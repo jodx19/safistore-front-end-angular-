@@ -1,0 +1,30 @@
+footer {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0c4a6e, #082f49 80%);
+  color: #f1f5f9;
+  letter-spacing: 0.2px;
+}
+
+footer h3 {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+footer a {
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+footer a:hover {
+  color: #bef264; /* lime-300 */
+}
+
+footer svg {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+footer svg:hover {
+  transform: scale(1.1);
+  color: #bef264;
+}

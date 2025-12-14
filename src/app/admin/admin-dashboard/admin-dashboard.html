@@ -1,0 +1,102 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="mb-8">
+    <h1 class="text-4xl font-bold text-sky-900">Admin Dashboard</h1>
+    <p class="text-sky-600 mt-2">Manage your e-commerce store</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+      <p class="text-sky-600 text-sm font-bold mb-2">Total Orders</p>
+      <p class="text-3xl font-bold text-sky-900">{{ stats.totalOrders }}</p>
+      <p class="text-xs text-gray-500 mt-2">↑ 12% from last month</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+      <p class="text-sky-600 text-sm font-bold mb-2">Total Revenue</p>
+      <p class="text-3xl font-bold text-sky-900">${{ stats.totalRevenue }}</p>
+      <p class="text-xs text-gray-500 mt-2">↑ 8% from last month</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+      <p class="text-sky-600 text-sm font-bold mb-2">Total Products</p>
+      <p class="text-3xl font-bold text-sky-900">{{ stats.totalProducts }}</p>
+      <p class="text-xs text-gray-500 mt-2">↑ 5 new products</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+      <p class="text-sky-600 text-sm font-bold mb-2">Pending Orders</p>
+      <p class="text-3xl font-bold text-sky-900">{{ stats.pendingOrders }}</p>
+      <p class="text-xs text-gray-500 mt-2">Need attention!</p>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="flex gap-4 mb-8">
+    <a
+      routerLink="/admin/dashboard"
+      routerLinkActive="bg-sky-600 text-white"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="px-6 py-2 rounded-lg bg-white border-2 border-sky-600 text-sky-600 font-bold hover:bg-sky-50 transition"
+    >
+      Dashboard
+    </a>
+    <a
+      routerLink="/admin/products"
+      routerLinkActive="bg-sky-600 text-white"
+      class="px-6 py-2 rounded-lg bg-white border-2 border-sky-600 text-sky-600 font-bold hover:bg-sky-50 transition"
+    >
+      Manage Products
+    </a>
+    <a
+      routerLink="/admin/orders"
+      routerLinkActive="bg-sky-600 text-white"
+      class="px-6 py-2 rounded-lg bg-white border-2 border-sky-600 text-sky-600 font-bold hover:bg-sky-50 transition"
+    >
+      Manage Orders
+    </a>
+  </div>
+
+  <!-- Recent Orders Table -->
+  <div class="bg-white p-6 rounded-lg shadow">
+    <h2 class="text-2xl font-bold text-sky-900 mb-4">Recent Orders</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b-2 border-sky-200">
+            <th class="text-left py-3 px-4 text-sky-900 font-bold">Order ID</th>
+            <th class="text-left py-3 px-4 text-sky-900 font-bold">Customer</th>
+            <th class="text-left py-3 px-4 text-sky-900 font-bold">Total</th>
+            <th class="text-left py-3 px-4 text-sky-900 font-bold">Status</th>
+            <th class="text-left py-3 px-4 text-sky-900 font-bold">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let order of recentOrders"
+            class="border-b border-sky-100 hover:bg-sky-50 transition"
+          >
+            <td class="py-3 px-4">{{ order.id }}</td>
+            <td class="py-3 px-4">{{ order.customer }}</td>
+            <td class="py-3 px-4 font-bold">${{ order.total }}</td>
+            <td class="py-3 px-4">
+              <span
+                [ngClass]="{
+                  'bg-green-100 text-green-800': order.status === 'Delivered',
+                  'bg-yellow-100 text-yellow-800': order.status === 'Pending',
+                  'bg-blue-100 text-blue-800': order.status === 'In Transit'
+                }"
+                class="px-3 py-1 rounded-full text-sm font-bold"
+              >
+                {{ order.status }}
+              </span>
+            </td>
+            <td class="py-3 px-4">
+              <button class="text-sky-600 hover:text-sky-900 font-bold">View</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

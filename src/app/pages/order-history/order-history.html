@@ -1,0 +1,56 @@
+<div class="min-h-screen bg-gradient-to-b from-sky-50 to-white py-8">
+  <div class="max-w-7xl mx-auto px-4">
+    <!-- Breadcrumbs -->
+    <app-breadcrumbs [items]="breadcrumbItems"></app-breadcrumbs>
+
+    <h1 class="page-title">Order History</h1>
+
+    <!-- Loading State -->
+    <app-skeleton-loader *ngIf="loading" type="list" [count]="5"></app-skeleton-loader>
+
+    <!-- Empty State -->
+    <app-empty-state
+      *ngIf="!loading && orders.length === 0"
+      icon="📦"
+      title="No orders yet"
+      message="You haven't placed any orders yet. Start shopping to see your order history here."
+      actionLabel="Browse Products"
+      [actionCallback]="navigateToProducts.bind(this)"
+    ></app-empty-state>
+
+    <!-- Orders List -->
+    <div *ngIf="!loading && orders.length > 0" class="orders-list">
+      <div *ngFor="let order of orders" class="order-card">
+        <div class="order-header">
+          <div class="order-info">
+            <h3 class="order-id">Order #{{ order.id }}</h3>
+            <p class="order-date">Placed on {{ formatDate(order.createdAt) }}</p>
+          </div>
+          <div class="order-status">
+            <span [class]="'status-badge ' + getStatusClass(order.status)">
+              {{ order.status | titlecase }}
+            </span>
+          </div>
+        </div>
+
+        <div class="order-items-summary">
+          <p class="items-count">
+            {{ order.items.length }} {{ order.items.length === 1 ? 'item' : 'items' }}
+          </p>
+          <p class="order-total">Total: ${{ order.total | number: '1.2-2' }}</p>
+        </div>
+
+        <div class="order-actions">
+          <button
+            (click)="viewOrder(order.id)"
+            class="btn-view-order"
+            aria-label="View order details"
+          >
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

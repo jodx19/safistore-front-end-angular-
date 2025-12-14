@@ -1,0 +1,87 @@
+<div [class.compact]="compact" class="wishlist-container">
+  <!-- Full Wishlist View -->
+  <div *ngIf="!compact" class="wishlist-full">
+    <h2 class="wishlist-title">My Wishlist</h2>
+
+    <!-- Loading State -->
+    <app-skeleton-loader *ngIf="loading" type="list" [count]="5"></app-skeleton-loader>
+
+    <!-- Empty State -->
+    <app-empty-state
+      *ngIf="!loading && wishlistItems.length === 0"
+      icon="❤️"
+      title="Your wishlist is empty"
+      message="Start adding products you love to your wishlist!"
+      actionLabel="Browse Products"
+      [actionCallback]="navigateToProducts.bind(this)"
+    ></app-empty-state>
+
+    <!-- Wishlist Items -->
+    <div *ngIf="!loading && wishlistItems.length > 0" class="wishlist-items">
+      <div *ngFor="let item of wishlistItems" class="wishlist-item">
+        <img
+          [src]="item.image"
+          [alt]="item.title"
+          loading="lazy"
+          width="120"
+          height="120"
+          class="item-image"
+          (click)="viewProduct(item.id)"
+        />
+        <div class="item-info">
+          <h3 class="item-title" (click)="viewProduct(item.id)">{{ item.title }}</h3>
+          <p class="item-price">${{ item.price | number: '1.2-2' }}</p>
+        </div>
+        <div class="item-actions">
+          <button
+            (click)="addToCartFromWishlist(item)"
+            class="btn-add-cart"
+            aria-label="Add to cart"
+          >
+            🛒 Add to Cart
+          </button>
+          <button
+            (click)="removeFromWishlist(item.id)"
+            class="btn-remove"
+            aria-label="Remove from wishlist"
+          >
+            ❌ Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compact View (for header dropdown) -->
+  <div *ngIf="compact" class="wishlist-compact">
+    <div *ngFor="let item of wishlistItems.slice(0, 5)" class="compact-item">
+      <img
+        [src]="item.image"
+        [alt]="item.title"
+        loading="lazy"
+        width="50"
+        height="50"
+        class="compact-image"
+      />
+      <div class="compact-info">
+        <p class="compact-title">{{ item.title }}</p>
+        <p class="compact-price">${{ item.price | number: '1.2-2' }}</p>
+      </div>
+      <button
+        (click)="removeFromWishlist(item.id)"
+        class="compact-remove"
+        aria-label="Remove from wishlist"
+      >
+        ×
+      </button>
+    </div>
+    <a
+      *ngIf="wishlistItems.length > 0"
+      routerLink="/wishlist"
+      class="compact-view-all"
+    >
+      View all ({{ wishlistItems.length }})
+    </a>
+  </div>
+</div>
+

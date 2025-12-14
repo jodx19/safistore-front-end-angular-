@@ -1,0 +1,62 @@
+<div class="min-h-screen bg-gradient-to-b from-sky-50 to-white py-12">
+  <div class="max-w-2xl mx-auto px-4">
+    <h1 class="text-4xl font-bold gradient-text mb-8">Track Your Order</h1>
+
+    <!-- Search Form -->
+    <div class="bg-white p-6 rounded-lg shadow mb-8">
+      <div class="flex gap-4">
+        <input
+          type="text"
+          [(ngModel)]="orderNumber"
+          placeholder="Enter order number (e.g., ORD-123456)"
+          class="flex-1 px-4 py-2 border border-sky-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+        />
+        <button
+          (click)="trackOrder()"
+          [disabled]="loading"
+          class="bg-sky-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-sky-700 disabled:opacity-50"
+        >
+          {{ loading ? 'Tracking...' : 'Track' }}
+        </button>
+      </div>
+      <p *ngIf="error" class="text-red-600 mt-2">{{ error }}</p>
+    </div>
+
+    <!-- Tracking Timeline -->
+    <div *ngIf="tracking" class="bg-white p-6 rounded-lg shadow">
+      <h2 class="text-xl font-bold text-sky-900 mb-6">Order {{ tracking.orderNumber }}</h2>
+
+      <!-- Timeline -->
+      <div class="space-y-4">
+        <div *ngFor="let status of statuses" class="flex gap-4">
+          <div class="flex flex-col items-center">
+            <div
+              [ngClass]="
+                isStatusActive(status) ? 'bg-sky-600 text-white' : 'bg-gray-200 text-gray-500'
+              "
+              class="w-10 h-10 rounded-full flex items-center justify-center font-bold"
+            >
+              {{ getStatusIcon(status) }}
+            </div>
+            <div
+              *ngIf="status !== 'delivered'"
+              [ngClass]="isStatusActive(status) ? 'bg-sky-600' : 'bg-gray-200'"
+              class="w-1 h-12 mt-2"
+            ></div>
+          </div>
+          <div class="pt-2">
+            <p class="font-bold text-sky-900 capitalize">
+              {{ status === 'in-transit' ? 'In Transit' : status }}
+            </p>
+            <p *ngIf="status === tracking.status" class="text-sky-600">
+              Current location: {{ tracking.location }}
+            </p>
+            <p *ngIf="status === 'delivered'" class="text-sky-600">
+              Estimated: {{ tracking.estimatedDelivery }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

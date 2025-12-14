@@ -1,0 +1,84 @@
+/* landing.component.css (final - updated) */
+
+/* Section spacing */
+.section-padding {
+  /* Base spacing kept for compatibility; utilities py-24/md:py-28 added per-section */
+  padding-top: 5.5rem;
+  padding-bottom: 5.5rem;
+}
+
+.section-max-width {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Cards */
+.card {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.06);
+  border: 1px solid rgba(2, 6, 23, 0.03);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(2, 6, 23, 0.12);
+}
+
+/* Scroll fade */
+.scroll-fade {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.3, 1),
+    transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+.scroll-fade.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.scroll-fade.delay-1 {
+  transition-delay: 0.08s;
+}
+.scroll-fade.delay-2 {
+  transition-delay: 0.18s;
+}
+.scroll-fade.delay-3 {
+  transition-delay: 0.28s;
+}
+
+/* Hero heading initial animation */
+.animate-fade-in {
+  animation: fadeIn 0.9s ease forwards;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Footer */
+footer {
+  background-color: #0f172a;
+  color: #cbd5e1;
+  text-align: center;
+  padding: 0.75rem 0;
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .section-padding {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+  .card {
+    border-radius: 0.75rem;
+  }
+}

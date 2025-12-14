@@ -1,0 +1,38 @@
+<div [ngSwitch]="type" class="skeleton-container">
+  <!-- Text Skeleton -->
+  <div *ngSwitchCase="'text'" class="space-y-2">
+    <div
+      *ngFor="let item of [].constructor(count); let i = index"
+      class="skeleton"
+      [style.width]="width"
+      [style.height]="height"
+    ></div>
+  </div>
+
+  <!-- Card Skeleton -->
+  <div *ngSwitchCase="'card'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let item of [].constructor(count); let i = index" class="skeleton-card">
+      <div class="skeleton skeleton-image"></div>
+      <div class="p-4 space-y-3">
+        <div class="skeleton skeleton-text h-4"></div>
+        <div class="skeleton skeleton-text h-4 w-3/4"></div>
+        <div class="skeleton skeleton-text h-6 w-1/2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- List Skeleton -->
+  <div *ngSwitchCase="'list'" class="space-y-4">
+    <div *ngFor="let item of [].constructor(count); let i = index" class="flex gap-4">
+      <div class="skeleton skeleton-image w-16 h-16 rounded"></div>
+      <div class="flex-1 space-y-2">
+        <div class="skeleton skeleton-text h-4"></div>
+        <div class="skeleton skeleton-text h-4 w-2/3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Skeleton -->
+  <div *ngSwitchCase="'image'" class="skeleton skeleton-image" [style.width]="width" [style.height]="height"></div>
+</div>
+

@@ -1,0 +1,178 @@
+<div class="min-h-screen bg-gradient-to-b from-sky-50 to-white py-8">
+  <div class="max-w-7xl mx-auto px-4">
+    <!-- Breadcrumbs -->
+    <app-breadcrumbs [items]="breadcrumbItems"></app-breadcrumbs>
+
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-sky-900 mb-2">Search Results</h1>
+      <p *ngIf="searchQuery" class="text-lg text-gray-600">
+        Results for: <strong>"{{ searchQuery }}"</strong>
+      </p>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+      <!-- Search Input -->
+      <div class="mb-6">
+        <label for="search-input" class="block text-sm font-semibold text-gray-700 mb-2">
+          Search Products
+        </label>
+        <input
+          id="search-input"
+          type="text"
+          [value]="searchQuery"
+          (input)="onSearchInput($event)"
+          placeholder="Search products, brands..."
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+          aria-label="Search products"
+        />
+      </div>
+
+      <!-- Filters Row -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Category Filter -->
+        <div>
+          <label for="category-filter" class="block text-sm font-semibold text-gray-700 mb-2">
+            Category
+          </label>
+          <select
+            id="category-filter"
+            [(ngModel)]="selectedCategory"
+            (change)="onCategoryChange()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+            aria-label="Filter by category"
+          >
+            <option value="">All Categories</option>
+            <option *ngFor="let cat of categories" [value]="cat">
+              {{ cat | titlecase }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Price Range -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Price Range: ${{ minPrice }} - ${{ maxPrice }}
+          </label>
+          <div class="flex gap-2 items-center">
+            <input
+              type="range"
+              [(ngModel)]="minPrice"
+              (change)="onPriceChange()"
+              min="0"
+              max="1000"
+              class="flex-1 accent-sky-600"
+              aria-label="Minimum price"
+            />
+            <input
+              type="range"
+              [(ngModel)]="maxPrice"
+              (change)="onPriceChange()"
+              min="0"
+              max="1000"
+              class="flex-1 accent-sky-600"
+              aria-label="Maximum price"
+            />
+          </div>
+        </div>
+
+        <!-- Sort -->
+        <div>
+          <label for="sort-filter" class="block text-sm font-semibold text-gray-700 mb-2">
+            Sort By
+          </label>
+          <select
+            id="sort-filter"
+            [(ngModel)]="sortBy"
+            (change)="onSortChange()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+            aria-label="Sort products"
+          >
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="price-asc">Price (Low to High)</option>
+            <option value="price-desc">Price (High to Low)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="mb-6 text-gray-700 font-semibold">
+      🎯 {{ filteredProducts.length }}
+      {{ filteredProducts.length === 1 ? 'Product' : 'Products' }} Found
+    </div>
+
+    <!-- Loading State -->
+    <app-skeleton-loader *ngIf="loading" type="card" [count]="6"></app-skeleton-loader>
+
+    <!-- Empty State -->
+    <app-empty-state
+      *ngIf="!loading && filteredProducts.length === 0"
+      icon="🔍"
+      title="No products found"
+      message="Try adjusting your search query or filters."
+    ></app-empty-state>
+
+    <!-- Products Grid -->
+    <div *ngIf="!loading && filteredProducts.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        *ngFor="let product of filteredProducts"
+        class="bg-white rounded-xl shadow-md hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+      >
+        <!-- Image -->
+        <div class="relative h-60 overflow-hidden group rounded-t-xl">
+          <img
+            [src]="product.image"
+            [alt]="product.title"
+            loading="lazy"
+            decoding="async"
+            width="400"
+            height="400"
+            class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500"
+            (error)="onImageError($event)"
+          />
+          <div
+            class="absolute top-3 left-3 px-2 py-1 rounded-md text-sm font-semibold shadow"
+            [ngClass]="
+              product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            "
+          >
+            {{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-4 space-y-2">
+          <h3 class="text-lg font-semibold text-gray-900 line-clamp-2">{{ product.title }}</h3>
+          <p class="text-gray-700 text-sm line-clamp-2">{{ product.description }}</p>
+
+          <div class="flex items-center justify-between mt-2">
+            <div class="text-xl font-bold text-sky-600">
+              ${{ product.price | number: '1.2-2' }}
+            </div>
+            <div class="flex gap-2">
+              <button
+                (click)="addToCart(product)"
+                [disabled]="product.stock === 0"
+                class="px-3 py-2 bg-gradient-to-r from-sky-500 to-sky-600 text-white rounded-md shadow hover:from-sky-600 hover:to-sky-700 disabled:opacity-50"
+                [attr.aria-label]="'Add ' + product.title + ' to cart'"
+              >
+                🛒 Add
+              </button>
+              <a
+                [routerLink]="['/products', product.id]"
+                class="px-3 py-2 text-sky-600 hover:text-sky-700 font-semibold"
+                [attr.aria-label]="'View details for ' + product.title"
+              >
+                View
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

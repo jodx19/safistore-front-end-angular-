@@ -1,0 +1,56 @@
+.gradient-text {
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 50%, #14b8a6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+header.sticky {
+  backdrop-filter: saturate(120%) blur(6px);
+}
+
+input:focus,
+button:focus,
+a:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+  border-radius: 8px;
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.md\\:hidden[ng-reflect-ng-if='true'],
+.mobile-open {
+  animation: slideDownFade 220ms ease-in-out;
+}
+
+.avatar-initial {
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+@media (max-width: 640px) {
+  .max-w-7xl {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
