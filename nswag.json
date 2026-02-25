@@ -1,0 +1,47 @@
+{
+  "runtime": "Default",
+  "defaultVariables": null,
+  "documentGenerator": {
+    "fromDocument": {
+      "url": "https://localhost:7203/swagger/v1/swagger.json",
+      "output": null,
+      "newLineBehavior": "Auto"
+    }
+  },
+  "codeGenerators": {
+    "openApiToTypeScriptClient": {
+      "className": "{controller}Client",
+      "moduleName": "",
+      "namespace": "",
+      "typeScriptVersion": 5.0,
+      "template": "Angular",
+      "promiseType": "Promise",
+      "httpClass": "HttpClient",
+      "useSingletonProvider": false,
+      "injectionTokenType": "InjectionToken",
+      "rxJsVersion": 7.0,
+      "useTransformOptionsMethod": false,
+      "useTransformResultMethod": false,
+      "generateClientClasses": true,
+      "generateClientInterfaces": true,
+      "generateDtoTypes": true,
+      "exportTypes": true,
+      "extensionCode": null,
+      "outputFilePath": "src/app/api-client/api-client.ts",
+      "clientBaseClass": null,
+      "configurationClass": null,
+      "useExtensionInterface": false,
+      "importRequiredTypes": true,
+      "useGetBaseUrlMethod": false,
+      "baseUrlTokenName": "API_BASE_URL",
+      "querySerializerType": null,
+      "handleReferences": false,
+      "generateConstructorInterface": true,
+      "convertConstructorInterfaceData": false,
+      "classNamePrefix": null,
+      "classNameSuffix": null,
+      "operationGenerationMode": "MultipleClientsFromFirstTagAndOperationId",
+      "additionalOptions": {}
+    }
+  }
+}

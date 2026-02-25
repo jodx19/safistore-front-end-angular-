@@ -4,9 +4,8 @@
 export const environment = {
   production: false,
 
-  // Main API Base URL - points to local .NET Web API
-  // the backend is running on http://localhost:5000
-  apiUrl: 'http://localhost:5000/api',
+  // Main API Base URL - points to .NET Web API
+  apiUrl: 'https://localhost:7203/api/v1',
 
   // Specific endpoint paths (used by Angular services)
   endpoints: {

@@ -14,7 +14,7 @@ export function saveToken(token: string): void {
       localStorage.setItem(TOKEN_KEY, token);
     }
   } catch (error) {
-    console.error('Failed to save token to localStorage:', error);
+    // Handle error gracefully
   }
 }
 
@@ -26,7 +26,6 @@ export function getToken(): string | null {
   try {
     return localStorage.getItem(TOKEN_KEY);
   } catch (error) {
-    console.error('Failed to get token from localStorage:', error);
     return null;
   }
 }
@@ -38,7 +37,7 @@ export function removeToken(): void {
   try {
     localStorage.removeItem(TOKEN_KEY);
   } catch (error) {
-    console.error('Failed to remove token from localStorage:', error);
+    // Handle error gracefully
   }
 }
 

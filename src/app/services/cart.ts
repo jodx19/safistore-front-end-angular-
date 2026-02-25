@@ -150,8 +150,8 @@ export class CartService {
     try {
       const storageKey = this.getStorageKey();
       localStorage.setItem(storageKey, JSON.stringify(this.cartItems.value));
-    } catch (e) {
-      console.warn("Could not save cart to storage:", e);
+    } catch {
+      // Storage unavailable — cart will not persist this session
     }
   }
 
@@ -182,8 +182,7 @@ export class CartService {
         .filter((it) => it.id > 0);
 
       this.cartItems.next(items);
-    } catch (e) {
-      console.warn("Failed to load cart from storage:", e);
+    } catch {
       this.cartItems.next([]);
     }
   }

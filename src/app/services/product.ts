@@ -32,7 +32,7 @@ export class ProductService {
   private productsCache$?: Observable<any>;
   private productsCacheTime?: number;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Get all products from .NET backend
@@ -76,7 +76,6 @@ export class ProductService {
       }),
       shareReplay(1),
       catchError((error) => {
-        console.error('Error fetching products:', error);
         return throwError(() => error);
       })
     );
@@ -96,7 +95,6 @@ export class ProductService {
       timeout(environment.timeouts.apiRequest),
       retry(1),
       catchError((error) => {
-        console.error(`Error fetching product ${id}:`, error);
         return throwError(() => error);
       })
     );
@@ -110,7 +108,6 @@ export class ProductService {
       timeout(environment.timeouts.apiRequest),
       tap(() => this.clearCache()),
       catchError((error) => {
-        console.error('Error creating product:', error);
         return throwError(() => error);
       })
     );
@@ -124,7 +121,6 @@ export class ProductService {
       timeout(environment.timeouts.apiRequest),
       tap(() => this.clearCache()),
       catchError((error) => {
-        console.error(`Error updating product ${id}:`, error);
         return throwError(() => error);
       })
     );
@@ -138,7 +134,6 @@ export class ProductService {
       timeout(environment.timeouts.apiRequest),
       tap(() => this.clearCache()),
       catchError((error) => {
-        console.error(`Error deleting product ${id}:`, error);
         return throwError(() => error);
       })
     );
@@ -152,7 +147,6 @@ export class ProductService {
       timeout(environment.timeouts.apiRequest),
       retry(1),
       catchError((error) => {
-        console.error('Error fetching categories:', error);
         return throwError(() => error);
       })
     );

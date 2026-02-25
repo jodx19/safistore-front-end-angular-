@@ -1,16 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 import { NotificationService } from "../../services/notification.service";
-
-interface Order {
-  id: string;
-  customer: string;
-  total: number;
-  status: "pending" | "confirmed" | "shipped" | "delivered";
-  date: string;
-}
+import { OrderClient, OrderDto } from "../../api-client/api-client";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-manage-orders",
@@ -19,60 +13,67 @@ interface Order {
   templateUrl: "./manage-orders.html",
   styleUrls: ["./manage-orders.css"],
 })
-export class ManageOrdersComponent implements OnInit {
-  orders: Order[] = [
-    {
-      id: "ORD-001",
-      customer: "John Doe",
-      total: 234.5,
-      status: "delivered",
-      date: "2025-11-01",
-    },
-    {
-      id: "ORD-002",
-      customer: "Jane Smith",
-      total: 567.8,
-      status: "shipped",
-      date: "2025-11-02",
-    },
-    {
-      id: "ORD-003",
-      customer: "Mike Johnson",
-      total: 123.45,
-      status: "pending",
-      date: "2025-11-05",
-    },
-    {
-      id: "ORD-004",
-      customer: "Sarah Williams",
-      total: 345.0,
-      status: "confirmed",
-      date: "2025-11-05",
-    },
-  ];
+export class ManageOrdersComponent implements OnInit, OnDestroy {
+  orders: OrderDto[] = [];
+  loading = false;
+  error = "";
+  private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private notificationService: NotificationService
-  ) {}
+    private notificationService: NotificationService,
+    private orderClient: OrderClient
+  ) { }
 
   ngOnInit() {
     if (!this.authService.isAdmin()) {
       this.router.navigate(["/products"]);
+      return;
     }
+    this.loadOrders();
   }
 
-  // ✅ Fixed: تحويل event إلى HTMLSelectElement
-  updateStatus(order: Order, event: Event) {
-    const selectElement = event.target as HTMLSelectElement; // ✅ Cast to HTMLSelectElement
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  loadOrders() {
+    this.loading = true;
+    this.orderClient.getAllOrders(1, 50)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (resp) => {
+          this.orders = resp.data.items;
+          this.loading = false;
+        },
+        error: () => {
+          this.error = "Failed to load orders";
+          this.loading = false;
+        }
+      });
+  }
+
+  updateStatus(order: OrderDto, event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
     const newStatus = selectElement.value;
-    order.status = newStatus as any;
-    this.notificationService.showSuccess("Order status updated to: " + newStatus);
+
+    this.orderClient.updateStatus(order.id, newStatus)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          order.status = newStatus;
+          this.notificationService.showSuccess(`Order ${order.id} status updated to: ${newStatus}`);
+        },
+        error: () => {
+          this.notificationService.showError("Failed to update order status");
+        }
+      });
   }
 
   getStatusColor(status: string): string {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "pending":
         return "bg-gray-100 text-gray-800";
       case "confirmed":
@@ -82,7 +83,7 @@ export class ManageOrdersComponent implements OnInit {
       case "delivered":
         return "bg-green-100 text-green-800";
       default:
-        return "";
+        return "bg-gray-100 text-gray-800";
     }
   }
 }

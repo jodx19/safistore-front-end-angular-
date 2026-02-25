@@ -23,7 +23,7 @@ export class RegisterComponent {
   successMessage = '';
   agreeToTerms = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   register() {
     if (!this.email || !this.password || !this.firstName || !this.lastName) {
@@ -49,27 +49,31 @@ export class RegisterComponent {
     this.loading = true;
     this.error = '';
 
-    this.authService.register(this.email, this.password, this.firstName, this.lastName).subscribe(
-      (response) => {
+    this.authService.register({
+      email: this.email,
+      password: this.password,
+      confirmPassword: this.confirmPassword,
+      firstName: this.firstName,
+      lastName: this.lastName
+    }).subscribe({
+      next: (response) => {
         this.loading = false;
         if (response.success) {
           this.successMessage = 'Registration successful! Redirecting...';
-          setTimeout(() => {
-            this.router.navigate(['/products']);
-          }, 1500);
+          setTimeout(() => this.router.navigate(['/products']), 1500);
         } else {
-          this.error = response.message;
+          this.error = response.message ?? 'Registration failed.';
         }
       },
-      (error) => {
+      error: () => {
         this.loading = false;
         this.error = 'An error occurred. Please try again.';
       }
-    );
+    });
   }
 
   goToLogin() {
     this.router.navigate(['/login']);
   }
 }
-export class Register{}
+export class Register { }

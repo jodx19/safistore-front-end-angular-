@@ -12,7 +12,8 @@
     "test:e2e": "echo 'E2E tests require Cypress setup'",
     "lint": "ng lint",
     "lint:ci": "ng lint --format=stylish",
-    "validate": "npm run lint:ci && npm run test:unit && npm run build:prod"
+    "validate": "npm run lint:ci && npm run test:unit && npm run build:prod",
+    "nswag:generate": "nswag run nswag.json /runtime:WinX64"
   },
   "prettier": {
     "printWidth": 100,

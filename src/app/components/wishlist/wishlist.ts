@@ -51,7 +51,7 @@ export class WishlistComponent implements OnInit, OnDestroy {
     private cartService: CartService,
     private notificationService: NotificationService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Subscribe to auth changes to load user-specific wishlist
@@ -103,8 +103,8 @@ export class WishlistComponent implements OnInit, OnDestroy {
 
       this.wishlistItems = parsed;
       this.wishlistSubject.next(this.wishlistItems);
-    } catch (error) {
-      console.warn('Failed to load wishlist:', error);
+    } catch {
+      // Storage unavailable or parsing error
       this.wishlistItems = [];
       this.wishlistSubject.next([]);
     }
@@ -118,8 +118,8 @@ export class WishlistComponent implements OnInit, OnDestroy {
       const storageKey = this.getStorageKey();
       localStorage.setItem(storageKey, JSON.stringify(this.wishlistItems));
       this.wishlistSubject.next(this.wishlistItems);
-    } catch (error) {
-      console.warn('Failed to save wishlist:', error);
+    } catch {
+      // Storage unavailable
     }
   }
 

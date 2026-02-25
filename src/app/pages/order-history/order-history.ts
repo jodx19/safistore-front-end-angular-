@@ -37,7 +37,7 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private notificationService: NotificationService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.setupBreadcrumbs();
@@ -80,7 +80,6 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
           this.loading = false;
         },
         error: (error) => {
-          console.error('Error loading orders:', error);
           this.notificationService.showError('Failed to load orders');
           this.loading = false;
         }
@@ -113,7 +112,7 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
   /**
    * Format date
    */
-  formatDate(date: Date | undefined): string {
+  formatDate(date: string | Date | undefined): string {
     if (!date) return 'N/A';
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',

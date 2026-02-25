@@ -34,7 +34,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private route: ActivatedRoute,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // read optional search query param
@@ -62,9 +62,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
         next: (data: string[]) => {
           this.categories = data;
         },
-        error: (error) => {
-          console.error("Error loading categories:", error);
-          this.error = "Failed to load categories";
+        error: () => {
+          this.error = 'Failed to load categories.';
         }
       });
   }
@@ -81,56 +80,18 @@ export class ProductsComponent implements OnInit, OnDestroy {
             price: product.price,
             description: product.description,
             image: product.image,
-            rating: product.rating?.rate || 4.5,
-            stock: Math.floor(Math.random() * 100) + 1,
+            rating: product.rating?.rate ?? 0,
+            stock: product.stock ?? 0,
             category: product.category,
           }));
           this.loading = false;
           this.applyFilters();
         },
-        error: (error) => {
-          console.error("Error loading products:", error);
-          this.error = "Failed to load products. Using sample data.";
+        error: () => {
+          this.error = 'Failed to load products. Please refresh or try again later.';
           this.loading = false;
-          this.loadSampleProducts();
         }
       });
-  }
-
-  loadSampleProducts() {
-    this.products = [
-      {
-        id: 1,
-        title: "Wireless Headphones",
-        price: 79.99,
-        description: "High-quality wireless headphones",
-        image: "https://via.placeholder.com/600x600?text=Headphones",
-        rating: 4.8,
-        stock: 45,
-        category: "electronics",
-      },
-      {
-        id: 2,
-        title: "USB-C Cable",
-        price: 9.99,
-        description: "Durable USB-C cable",
-        image: "https://via.placeholder.com/600x600?text=Cable",
-        rating: 4.5,
-        stock: 120,
-        category: "electronics",
-      },
-      {
-        id: 3,
-        title: "Ceramic Mug",
-        price: 12.5,
-        description: "Stylish ceramic coffee mug",
-        image: "https://via.placeholder.com/600x600?text=Mug",
-        rating: 4.3,
-        stock: 25,
-        category: "home",
-      },
-    ];
-    this.applyFilters();
   }
 
   applyFilters() {

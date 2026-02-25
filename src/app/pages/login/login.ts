@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,41 +14,44 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   email = '';
   password = '';
-  loginRole: 'user' | 'admin' = 'user';
   loading = false;
   error = '';
   successMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   login() {
     if (!this.email || !this.password) {
-      this.error = 'Please fill in all fields';
+      this.error = 'Please enter your email and password.';
       return;
     }
 
     this.loading = true;
     this.error = '';
 
-    // تمرير الدور المختار
-    this.authService.login(this.email, this.password, this.loginRole).subscribe(
-      (response) => {
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
+      next: (response) => {
         this.loading = false;
         if (response.success) {
-          this.successMessage = `Login successful as ${this.loginRole}! Redirecting...`;
+          // Role-based routing driven by server-issued JWT claims
+          const role = this.authService.currentUser?.role?.toLowerCase();
+          this.successMessage = 'Login successful! Redirecting...';
           setTimeout(() => {
-            // توجيه بناءً على الدور
-            if (this.loginRole === 'admin') {
+            if (role === 'admin') {
               this.router.navigate(['/admin/dashboard']);
             } else {
               this.router.navigate(['/products']);
             }
-          }, 1500);
+          }, 800);
         } else {
-          this.error = response.message;
+          this.error = response.message ?? 'Login failed. Please check your credentials.';
         }
+      },
+      error: () => {
+        this.loading = false;
+        this.error = 'Login failed. Please check your credentials and try again.';
       }
-    );
+    });
   }
 
   goToRegister() {

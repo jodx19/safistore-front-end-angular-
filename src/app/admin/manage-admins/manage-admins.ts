@@ -13,21 +13,13 @@ import { Router } from "@angular/router";
   styleUrls: ["./manage-admins.css"],
 })
 export class ManageAdminsComponent implements OnInit {
-  admins: any[] = [
-    {
-      id: 1,
-      email: "admin@example.com",
-      firstName: "Admin",
-      lastName: "User",
-      role: "admin",
-    },
-  ];
+  admins: any[] = [];
 
   newAdmin = {
-    email: "",
-    firstName: "",
-    lastName: "",
-    password: "",
+    email: '',
+    firstName: '',
+    lastName: '',
+    password: '',
   };
 
   showForm = false;
@@ -35,7 +27,7 @@ export class ManageAdminsComponent implements OnInit {
   error = "";
   success = "";
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
     if (!this.authService.isAdmin()) {
@@ -57,29 +49,10 @@ export class ManageAdminsComponent implements OnInit {
     this.error = "";
     this.success = "";
 
-    this.authService
-      .addNewAdmin(
-        this.newAdmin.email,
-        this.newAdmin.password,
-        this.newAdmin.firstName,
-        this.newAdmin.lastName
-      )
-      .subscribe((response) => {
-        this.loading = false;
-        if (response.success) {
-          this.success = "New admin added successfully!";
-          this.admins.push(response.admin);
-          this.newAdmin = {
-            email: "",
-            firstName: "",
-            lastName: "",
-            password: "",
-          };
-          this.showForm = false;
-        } else {
-          this.error = response.message;
-        }
-      });
+    // TODO: Implement a dedicated admin-creation API endpoint.
+    // addNewAdmin() is currently a deprecated stub — see AuthService.
+    this.loading = false;
+    this.error = 'Admin creation via this panel is not yet implemented. Please use the backend admin CLI or a secure invitation flow.';
   }
 
   removeAdmin(email: string) {

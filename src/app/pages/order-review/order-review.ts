@@ -40,7 +40,7 @@ export class OrderReviewComponent implements OnInit, OnDestroy {
     private orderService: OrderService,
     private notificationService: NotificationService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.setupBreadcrumbs();
@@ -73,7 +73,7 @@ export class OrderReviewComponent implements OnInit, OnDestroy {
         next: (items) => {
           this.cartItems = items;
           this.cartTotal = this.cartService.getCartTotal();
-          
+
           if (this.cartItems.length === 0) {
             this.notificationService.showWarning('Your cart is empty. Redirecting to products...');
             setTimeout(() => {
@@ -151,7 +151,6 @@ export class OrderReviewComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.loading = false;
           this.notificationService.showError('Failed to place order. Please try again.');
-          console.error('Order creation error:', error);
         }
       });
   }

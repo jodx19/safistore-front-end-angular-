@@ -1,10 +1,11 @@
 
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
-import { ProductService, Product } from "../../services/product";
+import { ProductClient, ProductDto, CreateProductDto, UpdateProductDto } from "../../api-client/api-client";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-manage-products",
@@ -13,155 +14,132 @@ import { ProductService, Product } from "../../services/product";
   templateUrl: "./manage-products.html",
   styleUrls: ["./manage-products.css"],
 })
-export class ManageProductsComponent implements OnInit {
-  products: Product[] = [
-    {
-      id: 1,
-      title: "Wireless Headphones",
-      price: 79.99,
-      description: "High-quality headphones",
-      image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-      rating: 4.5,
-      stock: 45,
-      category: "Electronics",
-    },
-    {
-      id: 2,
-      title: "USB-C Cable",
-      price: 9.99,
-      description: "Durable cable",
-      image: "https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg",
-      rating: 4.0,
-      stock: 120,
-      category: "Electronics",
-    },
-    {
-      id: 3,
-      title: "Cotton T-Shirt",
-      price: 24.99,
-      description: "Comfortable shirt",
-      image: "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg",
-      rating: 4.2,
-      stock: 80,
-      category: "Fashion",
-    },
-    {
-      id: 4,
-      title: "Running Shoes",
-      price: 89.99,
-      description: "Professional shoes",
-      image: "https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg",
-      rating: 4.8,
-      stock: 30,
-      category: "Sports",
-    },
-  ];
-
-  newProduct = { title: "", price: 0, stock: 0, category: "", description: "" };
-  categories = ["Electronics", "Fashion", "Home", "Sports", "Books"];
+export class ManageProductsComponent implements OnInit, OnDestroy {
+  products: ProductDto[] = [];
+  newProduct: CreateProductDto = { name: "", price: 0, stock: 0, categoryId: 1, description: "" };
+  categories: any[] = []; // Usually fetched from a category client
   showForm = false;
   loading = false;
   error = "";
   success = "";
+  editingProduct: ProductDto | null = null;
+  private destroy$ = new Subject<void>();
 
-  // ✅ Add edit mode
-  editingProduct: Product | null = null;
-
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private productClient: ProductClient
+  ) { }
 
   ngOnInit() {
     if (!this.authService.isAdmin()) {
       this.router.navigate(["/products"]);
+      return;
     }
+    this.loadProducts();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  loadProducts() {
+    this.loading = true;
+    this.productClient.getAll(1, 100)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (resp) => {
+          this.products = resp.data.items;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = "Failed to load products";
+          this.loading = false;
+        }
+      });
   }
 
   addProduct() {
-    if (
-      !this.newProduct.title ||
-      !this.newProduct.price ||
-      !this.newProduct.stock
-    ) {
-      this.error = "Please fill in all fields";
+    if (!this.newProduct.name || !this.newProduct.price) {
+      this.error = "Please fill in required fields";
       return;
     }
 
-    const product: Product = {
-      id: this.products.length + 1,
-      title: this.newProduct.title,
-      price: this.newProduct.price,
-      stock: this.newProduct.stock,
-      category: this.newProduct.category,
-      description: this.newProduct.description,
-      image: "",
-      rating: 0,
-    };
-
-    this.products.push(product);
-    this.newProduct = {
-      title: "",
-      price: 0,
-      stock: 0,
-      category: "",
-      description: "",
-    };
-    this.showForm = false;
-    this.success = "Product added successfully!";
-    setTimeout(() => (this.success = ""), 3000);
+    this.loading = true;
+    this.productClient.create(this.newProduct)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.success = "Product added successfully!";
+          this.loadProducts();
+          this.cancelEdit();
+          setTimeout(() => (this.success = ""), 3000);
+        },
+        error: () => {
+          this.error = "Failed to add product";
+          this.loading = false;
+        }
+      });
   }
 
-  // ✅ Add edit method
-  editProduct(product: Product) {
-    this.editingProduct = { ...product };
+  editProduct(product: ProductDto) {
+    this.editingProduct = product;
     this.newProduct = {
-      title: product.title,
+      name: product.name,
       price: product.price,
       stock: product.stock,
-      category: product.category,
+      categoryId: product.categoryId,
       description: product.description,
     };
     this.showForm = true;
   }
 
-  // ✅ Add save edit method
   saveEdit() {
     if (this.editingProduct) {
-      const index = this.products.findIndex(
-        (p) => p.id === this.editingProduct!.id
-      );
-      if (index > -1) {
-        this.products[index] = {
-          ...this.editingProduct,
-          title: this.newProduct.title,
-          price: this.newProduct.price,
-          stock: this.newProduct.stock,
-          category: this.newProduct.category,
-          description: this.newProduct.description,
-        };
-        this.success = "Product updated successfully!";
-        this.cancelEdit();
-        setTimeout(() => (this.success = ""), 3000);
-      }
+      this.loading = true;
+      const updateDto: UpdateProductDto = { ...this.newProduct };
+      this.productClient.update(this.editingProduct.id, updateDto)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.success = "Product updated successfully!";
+            this.loadProducts();
+            this.cancelEdit();
+            setTimeout(() => (this.success = ""), 3000);
+          },
+          error: () => {
+            this.error = "Failed to update product";
+            this.loading = false;
+          }
+        });
     }
   }
 
-  // ✅ Add cancel edit
   cancelEdit() {
     this.editingProduct = null;
-    this.newProduct = {
-      title: "",
-      price: 0,
-      stock: 0,
-      category: "",
-      description: "",
-    };
+    this.newProduct = { name: "", price: 0, stock: 0, categoryId: 1, description: "" };
     this.showForm = false;
+    this.error = "";
+    this.loading = false;
   }
 
   deleteProduct(id: number) {
     if (confirm("Are you sure you want to delete this product?")) {
-      this.products = this.products.filter((p) => p.id !== id);
-      this.success = "Product deleted successfully!";
-      setTimeout(() => (this.success = ""), 3000);
+      this.loading = true;
+      this.productClient.delete(id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.success = "Product deleted successfully!";
+            this.loadProducts();
+            setTimeout(() => (this.success = ""), 3000);
+          },
+          error: () => {
+            this.error = "Failed to delete product";
+            this.loading = false;
+          }
+        });
     }
   }
 }

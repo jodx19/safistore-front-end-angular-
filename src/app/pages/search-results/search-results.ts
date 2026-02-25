@@ -48,7 +48,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private cartService: CartService,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.setupBreadcrumbs();
@@ -121,15 +121,14 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
             price: product.price,
             description: product.description,
             image: product.image,
-            rating: product.rating?.rate || 4.5,
-            stock: Math.floor(Math.random() * 100) + 1,
+            rating: product.rating?.rate ?? 0,
+            stock: product.stock ?? 0,
             category: product.category
           }));
           this.loading = false;
           this.applyFilters();
         },
         error: (error) => {
-          console.error('Error loading products:', error);
           this.loading = false;
           this.notificationService.showError('Failed to load products');
         }
@@ -147,7 +146,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
           this.categories = data;
         },
         error: (error) => {
-          console.error('Error loading categories:', error);
+          // Silent fail for categories
         }
       });
   }

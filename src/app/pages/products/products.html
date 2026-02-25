@@ -2,7 +2,7 @@
   <div class="max-w-7xl mx-auto px-4">
     <!-- Header -->
     <div class="mb-10 space-y-3 text-center animate-fade-in">
-      <h1 class="text-4xl md:text-5xl font-extrabold text-gradient-from-purple-to-pink">
+      <h1 class="text-4xl md:text-5xl font-extrabold gradient-text">
         Our Products
       </h1>
       <p class="text-lg text-gray-800 max-w-2xl mx-auto">
@@ -15,11 +15,8 @@
       <!-- Category -->
       <div class="flex items-center gap-2">
         <label class="font-semibold text-gray-700">Categories:</label>
-        <select
-          [(ngModel)]="selectedCategory"
-          (change)="onCategoryChange()"
-          class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-        >
+        <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()"
+          class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500">
           <option value="">All Categories</option>
           <option *ngFor="let cat of categories" [value]="cat">{{ cat | titlecase }}</option>
         </select>
@@ -28,34 +25,17 @@
       <!-- Price -->
       <div class="flex items-center gap-4">
         <label class="font-semibold text-gray-700">Price:</label>
-        <input
-          type="range"
-          [(ngModel)]="minPrice"
-          (change)="onPriceChange()"
-          min="0"
-          max="1000"
-          class="accent-pink-500"
-        />
-        <input
-          type="range"
-          [(ngModel)]="maxPrice"
-          (change)="onPriceChange()"
-          min="0"
-          max="1000"
-          class="accent-pink-500"
-        />
+        <input type="range" [(ngModel)]="minPrice" (change)="onPriceChange()" min="0" max="1000"
+          class="accent-sky-600" />
+        <input type="range" [(ngModel)]="maxPrice" (change)="onPriceChange()" min="0" max="1000"
+          class="accent-sky-600" />
         <span class="text-gray-800">${{ minPrice }} - ${{ maxPrice }}</span>
       </div>
 
       <!-- Search -->
       <div class="flex-1 flex items-center gap-2">
-        <input
-          type="text"
-          [(ngModel)]="searchQuery"
-          (keyup)="onSearch()"
-          placeholder="Search products..."
-          class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-400"
-        />
+        <input type="text" [(ngModel)]="searchQuery" (keyup)="onSearch()" placeholder="Search products..."
+          class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 placeholder-gray-400" />
       </div>
 
       <!-- Results Count -->
@@ -74,35 +54,22 @@
     </div>
 
     <!-- Empty State -->
-    <app-empty-state
-      *ngIf="!loading && !error && filteredProducts.length === 0"
-      icon="🔍"
-      title="No products found"
-      message="Try adjusting your filters or search query."
-    ></app-empty-state>
+    <app-empty-state *ngIf="!loading && !error && filteredProducts.length === 0" icon="🔍" title="No products found"
+      message="Try adjusting your filters or search query."></app-empty-state>
 
     <!-- Products Grid -->
     <div *ngIf="!loading && filteredProducts.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div
-        *ngFor="let product of filteredProducts"
-        class="bg-white rounded-xl shadow-md hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-      >
+      <div *ngFor="let product of filteredProducts"
+        class="bg-white rounded-xl shadow-md hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden">
         <!-- Image -->
         <div class="relative h-60 overflow-hidden group rounded-t-xl">
-          <img
-            [src]="product.image"
-            [alt]="product.title"
-            loading="lazy"
+          <img [src]="product.image" [alt]="product.title" loading="lazy"
             class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500"
-            (error)="onImageError($event)"
-          />
+            (error)="onImageError($event)" />
           <!-- Stock Badge -->
-          <div
-            class="absolute top-3 left-3 px-2 py-1 rounded-md text-sm font-semibold shadow"
-            [ngClass]="
+          <div class="absolute top-3 left-3 px-2 py-1 rounded-md text-sm font-semibold shadow" [ngClass]="
               product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-            "
-          >
+            ">
             {{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}
           </div>
         </div>
@@ -113,22 +80,17 @@
           <p class="text-gray-700 text-sm line-clamp-2">{{ product.description }}</p>
 
           <div class="flex items-center justify-between mt-2">
-            <div class="text-xl font-bold text-purple-600">
+            <div class="text-xl font-bold text-sky-700">
               ${{ product.price | number : '1.2-2' }}
             </div>
             <div class="flex gap-2">
-              <button
-                (click)="addToCart(product)"
-                [disabled]="product.stock === 0"
-                class="px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md shadow hover:from-purple-600 hover:to-pink-600 disabled:opacity-50"
-              >
+              <button (click)="addToCart(product)" [disabled]="product.stock === 0"
+                class="px-4 py-2 bg-gradient-to-r from-sky-600 to-sky-700 text-white rounded-lg shadow-md hover:from-sky-700 hover:to-sky-800 transition-all font-bold disabled:opacity-50">
                 🛒 Add
               </button>
-              <a
-                [routerLink]="['/products', product.id]"
-                class="px-3 py-2 text-purple-600 hover:text-pink-500 font-semibold"
-                [attr.aria-label]="'View details for ' + product.title"
-              >
+              <a [routerLink]="['/products', product.id]"
+                class="px-3 py-2 text-sky-600 hover:text-sky-800 font-bold transition-colors"
+                [attr.aria-label]="'View details for ' + product.title">
                 View
               </a>
             </div>

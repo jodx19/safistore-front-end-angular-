@@ -55,7 +55,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private reviewService: ReviewService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const productId = this.route.snapshot.paramMap.get('id');
@@ -87,8 +87,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             price: data.price,
             description: data.description,
             image: data.image,
-            rating: data.rating?.rate || 4.5,
-            stock: Math.floor(Math.random() * 100) + 1, // Mock stock
+            rating: data.rating?.rate ?? 0,
+            stock: data.stock ?? 0,
             category: data.category
           };
           this.setupBreadcrumbs();
@@ -96,7 +96,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
           this.loading = false;
         },
         error: (err) => {
-          console.error('Error loading product:', err);
           this.error = 'Failed to load product details';
           this.loading = false;
         }
@@ -171,7 +170,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
     const stars: string[] = [];
-    
+
     for (let i = 0; i < fullStars; i++) {
       stars.push('★');
     }
@@ -181,7 +180,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     while (stars.length < 5) {
       stars.push('☆');
     }
-    
+
     return stars;
   }
 
@@ -205,7 +204,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
    */
   private loadReviews(): void {
     if (!this.product) return;
-    
+
     this.loadingReviews = true;
     this.reviewService.getReviews(this.product.id)
       .pipe(takeUntil(this.destroy$))
@@ -215,7 +214,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
           this.loadingReviews = false;
         },
         error: (error) => {
-          console.error('Error loading reviews:', error);
           this.loadingReviews = false;
         }
       });
@@ -283,7 +281,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
    */
   markHelpful(review: Review): void {
     if (!this.product) return;
-    
+
     this.reviewService.markHelpful(this.product.id, review.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({

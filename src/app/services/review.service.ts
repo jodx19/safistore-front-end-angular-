@@ -30,7 +30,7 @@ export interface Review {
 export class ReviewService {
   private readonly STORAGE_KEY_PREFIX = 'reviews_';
 
-  constructor() {}
+  constructor() { }
 
   /**
    * Get storage key for product reviews
@@ -48,7 +48,7 @@ export class ReviewService {
     try {
       const storageKey = this.getStorageKey(productId);
       const saved = localStorage.getItem(storageKey);
-      
+
       if (!saved) {
         return of([]).pipe(delay(300)); // Simulate network delay
       }
@@ -59,8 +59,7 @@ export class ReviewService {
       }));
 
       return of(reviews).pipe(delay(300));
-    } catch (error) {
-      console.error('Error loading reviews:', error);
+    } catch {
       return throwError(() => new Error('Failed to load reviews'));
     }
   }
@@ -101,8 +100,7 @@ export class ReviewService {
       localStorage.setItem(storageKey, JSON.stringify(existingReviews));
 
       return of(newReview).pipe(delay(500)); // Simulate network delay
-    } catch (error) {
-      console.error('Error adding review:', error);
+    } catch {
       return throwError(() => new Error('Failed to add review'));
     }
   }
@@ -117,7 +115,7 @@ export class ReviewService {
     try {
       const storageKey = this.getStorageKey(productId);
       const saved = localStorage.getItem(storageKey);
-      
+
       if (!saved) {
         return throwError(() => new Error('Reviews not found'));
       }
@@ -133,8 +131,7 @@ export class ReviewService {
       localStorage.setItem(storageKey, JSON.stringify(reviews));
 
       return of(reviews[reviewIndex]).pipe(delay(300));
-    } catch (error) {
-      console.error('Error marking review as helpful:', error);
+    } catch {
       return throwError(() => new Error('Failed to update review'));
     }
   }

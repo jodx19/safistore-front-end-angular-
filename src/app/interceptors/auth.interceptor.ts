@@ -1,87 +1,109 @@
-
-import { HttpInterceptorFn, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { HttpInterceptorFn, HttpRequest, HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, switchMap, throwError, delay } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { catchError, switchMap, throwError, BehaviorSubject, filter, take } from 'rxjs';
+import { TokenStorageService } from '../services/token-storage.service';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { ApiResponse, AuthResponseDto } from '../api-client/api-client';
 
 /**
- * Auth Interceptor
- * Adds JWT token to all outgoing requests
- * Handles token refresh on 401 response
+ * Auth Interceptor (functional, Angular 14+)
  *
- * WORKFLOW:
- * 1. Get access token from storage
- * 2. Add to Authorization header
- * 3. If 401 response, try to refresh token
- * 4. Retry request with new token
- * 5. If refresh fails, redirect to login
+ * 1. Attaches `Authorization: Bearer <token>` to all API requests.
+ * 2. On 401: attempts a single token refresh.
+ * 3. If refresh succeeds → retries original request with new token.
+ * 4. If refresh fails → clears session and navigates to /login.
+ *
+ * Public endpoints (login, register, refresh-token) skip the bearer header.
  */
+
+let isRefreshing = false;
+const refreshDone$ = new BehaviorSubject<string | null>(null);
+
+const PUBLIC_ENDPOINTS = ['/auth/login', '/auth/register', '/auth/refresh-token'];
+
+function isApiUrl(url: string): boolean {
+  return url.startsWith(environment.apiUrl);
+}
+
+function isPublicEndpoint(url: string): boolean {
+  return PUBLIC_ENDPOINTS.some(ep => url.includes(ep));
+}
+
+function cloneWithToken(req: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
+  return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
+  const tokenStorage = inject(TokenStorageService);
   const router = inject(Router);
+  const http = inject(HttpClient);
 
-  // Skip token for auth endpoints and external APIs
-  const skipAuth =
-    req.url.includes('/auth/login') ||
-    req.url.includes('/auth/register') ||
-    !req.url.includes(environment.apiUrl);
-
-  if (skipAuth) {
+  // Skip non-API requests and public auth routes
+  if (!isApiUrl(req.url) || isPublicEndpoint(req.url)) {
     return next(req);
   }
 
-  // Get current access token
-  let token = authService.getAccessToken();
+  const token = tokenStorage.getAccessToken();
+  const authReq = token ? cloneWithToken(req, token) : req;
 
-  // Clone request and add Authorization header
-  const clonedReq = req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return next(clonedReq).pipe(
+  return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Handle 401 Unauthorized - Token expired or invalid
-      if (error.status === 401) {
-        const refreshToken = authService.getRefreshToken();
-
-        if (refreshToken) {
-          // Try to refresh token
-          return authService.refreshToken(refreshToken).pipe(
-            // Retry original request with new token
-            switchMap((response: any) => {
-              const newAccessToken = response.accessToken;
-
-              // Update stored token
-              authService.setAccessToken(newAccessToken);
-
-              // Retry request with new token
-              const retryReq = req.clone({
-                setHeaders: {
-                  Authorization: `Bearer ${newAccessToken}`,
-                },
-              });
-              return next(retryReq);
-            }),
-            catchError((refreshError) => {
-              // Refresh failed - logout user
-              authService.logout();
-              router.navigate(['/login']);
-              return throwError(() => refreshError);
-            })
-          );
-        } else {
-          // No refresh token - logout
-          authService.logout();
-          router.navigate(['/login']);
-          return throwError(() => error);
-        }
+      if (error.status !== 401) {
+        return throwError(() => error);
       }
 
-      return throwError(() => error);
+      const refreshToken = tokenStorage.getRefreshToken();
+      const currentAccess = tokenStorage.getAccessToken();
+
+      if (!refreshToken || !currentAccess) {
+        tokenStorage.clear();
+        router.navigate(['/login']);
+        return throwError(() => error);
+      }
+
+      // If a refresh is already in progress, queue this request
+      if (isRefreshing) {
+        return refreshDone$.pipe(
+          filter((t): t is string => t !== null),
+          take(1),
+          switchMap(newToken => next(cloneWithToken(req, newToken)))
+        );
+      }
+
+      isRefreshing = true;
+      refreshDone$.next(null);
+
+      return http
+        .post<ApiResponse<AuthResponseDto>>(`${environment.apiUrl}/auth/refresh-token`, {
+          accessToken: currentAccess,
+          refreshToken: refreshToken
+        })
+        .pipe(
+          switchMap((response: ApiResponse<AuthResponseDto>) => {
+            isRefreshing = false;
+            const newAccess = response?.data?.accessToken;
+            const newRefresh = response?.data?.refreshToken ?? refreshToken;
+
+            if (!newAccess) {
+              tokenStorage.clear();
+              router.navigate(['/login']);
+              return throwError(() => new Error('Refresh response missing token'));
+            }
+
+            tokenStorage.saveTokens(newAccess, newRefresh);
+            refreshDone$.next(newAccess);
+
+            return next(cloneWithToken(req, newAccess));
+          }),
+          catchError((refreshError) => {
+            isRefreshing = false;
+            refreshDone$.next(null);
+            tokenStorage.clear();
+            router.navigate(['/login']);
+            return throwError(() => refreshError);
+          })
+        );
     })
   );
 };
