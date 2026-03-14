@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { of, BehaviorSubject } from 'rxjs';
-import { OrderReviewComponent } from './order-review';
+import { of, BehaviorSubject, throwError } from 'rxjs';
+import { OrderReviewComponent } from './order-review.component';
 import { CartService } from '../../services/cart';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';

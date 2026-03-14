@@ -9,6 +9,7 @@ import { NotificationService } from '../../services/notification.service';
 import { BreadcrumbsComponent, BreadcrumbItem } from '../../components/breadcrumbs/breadcrumbs';
 import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader';
 import { EmptyStateComponent } from '../../components/empty-state/empty-state';
+import { OrderReviewService } from './order-review.service';
 
 /**
  * Order Review Component
@@ -24,7 +25,7 @@ import { EmptyStateComponent } from '../../components/empty-state/empty-state';
     SkeletonLoaderComponent,
     EmptyStateComponent
   ],
-  templateUrl: './order-review.html',
+  templateUrl: './order-review.component.html',
   styleUrls: ['./order-review.css']
 })
 export class OrderReviewComponent implements OnInit, OnDestroy {
@@ -38,6 +39,7 @@ export class OrderReviewComponent implements OnInit, OnDestroy {
     private cartService: CartService,
     private authService: AuthService,
     private orderService: OrderService,
+    private orderReviewService: OrderReviewService,
     private notificationService: NotificationService,
     private router: Router
   ) { }
@@ -67,14 +69,14 @@ export class OrderReviewComponent implements OnInit, OnDestroy {
    * Load cart data
    */
   private loadCartData(): void {
-    this.cartService.cartItems$
+    this.orderReviewService.getOrderReview()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (items) => {
-          this.cartItems = items;
-          this.cartTotal = this.cartService.getCartTotal();
+        next: (orderReview) => {
+          this.cartItems = orderReview.items;
+          this.cartTotal = orderReview.totals;
 
-          if (this.cartItems.length === 0) {
+          if (orderReview.isEmpty) {
             this.notificationService.showWarning('Your cart is empty. Redirecting to products...');
             setTimeout(() => {
               this.router.navigate(['/products']);
@@ -110,31 +112,7 @@ export class OrderReviewComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     // Prepare order data
-    const orderData = {
-      customerId: user.id?.toString() || user.email,
-      items: this.cartItems.map(item => ({
-        productId: item.id,
-        title: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.image
-      })),
-      total: this.cartTotal.total,
-      shippingAddress: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        address: '', // Would come from checkout form
-        city: '',
-        postalCode: '',
-        country: ''
-      },
-      paymentInfo: {
-        cardNumber: '**** **** **** 1234', // Would come from checkout form
-        expiryDate: '',
-        cvv: ''
-      }
-    };
+    const orderData = this.orderReviewService.buildCreateOrderRequest(user, this.cartItems);
 
     // Create order
     this.orderService.createOrder(orderData)

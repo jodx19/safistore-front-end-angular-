@@ -52,7 +52,7 @@ export const routes: Routes = [
   },
   {
     path: 'checkout/review',
-    loadComponent: () => import('./pages/order-review/order-review').then(m => m.OrderReviewComponent),
+    loadComponent: () => import('./pages/order-review/order-review.component').then(m => m.OrderReviewComponent),
     canActivate: [AuthGuard]
   },
   {

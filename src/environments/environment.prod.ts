@@ -1,10 +1,9 @@
 // PRODUCTION ENVIRONMENT CONFIGURATION
-// Update these values when deploying to production
 export const environment = {
   production: true,
 
-  // Production API URL - replace with your production server
-  apiUrl: 'https://api.safistore.com/api',
+  // Production API base URL
+  apiUrl: 'https://safistore.runasp.net/api/v1',
 
   endpoints: {
     auth: '/auth',
