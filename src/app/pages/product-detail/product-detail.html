@@ -1,238 +1,153 @@
-<div class="min-h-screen bg-gradient-to-b from-sky-50 to-white py-8">
-  <div class="max-w-7xl mx-auto px-4">
-    <!-- Breadcrumbs -->
-    <app-breadcrumbs *ngIf="breadcrumbItems.length > 0" [items]="breadcrumbItems"></app-breadcrumbs>
+<div class="page-header">
+  <div class="page-header-glass animate-fade-in" *ngIf="product">
+    <div class="flex items-center justify-center gap-2 text-blue-600 font-bold mb-4">
+      <span (click)="navigateToProducts()" class="cursor-pointer hover:text-blue-800 transition-colors">Intelligence Catalog</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      <span class="text-slate-400">Deep Analysis</span>
+    </div>
+    <h1 class="text-4xl md:text-6xl font-black text-slate-900 mb-4">{{ product!.title }}</h1>
+    <div class="flex items-center justify-center gap-6">
+      <div class="flex items-center bg-blue-50 px-4 py-2 rounded-full">
+        <span class="text-blue-600 font-black text-2xl">${{ product!.price | number: '1.2-2' }}</span>
+      </div>
+      <span [ngClass]="product!.stock > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'" 
+            class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest">
+        {{ product!.stock > 0 ? 'In Stock' : 'Out of Stock' }}
+      </span>
+    </div>
+  </div>
+</div>
 
-    <!-- Loading State -->
+<section class="section-premium reveal active">
+  <div class="max-w-7xl mx-auto">
+    <!-- States -->
     <app-skeleton-loader *ngIf="loading" type="card" [count]="1"></app-skeleton-loader>
-
-    <!-- Error State -->
     <app-empty-state
       *ngIf="error && !loading"
       icon="⚠️"
-      title="Product Not Found"
+      title="Access Denied"
       [message]="error"
-      actionLabel="Back to Products"
+      actionLabel="Back to Catalog"
       [actionCallback]="navigateToProducts.bind(this)"
     ></app-empty-state>
 
-    <!-- Product Detail -->
-    <div *ngIf="product && !loading" class="product-detail" itemscope itemtype="https://schema.org/Product">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Product Images -->
-        <div class="product-gallery">
-          <div class="main-image-container">
-            <img
-              [src]="getProductImages()[selectedImageIndex]"
-              [alt]="product.title"
-              loading="lazy"
-              decoding="async"
-              width="600"
-              height="600"
-              class="main-image"
-              (error)="onImageError($event)"
-              itemprop="image"
-            />
-          </div>
-          <div class="thumbnail-gallery" *ngIf="getProductImages().length > 1">
-            <button
-              *ngFor="let image of getProductImages(); let i = index"
-              (click)="selectImage(i)"
-              [class.active]="i === selectedImageIndex"
-              class="thumbnail-button"
-              [attr.aria-label]="'View image ' + (i + 1)"
-            >
-              <img
-                [src]="image"
-                [alt]="product.title + ' thumbnail ' + (i + 1)"
-                loading="lazy"
-                width="100"
-                height="100"
-                class="thumbnail"
-              />
-            </button>
-          </div>
+    <!-- Content -->
+    <div *ngIf="product && !loading" class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-20 animate-fade-in">
+      <!-- Media Gallery -->
+      <div class="space-y-6">
+        <div class="main-image-container group overflow-hidden rounded-3xl border border-slate-100 shadow-soft">
+          <img [src]="getProductImages()[selectedImageIndex]" [alt]="product!.title" 
+               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
         </div>
-
-        <!-- Product Info -->
-        <div class="product-info">
-          <h1 class="product-title" itemprop="name">{{ product.title }}</h1>
-          
-          <div class="product-rating" *ngIf="product.rating">
-            <div class="stars" [attr.aria-label]="'Rating: ' + product.rating + ' out of 5'">
-              <span *ngFor="let star of getRatingStars(product.rating)" class="star">{{ star }}</span>
-            </div>
-            <span class="rating-text">{{ product.rating }} / 5.0</span>
-          </div>
-
-          <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-            <span class="price-amount" itemprop="price" [attr.content]="product.price">
-              ${{ product.price | number: '1.2-2' }}
-            </span>
-            <meta itemprop="priceCurrency" content="USD" />
-          </div>
-
-          <div class="product-stock" [class.in-stock]="product.stock > 0" [class.out-of-stock]="product.stock === 0">
-            <span *ngIf="product.stock > 0" class="stock-badge">
-              ✓ In Stock ({{ product.stock }} available)
-            </span>
-            <span *ngIf="product.stock === 0" class="stock-badge">
-              ✕ Out of Stock
-            </span>
-          </div>
-
-          <div class="product-description" itemprop="description">
-            <h2>Description</h2>
-            <p>{{ product.description }}</p>
-          </div>
-
-          <!-- Add to Cart Section -->
-          <div class="add-to-cart-section" *ngIf="product.stock > 0">
-            <div class="quantity-selector">
-              <label for="quantity" class="quantity-label">Quantity:</label>
-              <div class="quantity-controls">
-                <button
-                  (click)="updateQuantity(-1)"
-                  [disabled]="quantity <= 1"
-                  class="quantity-button"
-                  aria-label="Decrease quantity"
-                >
-                  −
-                </button>
-                <input
-                  id="quantity"
-                  type="number"
-                  [(ngModel)]="quantity"
-                  [min]="1"
-                  [max]="product.stock"
-                  class="quantity-input"
-                  aria-label="Product quantity"
-                />
-                <button
-                  (click)="updateQuantity(1)"
-                  [disabled]="quantity >= product.stock"
-                  class="quantity-button"
-                  aria-label="Increase quantity"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            <button
-              (click)="addToCart()"
-              class="add-to-cart-button"
-              aria-label="Add to cart"
-            >
-              🛒 Add to Cart
-            </button>
-          </div>
-
-          <div *ngIf="product.stock === 0" class="out-of-stock-message">
-            <p>This product is currently out of stock.</p>
-          </div>
+        <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" *ngIf="getProductImages().length > 1">
+          <button *ngFor="let img of getProductImages(); let i = index" 
+                  (click)="selectImage(i)"
+                  [class.active]="i === selectedImageIndex"
+                  class="thumbnail-button shrink-0 w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all"
+                  [ngClass]="i === selectedImageIndex ? 'border-blue-600 scale-95 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'">
+            <img [src]="img" class="w-full h-full object-cover" />
+          </button>
         </div>
       </div>
 
-      <!-- Reviews Section -->
-      <div class="reviews-section" id="reviews">
-        <div class="reviews-header">
-          <h2>Customer Reviews</h2>
-          <button
-            (click)="toggleReviewForm()"
-            class="btn-write-review"
-            aria-label="Write a review"
-          >
-            {{ showReviewForm ? 'Cancel' : 'Write a Review' }}
-          </button>
+      <!-- Intelligence Data -->
+      <div class="flex flex-col">
+        <div class="product-description mb-10">
+          <h2 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
+            <span class="w-2 h-8 bg-blue-600 rounded-full"></span>
+            Technical Specifications
+          </h2>
+          <p class="text-slate-500 leading-relaxed text-lg mb-8">{{ product!.description }}</p>
+          
+          <div class="grid grid-cols-2 gap-6 p-6 bg-slate-50 rounded-3xl border border-slate-100">
+            <div>
+              <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Authenticity</p>
+              <p class="text-slate-900 font-bold">Verified Intelligence</p>
+            </div>
+            <div>
+              <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Stock Level</p>
+              <p class="text-slate-900 font-bold">{{ product!.stock }} units available</p>
+            </div>
+          </div>
         </div>
 
-        <!-- Review Form -->
-        <div *ngIf="showReviewForm" class="review-form">
-          <h3>Write Your Review</h3>
-          <form (ngSubmit)="submitReview()" class="review-form-content">
-            <div class="form-group">
-              <label for="review-rating">Rating:</label>
-              <select
-                id="review-rating"
-                [(ngModel)]="newReview.rating"
-                name="rating"
-                class="form-input"
-                required
-              >
-                <option [value]="5">5 - Excellent</option>
-                <option [value]="4">4 - Very Good</option>
-                <option [value]="3">3 - Good</option>
-                <option [value]="2">2 - Fair</option>
-                <option [value]="1">1 - Poor</option>
-              </select>
+        <div class="add-to-cart-section p-10 bg-white rounded-3xl shadow-soft-lg border border-slate-50">
+          <div class="flex items-center justify-between mb-8">
+            <span class="text-slate-900 font-bold text-lg">Acquisition Volume</span>
+            <div class="flex items-center gap-4 bg-slate-100 p-2 rounded-2xl">
+              <button (click)="updateQuantity(-1)" [disabled]="quantity <= 1" 
+                      class="w-10 h-10 rounded-xl bg-white text-slate-900 font-black hover:bg-blue-600 hover:text-white transition-all disabled:opacity-30">−</button>
+              <p class="w-8 text-center font-black text-slate-900 text-xl">{{ quantity }}</p>
+              <button (click)="updateQuantity(1)" [disabled]="quantity >= product.stock"
+                      class="w-10 h-10 rounded-xl bg-white text-slate-900 font-black hover:bg-blue-600 hover:text-white transition-all disabled:opacity-30">+</button>
             </div>
-            <div class="form-group">
-              <label for="review-title">Title:</label>
-              <input
-                id="review-title"
-                type="text"
-                [(ngModel)]="newReview.title"
-                name="title"
-                class="form-input"
-                placeholder="Summary of your review"
-                required
-                maxlength="100"
-              />
-            </div>
-            <div class="form-group">
-              <label for="review-comment">Comment:</label>
-              <textarea
-                id="review-comment"
-                [(ngModel)]="newReview.comment"
-                name="comment"
-                class="form-textarea"
-                placeholder="Share your experience with this product..."
-                required
-                minlength="10"
-                rows="4"
-              ></textarea>
-              <p class="form-hint">Minimum 10 characters</p>
-            </div>
-            <button type="submit" class="btn-submit-review">Submit Review</button>
-          </form>
-        </div>
-
-        <!-- Reviews List -->
-        <div *ngIf="loadingReviews" class="reviews-loading">
-          <app-skeleton-loader type="list" [count]="3"></app-skeleton-loader>
-        </div>
-
-        <div *ngIf="!loadingReviews && reviews.length === 0" class="reviews-empty">
-          <p>No reviews yet. Be the first to review this product!</p>
-        </div>
-
-        <div *ngIf="!loadingReviews && reviews.length > 0" class="reviews-list">
-          <div *ngFor="let review of reviews" class="review-item">
-            <div class="review-header">
-              <div class="review-user">
-                <strong>{{ review.userName }}</strong>
-                <div class="review-rating">
-                  <span *ngFor="let star of getRatingStars(review.rating)" class="star">{{ star }}</span>
-                </div>
-              </div>
-              <span class="review-date">{{ review.createdAt | date: 'medium' }}</span>
-            </div>
-            <h4 class="review-title">{{ review.title }}</h4>
-            <p class="review-comment">{{ review.comment }}</p>
-            <div class="review-footer">
-              <button
-                (click)="markHelpful(review)"
-                class="btn-helpful"
-                aria-label="Mark as helpful"
-              >
-                👍 Helpful ({{ review.helpful || 0 }})
-              </button>
-            </div>
+          </div>
+          
+          <div class="flex flex-col gap-4">
+            <button (click)="addToCart()" [disabled]="product!.stock === 0" class="btn-primary py-5 text-lg shadow-blue-500/20 shadow-xl">
+              Initiate Acquisition
+            </button>
+            <button class="btn-secondary py-5 text-lg">Bookmark Intelligence</button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Review Intel -->
+    <div class="reviews-section reveal mt-24">
+      <div class="flex items-center justify-between mb-12">
+        <h2 class="text-3xl font-black text-slate-900">User Intelligence</h2>
+        <button (click)="toggleReviewForm()" class="btn-glass text-sm">
+          {{ showReviewForm ? 'Abort Analysis' : 'Contribute Analysis' }}
+        </button>
+      </div>
+
+      <!-- Review Form -->
+      <div *ngIf="showReviewForm" class="card p-10 mb-12 border border-blue-100 bg-blue-50/30 animate-fade-in">
+        <form (ngSubmit)="submitReview()" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-2">
+              <label class="block text-slate-900 font-bold text-sm uppercase tracking-wider">Analysis Rating</label>
+              <select [(ngModel)]="newReview.rating" name="rating" class="w-full px-5 py-3 border border-slate-200 rounded-xl outline-none bg-white">
+                <option [value]="5">5 - Optimal</option>
+                <option [value]="4">4 - Superior</option>
+                <option [value]="3">3 - Satisfactory</option>
+                <option [value]="2">2 - Subpar</option>
+                <option [value]="1">1 - Deficient</option>
+              </select>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-slate-900 font-bold text-sm uppercase tracking-wider">Headline</label>
+              <input type="text" [(ngModel)]="newReview.title" name="title" class="w-full px-5 py-3 border border-slate-200 rounded-xl outline-none" placeholder="Summary of findings...">
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-slate-900 font-bold text-sm uppercase tracking-wider">Detailed Feedback</label>
+            <textarea [(ngModel)]="newReview.comment" name="comment" rows="4" class="w-full px-5 py-3 border border-slate-200 rounded-xl outline-none" placeholder="Examine your experience..."></textarea>
+          </div>
+          <button type="submit" class="btn-primary w-full py-4">Publish Report</button>
+        </form>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div *ngFor="let review of reviews" class="card p-8 group hover:border-blue-200 transition-all duration-500">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-black">
+              {{ review.userName.charAt(0) }}
+            </div>
+            <div>
+              <p class="text-slate-900 font-bold">{{ review.userName }}</p>
+              <div class="flex text-amber-400 text-xs gap-0.5">
+                <span *ngFor="let s of [1,2,3,4,5]">★</span>
+              </div>
+            </div>
+            <span class="ml-auto text-slate-400 text-xs font-bold">{{ review.createdAt | date:'shortDate' }}</span>
+          </div>
+          <h4 class="text-slate-900 font-black mb-2">{{ review.title }}</h4>
+          <p class="text-slate-600 leading-relaxed italic">"{{ review.comment }}"</p>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 

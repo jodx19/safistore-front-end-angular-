@@ -11,17 +11,23 @@ export const routes: Routes = [
   // Landing Page - Public route
   {
     path: '',
-    loadComponent: () => import('./pages/landing/landing').then(m => m.LandingComponent)
+    loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent)
   },
   
-  // Auth Routes - Public routes
+  // Auth Routes - glassmorphism auth experience
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.routes').then(m => m.AUTH_ROUTES)
+  },
   {
     path: 'login',
-    loadComponent: () => import('./pages/login/login').then(m => m.LoginComponent)
+    redirectTo: 'auth/login',
+    pathMatch: 'full'
   },
   {
     path: 'register',
-    loadComponent: () => import('./pages/register/register').then(m => m.RegisterComponent)
+    redirectTo: 'auth/register',
+    pathMatch: 'full'
   },
   
   // Protected Routes - Require authentication

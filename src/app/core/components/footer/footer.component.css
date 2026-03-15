@@ -1,0 +1,41 @@
+:host {
+  display: block;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-link::before {
+  content: '';
+  width: 0;
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+  transition: width 0.2s ease;
+}
+
+.footer-link:hover {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+.footer-link:hover::before {
+  width: 10px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+

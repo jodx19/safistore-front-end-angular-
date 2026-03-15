@@ -1,256 +1,170 @@
-<header class="sticky top-0 z-50 backdrop-blur bg-white/70 border-b border-sky-100/30 shadow-sm">
-  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 py-3 md:py-4">
-    <!-- Logo -->
+<!-- Ultra-Modern Floating Blur Navbar -->
+<header *ngIf="!isAuthPage" 
+  [ngClass]="{
+    'bg-white/80 backdrop-blur-glass shadow-soft border-b border-navy/5 py-3': isScrolled,
+    'bg-transparent py-5': !isScrolled
+  }"
+  class="fixed top-0 w-full z-50 transition-all duration-500">
+  
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-6 px-6 lg:px-8">
+    <!-- Logo - Refined Geometric Shield -->
     <a
       (click)="goToHome()"
-      class="flex items-center gap-3 cursor-pointer group transition-transform hover:scale-105"
+      class="flex items-center gap-3 cursor-pointer group"
       aria-label="SafiStore Home"
     >
-      <div
-        class="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center bg-gradient-to-br from-sky-600 via-cyan-500 to-teal-400 shadow-lg shadow-sky-500/30 group-hover:shadow-xl group-hover:shadow-sky-500/40 transition-all duration-300"
-      >
-        <!-- Professional Shopping Bag SVG Logo -->
-        <svg
-          class="w-7 h-7 md:w-8 md:h-8 text-white"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <!-- Shopping Bag -->
-          <path
-            d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            fill="rgba(255,255,255,0.15)"
-          />
-          <!-- Bag Handle -->
-          <path
-            d="M3 6H21"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <!-- Shopping Cart Lines -->
-          <path
-            d="M8 10V14M16 10V14"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-          <!-- Sparkle/Star for Premium Feel -->
-          <circle cx="12" cy="12" r="1.5" fill="currentColor" opacity="0.8" />
-        </svg>
-      </div>
-      <div class="flex flex-col">
-        <div class="text-lg md:text-2xl font-extrabold gradient-text leading-none tracking-tight">
-          SafiStore
+      <!-- Geometric Shield Icon -->
+      <div class="relative w-10 h-10">
+        <!-- Background glow -->
+        <div class="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-xl rotate-3 group-hover:rotate-6 transition-transform duration-500 opacity-80 shadow-glow"></div>
+        <!-- Shield Container -->
+        <div class="absolute inset-0 bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+          <!-- Geometric Shield SVG -->
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L4 6V11C4 16.5 7.5 21 12 22C16.5 21 20 16.5 20 11V6L12 2Z" 
+                  stroke="#1A1A2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12 6L8 8.5V11.5C8 14.5 9.8 17.2 12 18C14.2 17.2 16 14.5 16 11.5V8.5L12 6Z" 
+                  fill="#6C3FFF"/>
+            <path d="M12 10L10.5 11.5L12 13L13.5 11.5L12 10Z" 
+                  fill="#1A1A2E"/>
+          </svg>
         </div>
-        <div class="text-[10px] md:text-xs text-sky-600 font-medium leading-tight -mt-0.5">
-          Premium Shopping
-        </div>
+        <!-- Glow dot -->
+        <div class="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse-glow shadow-glow-accent"></div>
       </div>
+      <span class="text-2xl font-black text-navy tracking-tight font-inter">
+        Safi<span class="text-primary">Store</span>
+      </span>
     </a>
 
-    <!-- Desktop Navigation -->
+    <!-- Desktop Navigation - Ultra Clean -->
     <nav class="hidden md:flex items-center gap-2">
       <a
         routerLink="/"
-        routerLinkActive="bg-sky-100"
+        routerLinkActive="bg-primary/5 text-primary font-bold"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="rounded-md px-3 py-2 text-sky-700 font-semibold transition hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-sky-300"
+        class="rounded-full px-5 py-2.5 text-slate-500 font-semibold text-sm transition-all duration-300 hover:bg-primary/10 hover:text-primary"
       >
         Home
       </a>
       <a
         routerLink="/products"
-        routerLinkActive="bg-sky-100"
-        class="rounded-md px-3 py-2 text-sky-700 font-semibold transition hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-sky-300"
+        routerLinkActive="bg-primary/5 text-primary font-bold"
+        class="rounded-full px-5 py-2.5 text-slate-500 font-semibold text-sm transition-all duration-300 hover:bg-primary/10 hover:text-primary"
       >
         Products
       </a>
       <a
         routerLink="/track"
-        routerLinkActive="bg-sky-100"
-        class="rounded-md px-3 py-2 text-sky-700 font-semibold transition hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-sky-300"
+        routerLinkActive="bg-primary/5 text-primary font-bold"
+        class="rounded-full px-5 py-2.5 text-slate-500 font-semibold text-sm transition-all duration-300 hover:bg-primary/10 hover:text-primary"
       >
         Track Order
       </a>
     </nav>
 
-    <!-- Search Bar -->
-    <div class="hidden lg:flex items-center gap-2">
-      <div role="search" class="relative">
+    <!-- Search Bar - Minimal -->
+    <div class="hidden lg:flex items-center">
+      <div role="search" class="relative group">
         <label for="global-search" class="sr-only">Search products</label>
         <input
           id="global-search"
           type="text"
           [(ngModel)]="searchQuery"
-          placeholder="Search products, brands..."
-          class="w-56 md:w-64 rounded-lg px-4 py-2 bg-sky-50 border border-sky-200 text-sky-900 placeholder-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition"
+          placeholder="Search..."
+          class="w-48 lg:w-56 rounded-full px-5 py-2.5 bg-slate-100/80 border border-transparent text-navy placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary/20 transition-all duration-300"
         />
         <button
           type="button"
           (click)="search(searchQuery)"
           aria-label="Search"
-          class="absolute right-2 top-1/2 -translate-y-1/2 text-sky-600 hover:text-sky-700"
+          class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"
-            ></path>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"></path>
           </svg>
         </button>
       </div>
     </div>
 
-    <!-- Cart & Auth -->
-    <div class="flex items-center gap-3">
+    <!-- Cart & Auth - Clean -->
+    <div class="flex items-center gap-5">
       <!-- Cart Icon -->
-      <a routerLink="/cart" class="relative group" aria-label="Cart">
-        <svg
-          class="w-7 h-7 text-sky-700 transition group-hover:scale-110"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 6h14l-2-6"
-          ></path>
+      <a routerLink="/cart" class="relative group p-2" aria-label="Cart">
+        <svg class="w-6 h-6 text-slate-600 transition-colors group-hover:text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/>
         </svg>
-        <span
-          *ngIf="cartCount > 0"
-          class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white"
-        >
+        <span *ngIf="cartCount > 0" class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white shadow-glow-accent animate-pulse-glow">
           {{ cartCount }}
         </span>
       </a>
 
-      <!-- Auth Links (Desktop) -->
+      <!-- Auth Links -->
       <div class="hidden sm:flex items-center gap-3">
         <ng-container *ngIf="currentUser as user; else loginLink">
           <div class="flex items-center gap-3">
-            <div
-              class="rounded-full bg-sky-50 text-sky-700 w-9 h-9 flex items-center justify-center font-semibold"
-            >
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm shadow-glow">
               {{ user.firstName.charAt(0) || 'U' }}
             </div>
-            <div class="hidden md:block">
-              <p class="text-sm font-semibold text-sky-900 leading-none">
-                {{ user.firstName }}
-              </p>
-              <p *ngIf="user.role === 'admin'" class="text-xs text-sky-600">Admin</p>
+            <div class="hidden lg:block text-left relative top-0.5">
+              <p class="text-sm font-bold text-navy leading-none">{{ user.firstName }}</p>
+              <p *ngIf="user.role === 'admin'" class="text-xs text-primary font-semibold mt-0.5">Admin</p>
             </div>
           </div>
-
-          <a
-            *ngIf="user.role === 'admin'"
-            (click)="navigateToAdmin()"
-            class="rounded-md bg-yellow-400 px-3 py-2 font-bold text-gray-900 hover:bg-yellow-500 cursor-pointer transition transform hover:scale-105"
-          >
+          <a *ngIf="user.role === 'admin'" (click)="navigateToAdmin()" class="rounded-full bg-navy px-5 py-2.5 text-sm font-bold text-white hover:bg-slate-800 cursor-pointer transition-all duration-300 ml-2">
             Dashboard
           </a>
-
-          <button
-            (click)="logout()"
-            class="rounded-md bg-red-500 px-3 py-2 font-bold text-white hover:bg-red-600 transition transform hover:scale-105"
-          >
+          <button (click)="logout()" class="rounded-full px-4 py-2.5 text-sm font-semibold text-slate-500 hover:text-navy hover:bg-slate-100 transition-all duration-300">
             Logout
           </button>
         </ng-container>
 
         <ng-template #loginLink>
-          <a
-            routerLink="/login"
-            class="rounded-md px-3 py-2 text-sky-700 font-semibold transition hover:bg-sky-50"
-          >
+          <a routerLink="/login" class="rounded-full px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-primary hover:bg-primary/5 transition-colors">
             Login
           </a>
-          <a
-            routerLink="/register"
-            class="rounded-md bg-sky-600 px-3 py-2 font-bold text-white hover:bg-sky-700 transition"
-          >
+          <a routerLink="/register" class="btn-safi-primary shadow-glow px-6 py-2.5 text-sm rounded-full">
             Sign Up
           </a>
         </ng-template>
       </div>
 
       <!-- Mobile Menu Button -->
-      <button
-        (click)="toggleMobileMenu()"
-        class="md:hidden text-sky-700 p-2 rounded-md hover:bg-sky-50/50 focus:outline-none focus:ring-2 focus:ring-sky-300"
-        aria-expanded="{{ showMobileMenu }}"
-      >
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16m-7 6h7"
-          ></path>
+      <button (click)="toggleMobileMenu()" class="md:hidden p-2 rounded-xl hover:bg-slate-100 transition-colors z-50 relative" aria-expanded="{{ showMobileMenu }}">
+        <svg *ngIf="!showMobileMenu" class="h-6 w-6 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-16 6h16"/>
+        </svg>
+        <svg *ngIf="showMobileMenu" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
     </div>
   </div>
 
-  <!-- Mobile Menu -->
-  <div *ngIf="showMobileMenu" class="md:hidden bg-white border-t border-sky-100 shadow-inner">
-    <div class="space-y-2 px-4 py-4">
-      <a
-        routerLink="/"
-        class="block rounded-md px-3 py-2 text-sky-700 font-semibold hover:bg-sky-50"
-        >Home</a
-      >
-      <a
-        routerLink="/products"
-        class="block rounded-md px-3 py-2 text-sky-700 font-semibold hover:bg-sky-50"
-        >Products</a
-      >
-      <a
-        routerLink="/track"
-        class="block rounded-md px-3 py-2 text-sky-700 font-semibold hover:bg-sky-50"
-        >Track Order</a
-      >
+  <!-- Mobile Menu - Full Screen Slide/Fade In Overlay -->
+  <div *ngIf="showMobileMenu" class="fixed inset-0 z-40 bg-navy/95 backdrop-blur-3xl flex flex-col justify-center items-center animate-fade-in transition-all duration-500">
+    <div class="space-y-6 w-full max-w-sm px-6 text-center text-xl">
+      <a routerLink="/" (click)="toggleMobileMenu()" class="block rounded-2xl px-6 py-4 text-white font-bold hover:bg-white/10 transition-colors">Home</a>
+      <a routerLink="/products" (click)="toggleMobileMenu()" class="block rounded-2xl px-6 py-4 text-white font-bold hover:bg-white/10 transition-colors">Products</a>
+      <a routerLink="/track" (click)="toggleMobileMenu()" class="block rounded-2xl px-6 py-4 text-white font-bold hover:bg-white/10 transition-colors">Track Order</a>
 
       <ng-container *ngIf="currentUser as user; else mobileLoginLink">
-        <div class="border-t border-sky-100 pt-3 mt-3">
-          <p class="px-3 py-2 font-semibold text-sky-900">{{ user.firstName }}</p>
-          <a
-            *ngIf="user.role === 'admin'"
-            (click)="navigateToAdmin()"
-            class="block rounded-md bg-yellow-400 px-3 py-2 text-center font-bold text-gray-900 hover:bg-yellow-500 cursor-pointer"
-            >Dashboard</a
-          >
-          <button
-            (click)="logout()"
-            class="mt-2 w-full rounded-md bg-red-500 px-3 py-2 font-bold text-white hover:bg-red-600"
-          >
-            Logout
-          </button>
+        <div class="border-t border-slate-700/50 pt-6 mt-6">
+          <div class="flex flex-col items-center justify-center gap-3 mb-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-2xl shadow-glow">
+              {{ user.firstName.charAt(0) || 'U' }}
+            </div>
+            <p class="font-black text-white text-2xl">{{ user.firstName }}</p>
+          </div>
+          <a *ngIf="user.role === 'admin'" (click)="navigateToAdmin()" class="block rounded-full bg-primary shadow-glow px-6 py-4 font-bold text-white mb-4">Admin Dashboard</a>
+          <button (click)="logout()" class="w-full rounded-full bg-white/10 px-6 py-4 font-bold text-white hover:bg-white/20 transition-colors">Logout</button>
         </div>
       </ng-container>
 
       <ng-template #mobileLoginLink>
-        <div class="border-t border-sky-100 pt-3 mt-3 space-y-2">
-          <a
-            routerLink="/login"
-            class="block rounded-md px-3 py-2 text-sky-700 font-semibold hover:bg-sky-50"
-            >Login</a
-          >
-          <a
-            routerLink="/register"
-            class="block rounded-md bg-sky-600 px-3 py-2 text-center font-bold text-white hover:bg-sky-700"
-            >Sign Up</a
-          >
+        <div class="border-t border-slate-700/50 pt-6 mt-6 space-y-4">
+          <a routerLink="/login" (click)="toggleMobileMenu()" class="block rounded-full border border-white/20 px-6 py-4 text-white font-bold hover:bg-white/10 transition-colors">Login</a>
+          <a routerLink="/register" (click)="toggleMobileMenu()" class="block rounded-full bg-primary shadow-glow px-6 py-4 font-bold text-white transition-all duration-300">Sign Up</a>
         </div>
       </ng-template>
     </div>

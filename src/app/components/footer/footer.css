@@ -1,30 +1,29 @@
 footer {
-  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #0c4a6e, #082f49 80%);
-  color: #f1f5f9;
-  letter-spacing: 0.2px;
+  font-family: inherit;
+  background: var(--primary); 
+  color: var(--text-muted);
 }
 
-footer h3 {
-  font-weight: 700;
+footer h4 {
+  color: white;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.15em;
 }
 
 footer a {
+  @apply text-slate-400 transition-all duration-300;
   text-decoration: none;
-  transition: color 0.25s ease;
 }
 
 footer a:hover {
-  color: #bef264; /* lime-300 */
+  color: #60a5fa; /* Light Blue for contrast on dark */
 }
 
 footer svg {
-  transition: transform 0.3s ease, color 0.3s ease;
+  @apply transition-transform duration-300;
 }
 
-footer svg:hover {
-  transform: scale(1.1);
-  color: #bef264;
+footer a:hover svg {
+  @apply scale-110 text-blue-400;
 }

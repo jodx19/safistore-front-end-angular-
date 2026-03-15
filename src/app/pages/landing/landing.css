@@ -1,84 +1,201 @@
-/* landing.component.css (final - updated) */
+/* landing.component.css - Modern Luxury Design Redesign */
 
-/* Section spacing */
-.section-padding {
-  /* Base spacing kept for compatibility; utilities py-24/md:py-28 added per-section */
-  padding-top: 5.5rem;
-  padding-bottom: 5.5rem;
+.landing-page-wrapper {
+  background-color: #FAFAFA; /* Light mode default */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #1A1A2E;
 }
 
-.section-max-width {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+.dark .landing-page-wrapper {
+  background-color: #0F172A;
+  color: #F8FAFC;
 }
 
-/* Cards */
-.card {
-  background-color: #ffffff;
-  border-radius: 1rem;
-  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.06);
-  border: 1px solid rgba(2, 6, 23, 0.03);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+/* Base Buttons */
+.btn-safi-primary {
+  position: relative;
+  background: #6C3FFF;
+  color: white;
+  border-radius: 8px; /* Consistent 8px radius */
+  font-weight: 700;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(2, 6, 23, 0.12);
+
+.btn-safi-primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+  z-index: -1;
+}
+
+.btn-safi-primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 25px -5px rgba(108, 63, 255, 0.4);
+}
+
+.btn-safi-primary:hover::before {
+  transform: translateX(100%);
+}
+
+.btn-safi-secondary {
+  position: relative;
+  background: transparent;
+  color: #1A1A2E;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark .btn-safi-secondary {
+  color: #F8FAFC;
+  border-color: #334155;
+}
+
+.btn-safi-secondary:hover {
+  background: rgba(108, 63, 255, 0.05);
+  border-color: #6C3FFF;
+  color: #6C3FFF;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Premium Section Padding */
+.section-premium {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .section-premium {
+    padding-top: 120px;
+    padding-bottom: 120px;
+  }
+}
+
+/* Standardized Section Spacing */
+.section-block {
+  background-color: #FAFAFA;
+  border-radius: 20px;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.dark .section-block {
+  background-color: #0F172A;
 }
 
 /* Scroll fade */
 .scroll-fade {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.3, 1),
-    transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1);
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .scroll-fade.visible {
   opacity: 1;
   transform: translateY(0);
 }
-.scroll-fade.delay-1 {
-  transition-delay: 0.08s;
-}
-.scroll-fade.delay-2 {
-  transition-delay: 0.18s;
-}
-.scroll-fade.delay-3 {
-  transition-delay: 0.28s;
+
+.scroll-fade.delay-1 { transition-delay: 0.1s; }
+.scroll-fade.delay-2 { transition-delay: 0.2s; }
+.scroll-fade.delay-3 { transition-delay: 0.3s; }
+
+/* Product Cards */
+.product-card {
+  background-color: #FAFAFA;
+  border-radius: 8px;
+  border: 1px solid rgba(26, 26, 46, 0.05);
+  transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Hero heading initial animation */
-.animate-fade-in {
-  animation: fadeIn 0.9s ease forwards;
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.dark .product-card {
+  background-color: #1E293B;
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
-/* Footer */
-footer {
-  background-color: #0f172a;
-  color: #cbd5e1;
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px -5px rgba(26, 26, 46, 0.1);
+}
+
+.dark .product-card:hover {
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom Mesh Gradient Background for Hero */
+.bg-mesh-hero {
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(108, 63, 255, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(74, 144, 245, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 212, 170, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(108, 63, 255, 0.1) 0px, transparent 50%);
+  background-color: #FAFAFA;
+}
+
+.dark .bg-mesh-hero {
+  background-color: #0F172A;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(108, 63, 255, 0.2) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(74, 144, 245, 0.2) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 212, 170, 0.15) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(108, 63, 255, 0.15) 0px, transparent 50%);
+}
+
+/* Section Header Layer - Reusable */
+.section-header-layer {
+  margin-bottom: 3rem;
   text-align: center;
-  padding: 0.75rem 0;
-  font-size: 0.9rem;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .section-padding {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
-  }
-  .card {
-    border-radius: 0.75rem;
+.section-header-layer > span {
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.section-header-layer > h2 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 900;
+}
+
+@media (min-width: 768px) {
+  .section-header-layer > h2 {
+    font-size: 3rem;
+    line-height: 1;
   }
 }

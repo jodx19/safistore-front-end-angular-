@@ -1,193 +1,329 @@
-<!-- landing.component.html (final - updated backgrounds & spacing) -->
-
-<!-- Hero Section with Background Image -->
-<section
-  class="relative bg-gradient-to-br from-sky-900 via-sky-800 to-sky-900 pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden scroll-fade py-24 md:py-28"
->
-  <!-- Background Image -->
-  <div
-    class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-    style="
-      background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
-    "
-  ></div>
-
-  <!-- Overlay for better text readability -->
-  <div class="absolute inset-0 bg-black/30"></div>
-
-  <div class="relative section-max-width section-padding text-center text-white">
-    <div class="space-y-6">
-      <h1 class="text-5xl md:text-6xl font-bold animate-fade-in">Welcome to SafiStore</h1>
-      <p class="text-xl text-sky-100 max-w-2xl mx-auto">
-        Discover thousands of quality products with exclusive deals and fast shipping
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-        <button
-          (click)="goToStartShopping()"
-          class="bg-lime-400 hover:bg-lime-500 text-sky-900 font-bold px-8 py-4 rounded-lg shadow-lg transition transform hover:scale-105"
-        >
-          Start Shopping
-        </button>
-        <a
-          routerLink="/products"
-          class="border-2 border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white/20 transition inline-block"
-        >
-          Browse Products
-        </a>
-      </div>
+<div class="landing-page-wrapper">
+  <!-- ============================================ -->
+  <!-- HERO - Ultra-Modern Minimalist Masterpiece -->
+  <!-- ============================================ -->
+  <section class="relative bg-mesh-hero overflow-hidden mx-4 lg:mx-8 mb-16 rounded-[20px] shadow-soft border border-black/5 mt-4 min-h-[90vh] flex flex-col justify-center">
+    
+    <!-- Particles Area -->
+    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-50">
+      <div class="absolute w-2 h-2 rounded-full bg-primary/40 left-[10%] bottom-[-10px] animate-particle" style="animation-duration: 12s; animation-delay: 0s;"></div>
+      <div class="absolute w-3 h-3 rounded-full bg-accent/40 left-[30%] bottom-[-10px] animate-particle" style="animation-duration: 18s; animation-delay: 2s;"></div>
+      <div class="absolute w-1.5 h-1.5 rounded-full bg-success/40 left-[60%] bottom-[-10px] animate-particle" style="animation-duration: 14s; animation-delay: 5s;"></div>
+      <div class="absolute w-2.5 h-2.5 rounded-full bg-primary/40 left-[80%] bottom-[-10px] animate-particle" style="animation-duration: 16s; animation-delay: 1s;"></div>
+      <div class="absolute w-2 h-2 rounded-full bg-accent/30 left-[45%] bottom-[-10px] animate-particle" style="animation-duration: 15s; animation-delay: 7s;"></div>
     </div>
-  </div>
-</section>
 
-<!-- Features Section (now with soft background to increase contrast) -->
-<section
-  class="section-padding bg-gradient-to-b from-sky-50 to-white scroll-fade delay-1 py-24 md:py-28"
->
-  <div class="section-max-width">
-    <h2 class="text-4xl font-bold text-center text-sky-900 mb-12">Why Choose SafiStore?</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-      <div class="card p-8 text-center hover:shadow-xl group">
-        <div class="text-5xl mb-4 text-lime-500 group-hover:scale-110 transition">🚚</div>
-        <h3 class="text-xl font-bold text-sky-900 mb-2">Fast Shipping</h3>
-        <p class="text-slate-600">Free delivery on orders over $50</p>
-      </div>
-
-      <div class="card p-8 text-center hover:shadow-xl group">
-        <div class="text-5xl mb-4 text-lime-500 group-hover:scale-110 transition">🔒</div>
-        <h3 class="text-xl font-bold text-sky-900 mb-2">Secure Payment</h3>
-        <p class="text-slate-600">100% secure and encrypted transactions</p>
-      </div>
-
-      <div class="card p-8 text-center hover:shadow-xl group">
-        <div class="text-5xl mb-4 text-lime-500 group-hover:scale-110 transition">↩️</div>
-        <h3 class="text-xl font-bold text-sky-900 mb-2">Easy Returns</h3>
-        <p class="text-slate-600">30-day hassle-free return policy</p>
-      </div>
-
-      <div class="card p-8 text-center hover:shadow-xl group">
-        <div class="text-5xl mb-4 text-lime-500 group-hover:scale-110 transition">💬</div>
-        <h3 class="text-xl font-bold text-sky-900 mb-2">24/7 Support</h3>
-        <p class="text-slate-600">We're always here to help you</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Stats Section -->
-<section
-  class="section-padding bg-gradient-to-r from-sky-600 to-sky-700 text-white scroll-fade delay-2 py-24 md:py-28"
->
-  <div class="section-max-width">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-      <div>
-        <p class="text-5xl font-bold mb-2">50K+</p>
-        <p class="text-lg text-sky-100">Happy Customers</p>
-      </div>
-      <div>
-        <p class="text-5xl font-bold mb-2">200K+</p>
-        <p class="text-lg text-sky-100">Products Available</p>
-      </div>
-      <div>
-        <p class="text-5xl font-bold mb-2">99.9%</p>
-        <p class="text-lg text-sky-100">Customer Satisfaction</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Testimonials Section (soft slate background to make cards pop) -->
-<section
-  class="section-padding bg-gradient-to-r from-white via-slate-50 to-white scroll-fade delay-3 py-24 md:py-28"
->
-  <div class="section-max-width">
-    <h2 class="text-4xl font-bold text-center text-sky-900 mb-12">What Customers Say</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="card p-8">
-        <div class="flex gap-1 mb-4 justify-center">
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
+    <!-- Frosted Glass Main Card -->
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-24 animate-fade-up">
+      <div class="glass-panel rounded-3xl p-8 lg:p-16 shadow-soft-xl">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <div class="text-center lg:text-left order-2 lg:order-1 lg:col-span-6 xl:col-span-7">
+            <div class="inline-flex items-center gap-3 bg-white/80 backdrop-blur-md border border-slate-200 px-4 py-2 rounded-full shadow-sm mb-8">
+              <span class="relative flex h-3 w-3">
+                <span class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
+              </span>
+              <span class="text-xs font-bold uppercase tracking-wider text-navy">New Collection 2025</span>
+            </div>
+            
+            <h1 class="text-5xl sm:text-6xl md:text-7xl font-black text-navy leading-[1.1] tracking-tight mb-6 font-inter">
+              Elevate <br/>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent drop-shadow-sm">Your Lifestyle</span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-slate-600 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-10 font-medium">
+              Discover premium products crafted with precision. Designed for those who appreciate the extraordinary.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button (click)="goToStartShopping()" class="btn-safi-primary px-8 py-4 text-base tracking-wide shadow-glow">
+                Explore Collection
+              </button>
+              <a routerLink="/products" class="btn-safi-secondary px-8 py-4 text-base tracking-wide flex items-center justify-center gap-2 group">
+                Shop Now
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </a>
+            </div>
+          </div>
+          
+          <div class="relative order-1 lg:order-2 lg:col-span-6 xl:col-span-5 flex justify-center mt-8 lg:mt-0">
+            <!-- Glowing Accent Background Ring -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div class="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] bg-gradient-to-tr from-primary/30 to-accent/30 rounded-full blur-[60px] animate-pulse-glow"></div>
+            </div>
+            
+            <div class="relative group animate-float-smooth z-10 w-full flex justify-center">
+              <div class="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[450px] lg:h-[450px] flex items-center justify-center">
+                <img
+                  src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&q=95"
+                  alt="Premium Smartwatch"
+                  class="w-full h-auto object-contain drop-shadow-[0_40px_30px_rgba(26,26,46,0.25)] scale-110 group-hover:scale-[1.12] transition-transform duration-700 ease-out"
+                />
+              </div>
+              
+              <!-- Floating Price Tag -->
+              <div class="absolute -right-4 lg:-right-10 top-1/4 sm:right-4 bg-white/90 backdrop-blur-md px-6 py-4 rounded-xl shadow-soft-xl border border-white/50 animate-float-smooth" style="animation-delay: 1s;">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Starting at</p>
+                <p class="text-2xl font-black text-navy">$399</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <p class="text-slate-700 mb-4 font-semibold">
-          "Amazing quality and lightning-fast delivery. Couldn't be happier with my purchase!"
-        </p>
-        <p class="font-bold text-sky-900">Muhammed Mobaruk</p>
-        <p class="text-sm text-sky-600">Verified Customer</p>
       </div>
+    </div>
+    
+    <!-- Bounce Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce-soft text-slate-400">
+      <span class="text-[10px] font-semibold uppercase tracking-widest mb-1">Scroll</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+    </div>
+  </section>
 
-      <div class="card p-8">
-        <div class="flex gap-1 mb-4 justify-center">
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
+<!-- ============================================ -->
+  <!-- FEATURED PRODUCTS - Elevated Carousel Grid -->
+  <!-- ============================================ -->
+  <section class="section-premium section-block scroll-fade !py-24" id="featured">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+        <div class="section-header-layer !mb-0 text-left !p-0 bg-transparent shadow-none border-none backdrop-blur-none">
+          <span class="text-xs font-black uppercase tracking-widest text-primary mb-3 block">Premium Selection</span>
+          <h2 class="text-4xl md:text-5xl font-black text-navy leading-tight font-inter">Featured Products</h2>
         </div>
-        <p class="text-slate-700 mb-4 font-semibold">
-          "Best shopping experience ever. Their customer service is exceptional!"
-        </p>
-        <p class="font-bold text-sky-900">Berlin</p>
-        <p class="text-sm text-sky-600">Verified Customer</p>
+        
+        <!-- Category Filter Tabs -->
+        <div class="flex overflow-x-auto pb-4 md:pb-0 gap-2 hide-scrollbar w-full md:w-auto">
+          <button *ngFor="let cat of categories" 
+                  (click)="setCategory(cat)"
+                  class="whitespace-nowrap rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-300 border border-transparent"
+                  [ngClass]="activeCategory === cat ? 'bg-primary text-white shadow-glow' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-navy border-slate-200'">
+            {{ cat }}
+          </button>
+        </div>
       </div>
+      
+      <!-- Product Grid / Horizontal Scroll for Mobile -->
+      <div class="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 pb-8 hide-scrollbar cursor-pointer">
+        
+        <div *ngFor="let product of filteredProducts" class="product-card group relative min-w-[280px] md:min-w-0 snap-start flex flex-col h-full bg-surface">
+          <!-- Discount Ribbon -->
+          <div *ngIf="product.discount" class="absolute -right-12 top-6 rotate-45 bg-accent text-white text-[10px] font-black uppercase tracking-wider py-1.5 w-40 text-center shadow-glow-accent z-20">
+            {{ product.discount }}
+          </div>
 
-      <div class="card p-8">
-        <div class="flex gap-1 mb-4 justify-center">
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
-          <span class="text-2xl text-yellow-400">★</span>
+          <!-- Product Compare Checkbox -->
+          <div class="absolute top-4 left-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <label class="flex items-center gap-2 cursor-pointer bg-white/90 backdrop-blur px-3 py-1.5 rounded-full shadow-sm">
+              <input type="checkbox" class="w-3.5 h-3.5 text-primary rounded border-slate-300 focus:ring-primary">
+              <span class="text-[10px] font-bold text-slate-600">Compare</span>
+            </label>
+          </div>
+          
+          <!-- Image Container -->
+          <div class="relative h-[250px] w-full p-8 flex items-center justify-center bg-slate-50 overflow-hidden border-b border-black/5 mix-blend-multiply">
+            <img [src]="product.image" [alt]="product.name" class="w-full h-full object-contain drop-shadow-[0_15px_15px_rgba(26,26,46,0.15)] group-hover:scale-110 transition-transform duration-700"/>
+            
+            <!-- Quick Add to Cart Sliding Button -->
+            <div class="absolute inset-x-8 bottom-4 translate-y-16 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
+              <button (click)="addToCart(product.name)" class="w-full bg-navy hover:bg-primary text-white rounded-xl py-3 font-bold shadow-soft flex items-center justify-center gap-2 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Quick Add
+              </button>
+            </div>
+          </div>
+          
+          <!-- Product Info -->
+          <div class="p-6 flex flex-col flex-grow bg-white">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ product.category }}</p>
+              <!-- Star Rating -->
+              <div class="flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded text-gold">
+                <svg class="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <span class="text-[11px] font-bold text-amber-600">{{ product.rating }}</span>
+                <span class="text-[10px] text-amber-500/80">({{ product.reviews }})</span>
+              </div>
+            </div>
+            
+            <h3 class="text-lg font-bold text-navy mb-4 font-inter leading-tight group-hover:text-primary transition-colors">{{ product.name }}</h3>
+            
+            <div class="mt-auto flex items-end justify-between">
+              <div>
+                <span *ngIf="product.oldPrice" class="text-sm text-slate-400 line-through mr-2">${{ product.oldPrice }}</span>
+                <span class="text-2xl font-black text-navy">${{ product.price }}</span>
+              </div>
+              <button (click)="addToCart(product.name)" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-navy hover:bg-primary hover:text-white transition-colors group/btn shrink-0">
+                <svg class="w-5 h-5 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
-        <p class="text-slate-700 mb-4 font-semibold">
-          "Great prices and variety. I found everything I needed in one place!"
-        </p>
-        <p class="font-bold text-sky-900">Nowdzawy</p>
-        <p class="text-sm text-sky-600">Verified Customer</p>
+
       </div>
+    </div>
+  </section>
+
+  <!-- Add to Cart Toast Notification -->
+  <div class="fixed bottom-6 right-6 z-50 transition-all duration-500 transform" [ngClass]="showToast ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'">
+    <div class="bg-navy text-white px-6 py-4 rounded-xl shadow-soft flex items-center gap-4">
+      <div class="w-8 h-8 rounded-full bg-success flex items-center justify-center shrink-0 shadow-glow">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <p class="font-semibold text-sm">{{ toastMessage }}</p>
     </div>
   </div>
-</section>
 
-<!-- Call to Action Section (Product LEFT, Text RIGHT on lg+) -->
-<section
-  class="section-padding bg-gradient-to-r from-sky-600 to-cyan-600 text-white scroll-fade delay-1 py-24 md:py-28"
->
-  <div class="section-max-width grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-    <!-- Product image (LEFT on large) -->
-    <div
-      class="relative overflow-hidden rounded-2xl shadow-2xl transform hover:scale-105 transition duration-300"
-    >
-      <img
-        loading="lazy"
-        src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
-        alt="Premium Product Showcase"
-        class="w-full h-80 lg:h-96 object-cover rounded-2xl"
-      />
-      <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
-      <div
-        class="absolute bottom-4 left-4 bg-white/95 backdrop-blur text-sky-900 px-4 py-2 rounded-lg font-bold text-lg shadow-lg"
-      >
-        $299.99
+  <!-- ============================================ -->
+  <!-- FEATURES & TRUST - Professional Integration -->
+  <!-- ============================================ -->
+  <section class="section-premium section-block reveal !py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center">
+        <div class="section-header-layer header-theme-emerald">
+          <span class="text-xs font-black uppercase tracking-widest text-emerald-600 mb-4 block">The Ecosystem</span>
+          <h2 class="text-4xl md:text-5xl font-black text-slate-800 leading-none">Safistore Protocol</h2>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div class="group card p-10 hover:border-blue-200 transition-all duration-700">
+          <div class="w-16 h-16 mb-8 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-soft">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
+          </div>
+          <h3 class="text-xl font-black text-slate-900 mb-4">Neural Logistics</h3>
+          <p class="text-slate-500 leading-relaxed font-medium">Hyper-efficient delivery architecture. Free for acquisitions above $50.</p>
+        </div>
+
+        <div class="group card p-10 hover:border-blue-200 transition-all duration-700">
+          <div class="w-16 h-16 mb-8 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-soft">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+          </div>
+          <h3 class="text-xl font-black text-slate-900 mb-4">Encrypted Ledger</h3>
+          <p class="text-slate-500 leading-relaxed font-medium">Military-grade transaction security. Your intelligence remains private.</p>
+        </div>
+
+        <div class="group card p-10 hover:border-blue-200 transition-all duration-700">
+          <div class="w-16 h-16 mb-8 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-soft">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/></svg>
+          </div>
+          <h3 class="text-xl font-black text-slate-900 mb-4">Protocol Reversal</h3>
+          <p class="text-slate-500 leading-relaxed font-medium">30-day effortless return cycle. Full transparency on every refund.</p>
+        </div>
+
+        <div class="group card p-10 hover:border-blue-200 transition-all duration-700">
+          <div class="w-16 h-16 mb-8 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-soft">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>
+          </div>
+          <h3 class="text-xl font-black text-slate-900 mb-4">Prime Direct</h3>
+          <p class="text-slate-500 leading-relaxed font-medium">Continuous human-to-human analysis. Available 24 cycles per day.</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- Text and CTA (RIGHT on large) -->
-    <div class="flex-1 text-center lg:text-left space-y-6">
-      <h2 class="text-4xl md:text-5xl font-bold">Ready to Experience Shopping at Its Best?</h2>
-      <p class="text-xl text-sky-100 max-w-2xl mx-auto lg:mx-0">
-        Join thousands of satisfied customers enjoying exclusive deals, fast shipping, and
-        exceptional service. Discover premium products at unbeatable prices.
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-        <button
-          (click)="goToStartShopping()"
-          class="bg-white text-sky-600 px-8 py-4 rounded-lg font-bold hover:bg-sky-50 transition transform hover:scale-105 inline-block shadow-lg"
-        >
-          Start Shopping
-        </button>
+  <!-- ============================================ -->
+  <!-- STATS SECTION - Premium Analytics -->
+  <!-- ============================================ -->
+  <section class="relative rounded-[3.5rem] shadow-[-10px_30px_60px_-15px_rgba(15,23,42,0.3)] bg-transparent overflow-hidden mb-16 mx-6 py-32 reveal border border-white/10">
+    <!-- Dark Abstract Background Image -->
+    <div class="absolute inset-0 -z-20">
+      <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2670&auto=format&fit=crop" alt="Data Analytics Background" class="w-full h-full object-cover opacity-80" />
+    </div>
+    <!-- Dark Glass Overlay for Text Legibility -->
+    <div class="absolute inset-0 -z-10 bg-slate-900/80 backdrop-blur-3xl"></div>
+    <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent"></div>
+    
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div class="text-center mb-16">
+        <div class="section-header-layer header-theme-slate-dark">
+          <span class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 block">System Performance</span>
+          <h2 class="text-4xl md:text-5xl font-black text-white leading-none">Global Metrics</h2>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+        <div class="p-10 rounded-[2.5rem] bg-slate-800/40 border border-white/10 backdrop-blur-md shadow-2xl hover:-translate-y-2 transition-transform duration-500">
+          <p class="text-6xl font-black text-blue-400 mb-2">50K+</p>
+          <p class="text-xs font-black uppercase tracking-widest text-slate-300">Collaborated Intelligence</p>
+        </div>
+        <div class="p-10 rounded-[2.5rem] bg-slate-800/40 border border-white/10 backdrop-blur-md shadow-2xl hover:-translate-y-2 transition-transform duration-500 delay-100">
+          <p class="text-6xl font-black text-blue-400 mb-2">200K+</p>
+          <p class="text-xs font-black uppercase tracking-widest text-slate-300">Available Protocols</p>
+        </div>
+        <div class="p-10 rounded-[2.5rem] bg-slate-800/40 border border-white/10 backdrop-blur-md shadow-2xl hover:-translate-y-2 transition-transform duration-500 delay-200">
+          <p class="text-6xl font-black text-blue-400 mb-2">99.9%</p>
+          <p class="text-xs font-black uppercase tracking-widest text-slate-300">Protocol Stability</p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- TESTIMONIALS - Professional Feed -->
+  <!-- ============================================ -->
+  <section class="section-premium section-block reveal !py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <div class="section-header-layer header-theme-indigo">
+        <span class="text-xs font-black uppercase tracking-widest text-indigo-600 mb-4 block">Feedback Loop</span>
+        <h2 class="text-4xl md:text-5xl font-black text-slate-800 leading-none">Transmission Logs</h2>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <ng-template #testimonialCard let-quote="quote" let-author="author" let-initial="initial">
+          <div class="group card-glass p-10 backdrop-blur-3xl bg-white/70 border-white/60 hover:shadow-2xl hover:-translate-y-2 transition-all duration-700">
+            <div class="flex gap-1 mb-8">
+              <svg *ngFor="let i of [1,2,3,4,5]" class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            </div>
+            <p class="text-slate-500 font-medium leading-relaxed mb-10 italic">"{{ quote }}"</p>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-black">{{ initial }}</div>
+              <div>
+                <p class="text-sm font-black text-slate-900">{{ author }}</p>
+                <p class="text-[10px] font-black uppercase tracking-widest text-blue-600">Verified Protocol</p>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-container *ngTemplateOutlet="testimonialCard; context: { quote: 'Amazing quality and lightning-fast delivery. Couldn\'t be happier.', author: 'Muhammed Mobaruk', initial: 'M' }"></ng-container>
+        <ng-container *ngTemplateOutlet="testimonialCard; context: { quote: 'Best shopping experience ever. Exceptional service protocol.', author: 'Berlin', initial: 'B' }"></ng-container>
+        <ng-container *ngTemplateOutlet="testimonialCard; context: { quote: 'Great prices and variety. Everything I needed in one place.', author: 'Nowdzawy', initial: 'N' }"></ng-container>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- CTA SECTION - Final Transmission -->
+  <!-- ============================================ -->
+  <section class="section-premium section-block reveal !py-24 overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(37,99,235,0.05),_transparent)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_rgba(37,99,235,0.1),_transparent)]"></div>
+    
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <div class="relative group">
+          <div class="relative w-full aspect-square bg-white rounded-[3rem] shadow-glow overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200" alt="CTA Anchor" class="w-full h-full object-contain p-20 group-hover:scale-110 transition-transform duration-1000"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
+          </div>
+          <div class="absolute -bottom-10 -right-10 w-48 h-48 bg-blue-600 rounded-full flex items-center justify-center text-white font-black text-2xl shadow-glow animate-float">
+            $299.99
+          </div>
+        </div>
+
+        <div class="space-y-12 text-center lg:text-left">
+          <div class="flex justify-center lg:justify-start">
+            <div class="section-header-layer header-theme-rose !mb-12 !items-center lg:!items-start !text-center lg:!text-left">
+              <span class="text-xs font-black uppercase tracking-widest text-rose-600 mb-6 block">Ready for Operation</span>
+              <h2 class="text-5xl md:text-7xl font-black text-slate-800 leading-[1.1]">Elevate Your <span class="text-rose-600">Inventory</span></h2>
+            </div>
+          </div>
+          <p class="text-xl text-slate-500 font-medium leading-relaxed max-w-xl">Join the elite network of Safistore users. Access high-fidelity intelligence and premium gear today.</p>
+          <div class="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
+            <button (click)="goToStartShopping()" class="btn-safi-primary !px-12 !py-6 text-base">Start Acquisition</button>
+            <a routerLink="/products" class="btn-safi-secondary !px-12 !py-6 text-base text-slate-900 border-slate-200 hover:bg-white">View Catalog</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

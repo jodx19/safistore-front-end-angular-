@@ -1,0 +1,237 @@
+<nav class="fixed top-0 inset-x-0 z-40">
+  <div
+    class="max-w-6xl mx-auto flex items-center justify-between h-[70px] px-4 sm:px-6 transition-all duration-300"
+    [class.bg-[rgba(10,22,40,0.85)]]="scrolled"
+    [class.backdrop-blur-2xl]="scrolled"
+    [class.border-b]="scrolled"
+    [class.border-[rgba(255,255,255,0.06)]]="scrolled"
+    [class.shadow-[0_4px_30px_rgba(0,0,0,0.3)]]="scrolled"
+  >
+    <!-- Logo -->
+    <a routerLink="/" class="flex items-center gap-2">
+      <div
+        class="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-brand-blue to-brand-purple animate-[pulse-glow_2s_ease-in-out_infinite]"
+      ></div>
+      <div class="flex items-baseline gap-1">
+        <span class="text-[20px] sm:text-[22px] font-display text-white tracking-tight"
+          >Safi</span
+        >
+        <span class="text-[20px] sm:text-[22px] font-display font-extrabold text-white">
+          Store
+        </span>
+      </div>
+    </a>
+
+    <!-- Desktop nav -->
+    <div class="hidden md:flex items-center gap-7 text-[14px] font-medium">
+      <a
+        routerLink="/"
+        routerLinkActive="nav-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-link"
+        >Home</a
+      >
+      <a routerLink="/products" routerLinkActive="nav-active" class="nav-link"
+        >Products</a
+      >
+      <a routerLink="/track" routerLinkActive="nav-active" class="nav-link"
+        >Track Order</a
+      >
+      <a routerLink="/about" routerLinkActive="nav-active" class="nav-link">About</a>
+    </div>
+
+    <!-- Right actions -->
+    <div class="flex items-center gap-3">
+      <!-- Search -->
+      <div class="hidden sm:flex items-center gap-2">
+        <button
+          type="button"
+          class="w-9 h-9 rounded-full flex items-center justify-center text-[rgba(255,255,255,0.7)] hover:text-white hover:bg-[rgba(255,255,255,0.06)] transition-colors"
+          (click)="toggleSearch()"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <circle cx="11" cy="11" r="6" />
+            <path d="m16 16 4 4" stroke-linecap="round" />
+          </svg>
+        </button>
+        <div
+          class="relative overflow-hidden transition-all duration-300"
+          [class.w-0]="!searchOpen"
+          [class.w-[220px]]="searchOpen"
+          [class.sm:w-[260px]]="searchOpen"
+          [class.md:w-[300px]]="searchOpen"
+        >
+          <input
+            type="text"
+            placeholder="Search premium gear"
+            class="w-full h-9 rounded-full bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.12)] text-[13px] text-white placeholder:text-[rgba(255,255,255,0.4)] px-3.5 pr-9 outline-none focus:border-brand-blue focus:shadow-input"
+          />
+          <span
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-[rgba(255,255,255,0.45)]"
+            >⌘K</span
+          >
+        </div>
+      </div>
+
+      <!-- Cart -->
+      <button
+        type="button"
+        routerLink="/cart"
+        class="relative w-9 h-9 rounded-full flex items-center justify-center text-[rgba(255,255,255,0.85)] hover:text-white hover:bg-[rgba(255,255,255,0.06)] transition-colors"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path
+            d="M4 4h2l2.5 11h10l2-8H7.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <circle cx="10" cy="20" r="1.3" />
+          <circle cx="18" cy="20" r="1.3" />
+        </svg>
+        <span
+          *ngIf="cartCount"
+          class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-gradient-to-r from-brand-blue to-brand-purple text-[11px] font-semibold text-white flex items-center justify-center"
+        >
+          {{ cartCount }}
+        </span>
+      </button>
+
+      <!-- Auth buttons -->
+      <div class="hidden sm:flex items-center gap-2">
+        <a
+          routerLink="/auth/login"
+          class="text-[13px] font-medium text-[rgba(255,255,255,0.65)] hover:text-white transition-colors"
+          >Login</a
+        >
+
+        <a
+          routerLink="/auth/register"
+          class="inline-flex items-center justify-center h-[36px] px-4 rounded-[10px] text-[14px] font-semibold bg-gradient-to-r from-brand-blue to-brand-purple text-white shadow-btn hover:-translate-y-[2px] transition-transform"
+        >
+          Sign Up
+        </a>
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button
+        type="button"
+        class="md:hidden w-9 h-9 rounded-full flex items-center justify-center text-[rgba(255,255,255,0.85)] hover:bg-[rgba(255,255,255,0.06)] transition-colors"
+        (click)="toggleMobile()"
+      >
+        <svg
+          *ngIf="!mobileOpen"
+          viewBox="0 0 24 24"
+          class="w-5 h-5"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+        </svg>
+        <svg
+          *ngIf="mobileOpen"
+          viewBox="0 0 24 24"
+          class="w-5 h-5"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path d="M6 6l12 12M6 18L18 6" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile overlay -->
+  <div
+    class="md:hidden fixed inset-0 z-30 bg-[rgba(10,22,40,0.97)] backdrop-blur-2xl transition-transform duration-300"
+    [class.translate-x-full]="!mobileOpen"
+    [class.translate-x-0]="mobileOpen"
+  >
+    <div class="flex flex-col h-full px-6 pt-6 pb-8">
+      <div class="flex items-center justify-between mb-10">
+        <a routerLink="/" class="flex items-center gap-2" (click)="closeMobile()">
+          <div
+            class="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-brand-blue to-brand-purple animate-[pulse-glow_2s_ease-in-out_infinite]"
+          ></div>
+          <span class="text-[20px] font-display text-white tracking-tight"
+            >SafiStore</span
+          >
+        </a>
+        <button
+          type="button"
+          class="w-9 h-9 rounded-full flex items-center justify-center text-[rgba(255,255,255,0.85)] hover:bg-[rgba(255,255,255,0.06)]"
+          (click)="closeMobile()"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            class="w-5 h-5"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path d="M6 6l12 12M6 18L18 6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <nav class="flex flex-col gap-6 text-[22px] font-medium">
+        <a
+          routerLink="/"
+          routerLinkActive="text-white"
+          class="text-[rgba(255,255,255,0.7)] hover:text-white transition-colors"
+          (click)="closeMobile()"
+          >Home</a
+        >
+        <a
+          routerLink="/products"
+          routerLinkActive="text-white"
+          class="text-[rgba(255,255,255,0.7)] hover:text-white transition-colors"
+          (click)="closeMobile()"
+          >Products</a
+        >
+        <a
+          routerLink="/track"
+          routerLinkActive="text-white"
+          class="text-[rgba(255,255,255,0.7)] hover:text-white transition-colors"
+          (click)="closeMobile()"
+          >Track Order</a
+        >
+        <a
+          routerLink="/about"
+          routerLinkActive="text-white"
+          class="text-[rgba(255,255,255,0.7)] hover:text-white transition-colors"
+          (click)="closeMobile()"
+          >About</a
+        >
+      </nav>
+
+      <div class="mt-auto pt-10 border-t border-[rgba(255,255,255,0.08)]">
+        <div class="flex flex-col gap-3">
+          <a
+            routerLink="/auth/login"
+            (click)="closeMobile()"
+            class="text-[14px] font-medium text-[rgba(255,255,255,0.75)]"
+            >Login</a
+          >
+          <a
+            routerLink="/auth/register"
+            (click)="closeMobile()"
+            class="inline-flex items-center justify-center h-[42px] rounded-[12px] bg-gradient-to-r from-brand-blue to-brand-purple text-[14px] font-semibold text-white shadow-btn"
+            >Sign Up</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+

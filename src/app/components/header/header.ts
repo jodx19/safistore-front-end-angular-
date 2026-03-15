@@ -1,10 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, HostListener } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { RouterLink, RouterLinkActive, Router } from "@angular/router";
+import { RouterLink, RouterLinkActive, Router, NavigationEnd } from "@angular/router";
 import { CartService } from "../../services/cart";
 import { AuthService, User } from "../../services/auth.service";
 import { Observable } from "rxjs";
+import { filter } from "rxjs/operators";
 
 @Component({
   selector: "app-header",
@@ -19,6 +20,13 @@ export class HeaderComponent implements OnInit {
   isAuthenticated$: Observable<User | null>;
   currentUser: User | null = null;
   showMobileMenu = false;
+  isAuthPage = false;
+  isScrolled = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 20;
+  }
 
   constructor(
     private cartService: CartService,
@@ -39,6 +47,20 @@ export class HeaderComponent implements OnInit {
     this.isAuthenticated$.subscribe((user) => {
       this.currentUser = user;
     });
+
+    // Check if current route is auth page
+    this.checkAuthPage(this.router.url);
+    
+    // Listen for route changes
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.checkAuthPage(event.url);
+    });
+  }
+
+  checkAuthPage(url: string) {
+    this.isAuthPage = url === '/login' || url === '/register';
   }
 
   logout() {

@@ -23,7 +23,6 @@ import { EmptyStateComponent } from '../../components/empty-state/empty-state';
     CommonModule,
     FormsModule,
     RouterModule,
-    BreadcrumbsComponent,
     SkeletonLoaderComponent,
     EmptyStateComponent
   ],

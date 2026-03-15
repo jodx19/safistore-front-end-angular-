@@ -1,37 +1,16 @@
-.gradient-text {
-  background: linear-gradient(90deg, #06b6d4 0%, #14b8a6 50%, #0f766e 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Standardized Checkout Styles */
+.card-glass {
+  @apply bg-white/80 backdrop-blur-xl rounded-2xl border border-white/40 shadow-soft p-6;
 }
 
-.bg-white {
-  background-color: #ffffff;
+input, select, textarea {
+  @apply rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300;
 }
 
-.shadow-sm {
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+.btn-checkout {
+  @apply btn-primary w-full;
 }
 
-.rounded-xl {
-  border-radius: 1rem;
-}
-
-input:focus {
-  outline: none;
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.text-electric {
+  color: var(--electric);
 }

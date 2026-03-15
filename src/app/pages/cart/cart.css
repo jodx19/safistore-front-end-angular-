@@ -1,43 +1,16 @@
-.gradient-text {
-  background: linear-gradient(90deg, #06b6d4 0%, #14b8a6 50%, #0f766e 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Standardized Cart Styles */
+.card-glass {
+  @apply bg-white/70 backdrop-blur-xl rounded-[var(--radius-standard)] border border-white/40 shadow-soft;
 }
 
-.card {
-  background: white;
-  border-radius: 0.75rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease-in-out;
+.text-electric {
+  color: var(--electric);
 }
 
-.card:hover {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+.bg-electric-50 {
+  background-color: rgba(37, 99, 235, 0.05); /* Azure base */
 }
 
-.btn-primary {
-  background-color: #06b6d4;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-
-.btn-primary:hover {
-  background-color: #0ea5e9;
-}
-
-.btn-secondary {
-  background-color: #14b8a6;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-
-.btn-secondary:hover {
-  background-color: #0f766e;
+.text-midnight {
+  color: var(--primary);
 }

@@ -1,0 +1,37 @@
+:host {
+  position: relative;
+  display: block;
+}
+
+.nav-link {
+  position: relative;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  padding-bottom: 2px;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 1.5px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+  transition: width 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+.nav-link:hover::after,
+.nav-link.nav-active::after {
+  width: 100%;
+}
+
+.nav-active {
+  color: #ffffff !important;
+}
+

@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterOutlet } from "@angular/router";
-import { HeaderComponent } from "./components/header/header";
-import { FooterComponent } from "./components/footer/footer";
+import { NavbarComponent } from "./core/components/navbar/navbar.component";
+import { FooterComponent } from "./core/components/footer/footer.component";
 import { NotificationComponent } from "./components/notification/notification";
 
 @Component({
@@ -11,7 +11,7 @@ import { NotificationComponent } from "./components/notification/notification";
   imports: [
     CommonModule,
     RouterOutlet,
-    HeaderComponent,
+    NavbarComponent,
     FooterComponent,
     NotificationComponent,
   ],
@@ -19,5 +19,5 @@ import { NotificationComponent } from "./components/notification/notification";
   styleUrls: ["./app.css"],
 })
 export class AppComponent {
-  title = "E-Commerce Store";
+  title = "SafiStore - Elevate Your Lifestyle";
 }
