@@ -93,6 +93,25 @@
   .nav-link.active {
     color: #ffffff;
   }
+
+  /* Card Glassmorphism */
+  .card-glass {
+    background: rgba(17, 31, 56, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  /* Premium Buttons */
+  .btn-primary {
+    @apply h-12 px-8 flex items-center justify-center rounded-xl bg-gradient-to-tr from-brand-blue to-brand-purple text-white font-bold transition-all duration-300 hover:shadow-glow hover:-translate-y-0.5 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply h-12 px-8 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white font-semibold transition-all duration-300 hover:bg-white/10 hover:-translate-y-0.5 active:scale-95;
+  }
 }
 
 /* Custom Keyframes */
