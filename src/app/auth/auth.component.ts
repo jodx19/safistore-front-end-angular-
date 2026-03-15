@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { LoginRequestDto, RegisterRequestDto } from '../api-client/api-client';
 
 @Component({
   selector: 'app-auth',
@@ -22,10 +24,22 @@ export class AuthComponent implements OnInit {
   isRegLoading = false;
   termsChecked = false;
   passwordStrength = 0;
+  loginError = '';
+  registerError = '';
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
+    // Redirect if already logged in
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/']);
+      return;
+    }
+
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -58,6 +72,8 @@ export class AuthComponent implements OnInit {
     this.showLoginPass = false;
     this.showRegPass = false;
     this.showConfirmPass = false;
+    this.loginError = '';
+    this.registerError = '';
   }
 
   calcStrength(val: string) {
@@ -104,10 +120,27 @@ export class AuthComponent implements OnInit {
       return;
     }
     this.isLoginLoading = true;
-    setTimeout(() => {
-      this.isLoginLoading = false;
-      // Integrate real AuthService + Router navigation here.
-    }, 2000);
+    this.loginError = '';
+
+    const dto: LoginRequestDto = {
+      email: this.loginForm.value.email,
+      password: this.loginForm.value.password
+    };
+
+    this.authService.login(dto).subscribe({
+      next: (response) => {
+        this.isLoginLoading = false;
+        if (response.success) {
+          this.router.navigate(['/']);
+        } else {
+          this.loginError = response.message || 'Login failed. Please try again.';
+        }
+      },
+      error: (err) => {
+        this.isLoginLoading = false;
+        this.loginError = err?.error?.message || err?.message || 'Login failed. Please check your credentials.';
+      }
+    });
   }
 
   onRegister() {
@@ -116,10 +149,34 @@ export class AuthComponent implements OnInit {
       return;
     }
     this.isRegLoading = true;
-    setTimeout(() => {
-      this.isRegLoading = false;
-      // Integrate real AuthService + Router navigation here.
-    }, 2000);
+    this.registerError = '';
+
+    const fullName: string = this.registerForm.value.fullName.trim();
+    const nameParts = fullName.split(' ');
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(' ') || firstName;
+
+    const dto: RegisterRequestDto = {
+      firstName,
+      lastName,
+      email: this.registerForm.value.email,
+      password: this.registerForm.value.password,
+      confirmPassword: this.registerForm.value.confirmPassword
+    };
+
+    this.authService.register(dto).subscribe({
+      next: (response) => {
+        this.isRegLoading = false;
+        if (response.success) {
+          this.router.navigate(['/']);
+        } else {
+          this.registerError = response.message || 'Registration failed. Please try again.';
+        }
+      },
+      error: (err) => {
+        this.isRegLoading = false;
+        this.registerError = err?.error?.message || err?.message || 'Registration failed. Please try again.';
+      }
+    });
   }
 }
-
