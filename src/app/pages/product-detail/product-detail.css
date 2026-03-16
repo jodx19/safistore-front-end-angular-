@@ -1,57 +1,50 @@
-/* Standardized Product Detail Styles */
-.product-detail {
-  @apply py-12;
+/* Product Detail Page Styles - Premium Dark */
+
+:host {
+  display: block;
 }
 
-.main-image-container {
-  @apply rounded-2xl overflow-hidden shadow-soft bg-slate-50;
+/* Slide Up Animation for Review Form */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.thumbnail-button {
-  @apply rounded-xl border-2 transition-all duration-300 overflow-hidden;
-  border-color: transparent;
+.animate-slide-up {
+  animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-.thumbnail-button.active {
-  border-color: var(--electric);
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+/* Custom Scrollbar for better UX */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.product-title {
-  @apply text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-4;
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.product-price {
-  @apply text-4xl font-extrabold;
-  color: var(--electric);
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
 }
 
-.product-stock .stock-badge {
-  @apply px-4 py-2 rounded-full font-bold text-sm;
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 108, 247, 0.3);
 }
 
-.product-stock.in-stock .stock-badge {
-  @apply bg-emerald-50 text-emerald-600;
+/* Shadow Glow for Avatar */
+.shadow-glow {
+  box-shadow: 0 0 15px rgba(74, 108, 247, 0.4);
 }
 
-.product-description, .add-to-cart-section, .reviews-section {
-  @apply card-glass p-8 mb-8;
+/* Ensure images maintain aspect ratio in the new containers */
+img {
+  max-width: 100%;
+  height: auto;
 }
 
-.quantity-button {
-  @apply w-10 h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all font-bold;
+/* Fix for select elements in dark mode */
+select option {
+  background-color: #0a1628;
+  color: white;
 }
-
-.quantity-input {
-  @apply h-10 rounded-xl border-slate-200 text-center font-bold;
-}
-
-.add-to-cart-button, .btn-submit-review, .btn-write-review {
-  @apply btn-primary w-full;
-}
-
-.review-item {
-  @apply bg-slate-50/50 rounded-2xl p-6 border-l-4;
-  border-color: var(--electric);
-}
-

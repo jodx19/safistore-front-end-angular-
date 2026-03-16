@@ -1,153 +1,200 @@
-<div class="page-header">
-  <div class="page-header-glass animate-fade-in" *ngIf="product">
-    <div class="flex items-center justify-center gap-2 text-blue-600 font-bold mb-4">
-      <span (click)="navigateToProducts()" class="cursor-pointer hover:text-blue-800 transition-colors">Intelligence Catalog</span>
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-      <span class="text-slate-400">Deep Analysis</span>
-    </div>
-    <h1 class="text-4xl md:text-6xl font-black text-slate-900 mb-4">{{ product!.title }}</h1>
-    <div class="flex items-center justify-center gap-6">
-      <div class="flex items-center bg-blue-50 px-4 py-2 rounded-full">
-        <span class="text-blue-600 font-black text-2xl">${{ product!.price | number: '1.2-2' }}</span>
+<div class="min-h-screen w-full bg-[#0a1628] relative overflow-hidden font-body text-white">
+  <!-- Dynamic Backgrounds -->
+  <div class="absolute w-[800px] h-[800px] rounded-full pointer-events-none bg-[rgba(74,108,247,0.15)] blur-[150px] -top-96 -right-48 animate-drift"></div>
+  <div class="absolute w-[600px] h-[600px] rounded-full pointer-events-none bg-[rgba(106,61,232,0.1)] blur-[120px] bottom-0 left-0 animate-pulse-slow"></div>
+
+  <div class="relative z-10 container mx-auto px-6 py-12">
+    <!-- Navigation / Breadcrumbs -->
+    <nav class="flex items-center gap-3 mb-12 text-[12px] font-bold tracking-[0.15em] uppercase text-brand-muted" appReveal>
+      <a routerLink="/" class="hover:text-brand-blue transition-colors">Home</a>
+      <span class="opacity-30">/</span>
+      <a routerLink="/products" class="hover:text-brand-blue transition-colors">Catalog</a>
+      <span class="opacity-30">/</span>
+      <span class="text-brand-blue">{{ product?.category }}</span>
+    </nav>
+
+    @if (loading) {
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div class="aspect-square bg-white/5 rounded-[32px] animate-shimmer"></div>
+        <div class="space-y-6">
+          <div class="h-12 w-3/4 bg-white/5 rounded-xl animate-shimmer"></div>
+          <div class="h-6 w-1/2 bg-white/5 rounded-xl animate-shimmer"></div>
+          <div class="h-[200px] w-full bg-white/5 rounded-2xl animate-shimmer"></div>
+        </div>
       </div>
-      <span [ngClass]="product!.stock > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'" 
-            class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest">
-        {{ product!.stock > 0 ? 'In Stock' : 'Out of Stock' }}
-      </span>
-    </div>
+    } @else if (error) {
+      <app-empty-state icon="✕" title="System Error" [message]="error" actionLabel="Return to Catalog" [actionCallback]="navigateToProducts.bind(this)"></app-empty-state>
+    } @else if (product) {
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 mb-32">
+        <!-- Gallery Section -->
+        <div class="space-y-8" appReveal="100">
+          <div class="relative group aspect-square rounded-[40px] overflow-hidden bg-white/5 border border-white/5 shadow-2xl transition-all duration-500 hover:border-brand-blue/20">
+            <img [src]="product.image" [alt]="product.title" class="w-full h-full object-contain p-12 transition-transform duration-700 group-hover:scale-105" />
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-navy/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            
+            <!-- Floating Badge -->
+            <div class="absolute top-8 left-8">
+              <app-badge [variant]="product.stock > 0 ? 'success' : 'danger'" size="md">
+                {{ product.stock > 0 ? 'Available' : 'Out of Stock' }}
+              </app-badge>
+            </div>
+          </div>
+
+          <!-- Thumbnail Gallery (Mocking if more images existed) -->
+          <div class="flex gap-4">
+             <div class="w-24 h-24 rounded-2xl border-2 border-brand-blue p-2 bg-white/5">
+                <img [src]="product.image" class="w-full h-full object-contain opacity-100" />
+             </div>
+             @for (i of [1,2,3]; track i) {
+               <div class="w-24 h-24 rounded-2xl border-2 border-white/5 p-2 bg-white/5 opacity-40 grayscale pointer-events-none">
+                  <img [src]="product.image" class="w-full h-full object-contain" />
+               </div>
+             }
+          </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="flex flex-col" [appReveal]="200">
+          <div class="mb-8">
+            <span class="text-brand-blue text-[13px] font-bold tracking-[0.2em] uppercase mb-4 block">{{ product.category }}</span>
+            <h1 class="text-[40px] md:text-[52px] font-display font-bold leading-tight mb-6">
+              {{ product.title }}
+            </h1>
+            
+            <!-- Rating -->
+            <div class="flex items-center gap-4 mb-8">
+              <div class="flex text-yellow-400 gap-0.5">
+                @for (s of [1,2,3,4,5]; track s) {
+                  <span class="text-xl">★</span>
+                }
+              </div>
+              <span class="text-brand-muted text-sm font-medium">({{ product.rating }} average score)</span>
+              <span class="h-4 w-px bg-white/10 mx-2"></span>
+              <span class="text-brand-muted text-sm font-medium">{{ reviews.length }} analysis reports</span>
+            </div>
+          </div>
+
+          <p class="text-[18px] text-brand-muted leading-relaxed mb-10 pb-10 border-b border-white/10">
+            {{ product.description }}
+          </p>
+
+          <!-- Configuration & Purchase -->
+          <div class="bg-brand-card/40 backdrop-blur-2xl border border-white/5 rounded-[32px] p-8 shadow-2xl relative overflow-hidden group">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-blue/5 rounded-full blur-3xl group-hover:bg-brand-blue/10 transition-colors"></div>
+            
+            <div class="flex items-end justify-between mb-10 relative z-10">
+              <div>
+                <p class="text-brand-muted text-[11px] font-bold uppercase tracking-widest mb-2">Price Estimate</p>
+                <h2 class="text-[42px] font-display font-bold text-white">$\{{ product.price | number:'1.2-2' }}</h2>
+              </div>
+              <div class="text-right">
+                 <p class="text-brand-muted text-[11px] font-bold uppercase tracking-widest mb-2">Availability</p>
+                 <p class="text-white font-bold">{{ product.stock || '∞' }} Units</p>
+              </div>
+            </div>
+
+            <!-- Quantity Selector -->
+            <div class="flex items-center gap-6 mb-8 relative z-10">
+               <div class="flex items-center h-16 bg-white/5 border border-white/5 rounded-2xl overflow-hidden min-w-[160px]">
+                  <button 
+                    (click)="updateQuantity(-1)" 
+                    [disabled]="quantity <= 1"
+                    class="flex-1 h-full hover:bg-white/10 text-white font-bold transition-all disabled:opacity-20 outline-none"
+                  >−</button>
+                  <span class="px-6 text-xl font-display font-bold text-brand-blue">{{ quantity }}</span>
+                  <button 
+                    (click)="updateQuantity(1)" 
+                    [disabled]="quantity >= (product.stock || 99)"
+                    class="flex-1 h-full hover:bg-white/10 text-white font-bold transition-all disabled:opacity-20 outline-none"
+                  >+</button>
+               </div>
+               <span class="text-[13px] text-brand-muted font-medium">Select acquisition volume</span>
+            </div>
+
+            <app-button 
+              size="lg" 
+              class="w-full relative z-10" 
+              [disabled]="product.stock === 0"
+              (onClick)="addToCart()"
+            >
+              Initiate Acquisition
+            </app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analysis Reports (Reviews) -->
+      <div class="mt-24" appReveal>
+        <div class="flex flex-wrap items-center justify-between gap-6 mb-16 px-6 border-l-4 border-brand-blue">
+          <div>
+            <h2 class="text-3xl font-display font-bold text-white mb-2">Analysis Reports</h2>
+            <p class="text-brand-muted">User verified intelligence and feedback</p>
+          </div>
+          <app-button variant="secondary" size="sm" (onClick)="toggleReviewForm()">
+            {{ showReviewForm ? 'Abort Analysis' : 'Contribute Findings' }}
+          </app-button>
+        </div>
+
+        @if (showReviewForm) {
+          <div class="mb-20 p-8 bg-brand-card/60 backdrop-blur-3xl border border-brand-blue/20 rounded-[32px] animate-slide-up">
+            <form (ngSubmit)="submitReview()" class="space-y-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-3">
+                  <label class="text-[12px] font-bold uppercase tracking-widest text-brand-muted">Precision Rating</label>
+                  <select [(ngModel)]="newReview.rating" name="rating" class="w-full h-14 bg-white/5 border border-white/10 rounded-xl px-6 text-white outline-none focus:border-brand-blue/30 transition-all">
+                    <option [value]="5">5 - Optimal</option>
+                    <option [value]="4">4 - Superior</option>
+                    <option [value]="3">3 - Standard</option>
+                    <option [value]="2">2 - Subpar</option>
+                    <option [value]="1">1 - Deficient</option>
+                  </select>
+                </div>
+                <div class="space-y-3">
+                  <label class="text-[12px] font-bold uppercase tracking-widest text-brand-muted">Headline Summary</label>
+                  <input type="text" [(ngModel)]="newReview.title" name="title" class="w-full h-14 bg-white/5 border border-white/10 rounded-xl px-6 text-white outline-none focus:border-brand-blue/30 transition-all" placeholder="Brief capture of findings...">
+                </div>
+              </div>
+              <div class="space-y-3">
+                <label class="text-[12px] font-bold uppercase tracking-widest text-brand-muted">Detailed Log</label>
+                <textarea [(ngModel)]="newReview.comment" name="comment" rows="4" class="w-full p-6 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-brand-blue/30 transition-all" placeholder="Describe your full experience..."></textarea>
+              </div>
+              <div class="flex justify-end">
+                <app-button type="submit" class="w-full md:w-auto">Transmit Data</app-button>
+              </div>
+            </form>
+          </div>
+        }
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          @for (review of reviews; track review.id) {
+            <div class="p-8 bg-brand-card/40 backdrop-blur-xl border border-white/5 rounded-[32px] transition-all duration-500 hover:border-brand-blue/20 hover:bg-brand-card/60">
+              <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-blue to-brand-purple flex items-center justify-center text-white font-bold shadow-glow">
+                  {{ review.userName.charAt(0) || 'U' }}
+                </div>
+                <div>
+                  <h4 class="text-white font-bold">{{ review.userName }}</h4>
+                  <div class="flex text-yellow-400 text-xs gap-0.5 mt-1">
+                    @for (s of [1,2,3,4,5]; track s) {
+                      <span>★</span>
+                    }
+                  </div>
+                </div>
+                <span class="ml-auto text-[11px] font-bold text-brand-muted uppercase tracking-widest">{{ review.createdAt | date:'MMM d, y' }}</span>
+              </div>
+              <h5 class="text-white font-bold text-lg mb-3">{{ review.title }}</h5>
+              <p class="text-brand-muted leading-relaxed italic">"{{ review.comment }}"</p>
+            </div>
+          } @empty {
+            <div class="col-span-full py-16 text-center border-2 border-dashed border-white/5 rounded-[40px]">
+              <p class="text-brand-muted italic">No analysis reports logged for this artifact yet.</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
   </div>
 </div>
 
-<section class="section-premium reveal active">
-  <div class="max-w-7xl mx-auto">
-    <!-- States -->
-    <app-skeleton-loader *ngIf="loading" type="card" [count]="1"></app-skeleton-loader>
-    <app-empty-state
-      *ngIf="error && !loading"
-      icon="⚠️"
-      title="Access Denied"
-      [message]="error"
-      actionLabel="Back to Catalog"
-      [actionCallback]="navigateToProducts.bind(this)"
-    ></app-empty-state>
-
-    <!-- Content -->
-    <div *ngIf="product && !loading" class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-20 animate-fade-in">
-      <!-- Media Gallery -->
-      <div class="space-y-6">
-        <div class="main-image-container group overflow-hidden rounded-3xl border border-slate-100 shadow-soft">
-          <img [src]="getProductImages()[selectedImageIndex]" [alt]="product!.title" 
-               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
-        </div>
-        <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" *ngIf="getProductImages().length > 1">
-          <button *ngFor="let img of getProductImages(); let i = index" 
-                  (click)="selectImage(i)"
-                  [class.active]="i === selectedImageIndex"
-                  class="thumbnail-button shrink-0 w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all"
-                  [ngClass]="i === selectedImageIndex ? 'border-blue-600 scale-95 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'">
-            <img [src]="img" class="w-full h-full object-cover" />
-          </button>
-        </div>
-      </div>
-
-      <!-- Intelligence Data -->
-      <div class="flex flex-col">
-        <div class="product-description mb-10">
-          <h2 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
-            <span class="w-2 h-8 bg-blue-600 rounded-full"></span>
-            Technical Specifications
-          </h2>
-          <p class="text-slate-500 leading-relaxed text-lg mb-8">{{ product!.description }}</p>
-          
-          <div class="grid grid-cols-2 gap-6 p-6 bg-slate-50 rounded-3xl border border-slate-100">
-            <div>
-              <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Authenticity</p>
-              <p class="text-slate-900 font-bold">Verified Intelligence</p>
-            </div>
-            <div>
-              <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Stock Level</p>
-              <p class="text-slate-900 font-bold">{{ product!.stock }} units available</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="add-to-cart-section p-10 bg-white rounded-3xl shadow-soft-lg border border-slate-50">
-          <div class="flex items-center justify-between mb-8">
-            <span class="text-slate-900 font-bold text-lg">Acquisition Volume</span>
-            <div class="flex items-center gap-4 bg-slate-100 p-2 rounded-2xl">
-              <button (click)="updateQuantity(-1)" [disabled]="quantity <= 1" 
-                      class="w-10 h-10 rounded-xl bg-white text-slate-900 font-black hover:bg-blue-600 hover:text-white transition-all disabled:opacity-30">−</button>
-              <p class="w-8 text-center font-black text-slate-900 text-xl">{{ quantity }}</p>
-              <button (click)="updateQuantity(1)" [disabled]="quantity >= product.stock"
-                      class="w-10 h-10 rounded-xl bg-white text-slate-900 font-black hover:bg-blue-600 hover:text-white transition-all disabled:opacity-30">+</button>
-            </div>
-          </div>
-          
-          <div class="flex flex-col gap-4">
-            <button (click)="addToCart()" [disabled]="product!.stock === 0" class="btn-primary py-5 text-lg shadow-blue-500/20 shadow-xl">
-              Initiate Acquisition
-            </button>
-            <button class="btn-secondary py-5 text-lg">Bookmark Intelligence</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Review Intel -->
-    <div class="reviews-section reveal mt-24">
-      <div class="flex items-center justify-between mb-12">
-        <h2 class="text-3xl font-black text-slate-900">User Intelligence</h2>
-        <button (click)="toggleReviewForm()" class="btn-glass text-sm">
-          {{ showReviewForm ? 'Abort Analysis' : 'Contribute Analysis' }}
-        </button>
-      </div>
-
-      <!-- Review Form -->
-      <div *ngIf="showReviewForm" class="card p-10 mb-12 border border-blue-100 bg-blue-50/30 animate-fade-in">
-        <form (ngSubmit)="submitReview()" class="space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="space-y-2">
-              <label class="block text-slate-900 font-bold text-sm uppercase tracking-wider">Analysis Rating</label>
-              <select [(ngModel)]="newReview.rating" name="rating" class="w-full px-5 py-3 border border-slate-200 rounded-xl outline-none bg-white">
-                <option [value]="5">5 - Optimal</option>
-                <option [value]="4">4 - Superior</option>
-                <option [value]="3">3 - Satisfactory</option>
-                <option [value]="2">2 - Subpar</option>
-                <option [value]="1">1 - Deficient</option>
-              </select>
-            </div>
-            <div class="space-y-2">
-              <label class="block text-slate-900 font-bold text-sm uppercase tracking-wider">Headline</label>
-              <input type="text" [(ngModel)]="newReview.title" name="title" class="w-full px-5 py-3 border border-slate-200 rounded-xl outline-none" placeholder="Summary of findings...">
-            </div>
-          </div>
-          <div class="space-y-2">
-            <label class="block text-slate-900 font-bold text-sm uppercase tracking-wider">Detailed Feedback</label>
-            <textarea [(ngModel)]="newReview.comment" name="comment" rows="4" class="w-full px-5 py-3 border border-slate-200 rounded-xl outline-none" placeholder="Examine your experience..."></textarea>
-          </div>
-          <button type="submit" class="btn-primary w-full py-4">Publish Report</button>
-        </form>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div *ngFor="let review of reviews" class="card p-8 group hover:border-blue-200 transition-all duration-500">
-          <div class="flex items-center gap-4 mb-6">
-            <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-black">
-              {{ review.userName.charAt(0) }}
-            </div>
-            <div>
-              <p class="text-slate-900 font-bold">{{ review.userName }}</p>
-              <div class="flex text-amber-400 text-xs gap-0.5">
-                <span *ngFor="let s of [1,2,3,4,5]">★</span>
-              </div>
-            </div>
-            <span class="ml-auto text-slate-400 text-xs font-bold">{{ review.createdAt | date:'shortDate' }}</span>
-          </div>
-          <h4 class="text-slate-900 font-black mb-2">{{ review.title }}</h4>
-          <p class="text-slate-600 leading-relaxed italic">"{{ review.comment }}"</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
