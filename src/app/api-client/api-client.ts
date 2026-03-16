@@ -44,8 +44,7 @@ export interface ApiError {
 // ---------------------------------------------------------------------------
 
 export interface RegisterRequestDto {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   password: string;
   confirmPassword: string;
