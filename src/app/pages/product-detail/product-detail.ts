@@ -71,10 +71,11 @@ export class ProductDetailComponent implements OnInit {
           title: data.title,
           price: data.price,
           description: data.description,
-          image: data.image,
-          rating: data.rating?.rate ?? 0,
+          imageUrl: data.imageUrl,
+          rating: data.rating ?? 0,
           stock: data.stock ?? 0,
-          category: data.category
+          categoryName: data.categoryName,
+          categoryId: data.categoryId ?? 0
         };
         this.loadReviews();
         this.loading = false;
@@ -87,7 +88,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   getProductImages(): string[] {
-    return this.product ? [this.product.image] : [];
+    return this.product?.imageUrl ? [this.product.imageUrl] : [];
   }
 
   updateQuantity(change: number): void {
@@ -113,7 +114,7 @@ export class ProductDetailComponent implements OnInit {
     this.loadingReviews = true;
     this.reviewService.getReviews(this.product.id).subscribe({
       next: (reviews) => {
-        this.reviews = reviews;
+        this.reviews = reviews as any; // Cast for now to match local Review structure
         this.loadingReviews = false;
       },
       error: () => {
@@ -136,15 +137,13 @@ export class ProductDetailComponent implements OnInit {
       return;
     }
 
-    this.reviewService.addReview(this.product.id, {
-      userId: user.userId,
-      userName: `${user.firstName} ${user.lastName}`,
+    this.reviewService.addReview({
+      productId: this.product.id,
       rating: this.newReview.rating,
-      title: this.newReview.title,
       comment: this.newReview.comment
     }).subscribe({
       next: (review) => {
-        this.reviews.unshift(review);
+        this.reviews.unshift(review as any);
         this.notificationService.showSuccess('Analysis log updated successfully.');
         this.showReviewForm = false;
         this.newReview = { rating: 5, title: '', comment: '' };

@@ -100,19 +100,21 @@ export interface ProductDto {
 }
 
 export interface CreateProductDto {
-  name: string;
+  title: string;
   description: string;
   price: number;
   stock: number;
   categoryId: number;
+  imageUrl?: string;
 }
 
 export interface UpdateProductDto {
-  name?: string;
+  title?: string;
   description?: string;
   price?: number;
   stock?: number;
   categoryId?: number;
+  imageUrl?: string;
 }
 
 // ---------------------------------------------------------------------------

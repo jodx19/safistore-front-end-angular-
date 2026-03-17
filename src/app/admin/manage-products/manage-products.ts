@@ -16,7 +16,7 @@ import { Subject, takeUntil } from "rxjs";
 })
 export class ManageProductsComponent implements OnInit, OnDestroy {
   products: ProductDto[] = [];
-  newProduct: CreateProductDto = { name: "", price: 0, stock: 0, categoryId: 1, description: "" };
+  newProduct: CreateProductDto = { title: "", price: 0, stock: 0, categoryId: 1, description: "" };
   categories: any[] = []; // Usually fetched from a category client
   showForm = false;
   loading = false;
@@ -50,7 +50,7 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (resp) => {
-          this.products = resp.data.items;
+          this.products = resp.data.products;
           this.loading = false;
         },
         error: (err) => {
@@ -61,7 +61,7 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
   }
 
   addProduct() {
-    if (!this.newProduct.name || !this.newProduct.price) {
+    if (!this.newProduct.title || !this.newProduct.price) {
       this.error = "Please fill in required fields";
       return;
     }
@@ -86,11 +86,12 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
   editProduct(product: ProductDto) {
     this.editingProduct = product;
     this.newProduct = {
-      name: product.name,
+      title: product.title,
       price: product.price,
       stock: product.stock,
       categoryId: product.categoryId,
       description: product.description,
+      imageUrl: product.imageUrl
     };
     this.showForm = true;
   }
@@ -118,7 +119,7 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
 
   cancelEdit() {
     this.editingProduct = null;
-    this.newProduct = { name: "", price: 0, stock: 0, categoryId: 1, description: "" };
+    this.newProduct = { title: "", price: 0, stock: 0, categoryId: 1, description: "" };
     this.showForm = false;
     this.error = "";
     this.loading = false;

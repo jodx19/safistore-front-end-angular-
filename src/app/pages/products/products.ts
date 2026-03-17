@@ -71,10 +71,11 @@ export class ProductsComponent implements OnInit {
           title: product.title,
           price: product.price,
           description: product.description,
-          image: product.image,
-          rating: product.rating?.rate ?? 0,
+          imageUrl: product.imageUrl,
+          rating: product.rating ?? 0,
           stock: product.stock ?? 0,
-          category: product.category,
+          categoryName: product.categoryName,
+          categoryId: product.categoryId ?? 0,
         }));
         this.loading = false;
         this.applyFilters();
@@ -90,7 +91,7 @@ export class ProductsComponent implements OnInit {
     let filtered = [...this.products];
 
     if (this.selectedCategory) {
-      filtered = filtered.filter((p) => p.category === this.selectedCategory);
+      filtered = filtered.filter((p) => p.categoryName === this.selectedCategory);
     }
 
     filtered = filtered.filter(
@@ -103,7 +104,7 @@ export class ProductsComponent implements OnInit {
         (p) =>
           p.title.toLowerCase().includes(q) ||
           p.description.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q)
+          p.categoryName?.toLowerCase().includes(q)
       );
     }
 
@@ -111,11 +112,11 @@ export class ProductsComponent implements OnInit {
     this.filteredProducts = filtered.map(p => ({
       id: p.id,
       name: p.title,
-      category: p.category,
+      category: p.categoryName,
       price: p.price,
       rating: p.rating,
       reviews: Math.floor(Math.random() * 50) + 5, // Mock reviews since not in DTO
-      image: p.image,
+      image: p.imageUrl,
       isNew: Math.random() > 0.8
     }));
   }
@@ -144,10 +145,11 @@ export class ProductsComponent implements OnInit {
       title: product.name,
       price: product.price,
       description: '',
-      image: product.image,
+      imageUrl: product.image,
       rating: product.rating,
       stock: 99, // Assume plenty for now or fetch real stock
-      category: product.category
+      categoryName: product.category,
+      categoryId: 0 // Placeholder
     };
     
     const success = this.cartService.addToCart(serviceProduct, 1);

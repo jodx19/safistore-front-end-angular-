@@ -18,6 +18,10 @@ export interface Product {
   imageUrl?: string;
   rating: number;
   categoryId: number;
+  // Backward compatibility
+  category?: string;
+  image?: string;
+  name?: string;
 }
 
 @Injectable({
