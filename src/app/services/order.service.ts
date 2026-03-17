@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { OrderClient, ApiResponse, OrderDto, CheckoutDto } from '../api-client/api-client';
 
 export interface OrderItem {
   productId: number;
@@ -22,92 +21,63 @@ export interface ShippingAddress {
   country: string;
 }
 
-// NOTE: CVV should NEVER be sent to your own backend.
-// It must only be sent directly to the payment gateway (Stripe, etc.).
-// The paymentInfo stored here should only be masked card data.
 export interface PaymentInfo {
-  cardNumber: string;  // masked, e.g. "**** **** **** 1234"
+  cardNumber: string;
   expiryDate: string;
 }
 
 export interface Order {
-  id?: string;
-  customerId: string;
+  id: number;
+  userId: string;
   items: OrderItem[];
-  total: number;
-  shippingAddress: ShippingAddress;
-  paymentInfo: PaymentInfo;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  totalPrice: number;
+  status: string;
+  shippingAddress: string;
   createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface CreateOrderRequest {
-  items: { productId: number; quantity: number }[];
-  shippingAddress: ShippingAddress;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
-  private readonly apiUrl = `${environment.apiUrl}${environment.endpoints.orders}`;
-
-  constructor(private http: HttpClient) { }
+  constructor(private orderClient: OrderClient) { }
 
   private handleError(error: any): Observable<never> {
-    const message = error?.error?.error?.message ?? error?.message ?? 'Failed to process order';
+    const message = error?.error?.message ?? error?.message ?? 'Failed to process order';
     return throwError(() => new Error(message));
   }
 
-  /** Create a new order. Authorization header is attached by AuthInterceptor. */
-  createOrder(request: CreateOrderRequest): Observable<Order> {
-    return this.http.post<{ success: boolean; data: Order }>(this.apiUrl, request).pipe(
+  createOrder(request: { shippingAddress: string }): Observable<OrderDto> {
+    return this.orderClient.checkout(request as CheckoutDto).pipe(
       map(res => res.data),
       catchError(err => this.handleError(err))
     );
   }
 
-  /** Get a single order by ID. */
-  getOrderById(orderId: string): Observable<Order> {
-    return this.http.get<{ success: boolean; data: Order }>(`${this.apiUrl}/${orderId}`).pipe(
+  getOrderById(id: number): Observable<OrderDto> {
+    return this.orderClient.getById(id).pipe(
       map(res => res.data),
       catchError(err => this.handleError(err))
     );
   }
 
-  /** Get all orders for the currently authenticated user. */
-  getMyOrders(): Observable<Order[]> {
-    return this.http.get<{ success: boolean; data: Order[] }>(`${this.apiUrl}/my`).pipe(
+  getMyOrders(): Observable<OrderDto[]> {
+    return this.orderClient.getMyOrders().pipe(
       map(res => res.data ?? []),
       catchError(err => this.handleError(err))
     );
   }
 
-  /** Get orders by customer ID (Admin only). */
-  getOrdersByCustomer(customerId: string): Observable<Order[]> {
-    return this.http
-      .get<{ success: boolean; data: Order[] }>(`${this.apiUrl}?customerId=${customerId}`)
-      .pipe(
-        map(res => res.data ?? []),
-        catchError(err => this.handleError(err))
-      );
+  updateOrderStatus(id: number, status: string): Observable<OrderDto> {
+    return this.orderClient.updateStatus(id, status).pipe(
+      map(res => res.data),
+      catchError(err => this.handleError(err))
+    );
   }
 
-  /** Update order status (Admin only). */
-  updateOrderStatus(orderId: string, status: Order['status']): Observable<Order> {
-    return this.http
-      .patch<{ success: boolean; data: Order }>(`${this.apiUrl}/${orderId}/status`, { status })
-      .pipe(
-        map(res => res.data),
-        catchError(err => this.handleError(err))
-      );
-  }
-
-  /** Cancel an order. */
-  cancelOrder(orderId: string): Observable<void> {
-    return this.http
-      .patch<void>(`${this.apiUrl}/${orderId}/cancel`, {})
-      .pipe(catchError(err => this.handleError(err)));
+  cancelOrder(id: number): Observable<ApiResponse<null>> {
+    return this.orderClient.cancelOrder(id).pipe(
+      catchError(err => this.handleError(err))
+    );
   }
 }

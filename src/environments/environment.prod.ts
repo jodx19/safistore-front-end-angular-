@@ -3,7 +3,7 @@ export const environment = {
   production: true,
 
   // Production API base URL
-  apiUrl: 'https://safistore.runasp.net/api/v1',
+  apiUrl: 'https://safistore.runasp.net',
 
   endpoints: {
     auth: '/auth',

@@ -36,7 +36,7 @@ export interface ApiResponse<T> {
 export interface ApiError {
   code: string;
   message: string;
-  errors?: Record<string, string[]>;
+  errors?: any;
 }
 
 // ---------------------------------------------------------------------------
@@ -44,7 +44,8 @@ export interface ApiError {
 // ---------------------------------------------------------------------------
 
 export interface RegisterRequestDto {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -56,14 +57,23 @@ export interface LoginRequestDto {
 }
 
 export interface AuthResponseDto {
-  userId: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
+  success: boolean;
+  message: string;
   accessToken: string;
   refreshToken: string;
-  expiresAt: string;
+  accessTokenExpiry: string;
+  user: UserDto;
+  errors: string[];
+}
+
+export interface UserDto {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatarUrl?: string;
+  roles: string[];
+  createdAt: string;
 }
 
 export interface RefreshTokenRequestDto {
@@ -77,14 +87,16 @@ export interface RefreshTokenRequestDto {
 
 export interface ProductDto {
   id: number;
-  name: string;
+  title: string;
   description: string;
   price: number;
   stock: number;
   categoryId: number;
-  categoryName?: string;
+  categoryName: string;
   imageUrl?: string;
-  createdAt?: string;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateProductDto {
@@ -197,11 +209,13 @@ export interface ReviewSummaryDto {
 // ---------------------------------------------------------------------------
 
 export interface PaginatedResult<T> {
-  items: T[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
+  products: T[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 // ---------------------------------------------------------------------------

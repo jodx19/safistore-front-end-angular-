@@ -112,18 +112,23 @@ export class AuthService {
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
 
-  private handleAuthSuccess(data: AuthResponseDto): void {
-    this.tokenStorage.saveTokens(data.accessToken, data.refreshToken);
-    const user: CurrentUser = {
-      userId: data.userId,
-      email: data.email,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      role: data.role,
-      expiresAt: data.expiresAt
-    };
-    this.tokenStorage.saveUser(user);
-    this._currentUser$.next(user);
+   private handleAuthSuccess(data: AuthResponseDto): void {
+    if (data.accessToken && data.refreshToken) {
+      this.tokenStorage.saveTokens(data.accessToken, data.refreshToken);
+    }
+    
+    if (data.user) {
+      const user: CurrentUser = {
+        userId: data.user.id.toString(),
+        email: data.user.email,
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        role: data.user.roles[0] || 'Customer',
+        expiresAt: data.accessTokenExpiry
+      };
+      this.tokenStorage.saveUser(user);
+      this._currentUser$.next(user);
+    }
   }
 
   get currentUser(): CurrentUser | null {

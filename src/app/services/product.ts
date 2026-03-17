@@ -6,6 +6,7 @@ import { Observable, BehaviorSubject, throwError, of } from 'rxjs';
 import { catchError, retry, shareReplay, tap, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { ApiHelper } from '../utils/api-helper';
+import { ApiResponse, PaginatedResult } from '../api-client/api-client';
 
 export interface Product {
   id: number;
@@ -13,12 +14,10 @@ export interface Product {
   description: string;
   price: number;
   stock: number;
-  category: string;
-  image: string;
-  rating: number;
-  categoryId?: number;
+  categoryName: string;
   imageUrl?: string;
-  categoryName?: string;
+  rating: number;
+  categoryId: number;
 }
 
 @Injectable({
@@ -65,7 +64,7 @@ export class ProductService {
     }
 
     // Fetch from .NET backend
-    const request$ = this.http.get<any>(this.apiUrl, { params: httpParams }).pipe(
+    const request$ = this.http.get<ApiResponse<PaginatedResult<Product>>>(this.apiUrl, { params: httpParams }).pipe(
       timeout(environment.timeouts.apiRequest),
       retry(1),
       tap((response) => {

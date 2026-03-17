@@ -52,8 +52,6 @@ export class CartService {
   addToCart(product: any, availableStock?: number): boolean {
     // 1) prevent adding if user not logged in
     if (!this.authService.isLoggedIn()) {
-      // optionally show a toast/message in component instead of redirecting
-      // but here we redirect to login to enforce auth before cart operations.
       this.router.navigate(["/login"]);
       return false;
     }
@@ -62,7 +60,7 @@ export class CartService {
     const productId = Number(product?.id);
     const productName = product?.title || product?.name || "Product";
     const productPrice = Number(product?.price) || 0;
-    const productImage = product?.image || product?.thumbnail || "";
+    const productImage = product?.imageUrl || product?.image || product?.thumbnail || "";
 
     // 3) work on a new array (avoid mutating BehaviorSubject.value directly)
     const items = [...this.cartItems.value];
