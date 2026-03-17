@@ -6,8 +6,8 @@ import { RevealDirective } from '../../directives/reveal.directive';
 
 export interface Product {
   id: number;
-  name: string;
-  category: string;
+  title: string;
+  categoryName: string;
   price: number;
   originalPrice?: number;
   discount?: number;
@@ -33,7 +33,7 @@ export interface Product {
         <a [routerLink]="['/products', product.id]" class="block w-full h-full">
           <img 
             [src]="product.image" 
-            [alt]="product.name"
+            [alt]="product.title"
             class="w-full h-full object-contain p-5 transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
           >
@@ -63,9 +63,9 @@ export interface Product {
 
       <!-- Card Body -->
       <div class="p-5">
-        <span class="text-[11px] font-medium text-brand-blue tracking-widest uppercase">{{ product.category }}</span>
+        <span class="text-[11px] font-medium text-brand-blue tracking-widest uppercase">{{ product.categoryName }}</span>
         <a [routerLink]="['/products', product.id]">
-          <h3 class="font-display text-[17px] text-white mt-1 mb-2 line-clamp-1 hover:text-brand-blue transition-colors">{{ product.name }}</h3>
+          <h3 class="font-display text-[17px] text-white mt-1 mb-2 line-clamp-1 hover:text-brand-blue transition-colors">{{ product.title }}</h3>
         </a>
         
         <!-- Stars -->

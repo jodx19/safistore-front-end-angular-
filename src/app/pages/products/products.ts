@@ -111,12 +111,12 @@ export class ProductsComponent implements OnInit {
     // Map to the interface expected by ProductCardComponent
     this.filteredProducts = filtered.map(p => ({
       id: p.id,
-      name: p.title,
-      category: p.categoryName,
+      title: p.title,
+      categoryName: p.categoryName,
       price: p.price,
       rating: p.rating,
-      reviews: Math.floor(Math.random() * 50) + 5, // Mock reviews since not in DTO
-      image: p.imageUrl,
+      reviews: Math.floor(Math.random() * 50) + 5,
+      image: p.imageUrl || '',
       isNew: Math.random() > 0.8
     }));
   }
@@ -142,26 +142,26 @@ export class ProductsComponent implements OnInit {
     // Map back to service expectations
     const serviceProduct: Product = {
       id: product.id,
-      title: product.name,
+      title: product.title,
       price: product.price,
       description: '',
       imageUrl: product.image,
       rating: product.rating,
-      stock: 99, // Assume plenty for now or fetch real stock
-      categoryName: product.category,
-      categoryId: 0 // Placeholder
+      stock: 99,
+      categoryName: product.categoryName,
+      categoryId: 0
     };
     
     const success = this.cartService.addToCart(serviceProduct, 1);
     if (success) {
-      this.notificationService.showSuccess(`${product.name} added to cart!`);
+      this.notificationService.showSuccess(`${product.title} added to cart!`);
     } else {
-      this.notificationService.showError(`Failed to add ${product.name} to cart.`);
+      this.notificationService.showError(`Failed to add ${product.title} to cart.`);
     }
   }
 
   onAddToWishlist(product: any) {
-    this.notificationService.showSuccess(`${product.name} added to wishlist!`);
+    this.notificationService.showSuccess(`${product.title} added to wishlist!`);
   }
 }
 

@@ -10,7 +10,7 @@
       <span class="opacity-30">/</span>
       <a routerLink="/products" class="hover:text-brand-blue transition-colors">Catalog</a>
       <span class="opacity-30">/</span>
-      <span class="text-brand-blue">{{ product?.category }}</span>
+      <span class="text-brand-blue">{{ product?.categoryName }}</span>
     </nav>
 
     @if (loading) {
@@ -57,7 +57,7 @@
         <!-- Info Section -->
         <div class="flex flex-col" [appReveal]="200">
           <div class="mb-8">
-            <span class="text-brand-blue text-[13px] font-bold tracking-[0.2em] uppercase mb-4 block">{{ product.category }}</span>
+            <span class="text-brand-blue text-[13px] font-bold tracking-[0.2em] uppercase mb-4 block">{{ product.categoryName }}</span>
             <h1 class="text-[40px] md:text-[52px] font-display font-bold leading-tight mb-6">
               {{ product.title }}
             </h1>
@@ -171,10 +171,10 @@
             <div class="p-8 bg-brand-card/40 backdrop-blur-xl border border-white/5 rounded-[32px] transition-all duration-500 hover:border-brand-blue/20 hover:bg-brand-card/60">
               <div class="flex items-center gap-4 mb-6">
                 <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-blue to-brand-purple flex items-center justify-center text-white font-bold shadow-glow">
-                  {{ review.userName.charAt(0) || 'U' }}
+                  {{ (review?.userName?.charAt(0)) || 'U' }}
                 </div>
                 <div>
-                  <h4 class="text-white font-bold">{{ review.userName }}</h4>
+                  <h4 class="text-white font-bold">{{ review.userName || 'Verified User' }}</h4>
                   <div class="flex text-yellow-400 text-xs gap-0.5 mt-1">
                     @for (s of [1,2,3,4,5]; track s) {
                       <span>★</span>
@@ -183,7 +183,6 @@
                 </div>
                 <span class="ml-auto text-[11px] font-bold text-brand-muted uppercase tracking-widest">{{ review.createdAt | date:'MMM d, y' }}</span>
               </div>
-              <h5 class="text-white font-bold text-lg mb-3">{{ review.title }}</h5>
               <p class="text-brand-muted leading-relaxed italic">"{{ review.comment }}"</p>
             </div>
           } @empty {

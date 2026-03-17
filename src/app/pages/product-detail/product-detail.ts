@@ -7,7 +7,6 @@ import { CartService } from '../../services/cart';
 import { NotificationService } from '../../services/notification.service';
 import { ReviewService, Review } from '../../services/review.service';
 import { AuthService } from '../../services/auth.service';
-import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader';
 import { EmptyStateComponent } from '../../components/empty-state/empty-state';
 import { RevealDirective } from '../../shared/directives/reveal.directive';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -20,7 +19,6 @@ import { BadgeComponent } from '../../shared/components/badge/badge.component';
     CommonModule,
     FormsModule,
     RouterModule,
-    SkeletonLoaderComponent,
     EmptyStateComponent,
     RevealDirective,
     ButtonComponent,

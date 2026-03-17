@@ -120,10 +120,11 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
             title: product.title,
             price: product.price,
             description: product.description,
-            image: product.image,
-            rating: product.rating?.rate ?? 0,
+            imageUrl: product.imageUrl,
+            rating: product.rating ?? 0,
             stock: product.stock ?? 0,
-            category: product.category
+            categoryName: product.categoryName,
+            categoryId: product.categoryId ?? 0
           }));
           this.loading = false;
           this.applyFilters();
@@ -183,13 +184,13 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
         (p) =>
           p.title.toLowerCase().includes(query) ||
           p.description.toLowerCase().includes(query) ||
-          p.category.toLowerCase().includes(query)
+          p.categoryName?.toLowerCase().includes(query)
       );
     }
 
     // Category filter
     if (this.selectedCategory) {
-      filtered = filtered.filter((p) => p.category === this.selectedCategory);
+      filtered = filtered.filter((p) => p.categoryName === this.selectedCategory);
     }
 
     // Price filter
