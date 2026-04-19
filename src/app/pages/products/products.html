@@ -133,18 +133,30 @@
          Shows: [Prev] [1] [2] [3] [4] [5] [...] [Last] [Next]
     ════════════════════════════════════════════════════════════ -->
     @if (totalPages > 1 && !loading && !error) {
-      <nav class="mt-16 flex justify-center items-center gap-2" aria-label="Product pagination">
-        <!-- Previous -->
+      <!-- Showing X - Y of Z -->
+      <p class="mt-16 mb-4 text-center text-[13px] text-brand-muted">
+        Showing
+        <span class="text-white font-semibold">{{ (currentPage - 1) * pageSize + 1 }}</span>
+        –
+        <span class="text-white font-semibold">{{ getPageEnd() }}</span>
+        of
+        <span class="text-white font-semibold">{{ totalProducts }}</span>
+        products
+      </p>
+
+      <nav class="flex justify-center items-center gap-2" aria-label="Product pagination">
+        <!-- ‹ Previous -->
         <button
-          class="pagination-btn"
+          class="pagination-btn pagination-btn--nav"
           [class.pagination-btn--disabled]="currentPage === 1"
           [disabled]="currentPage === 1"
           (click)="goToPage(currentPage - 1)"
           aria-label="Previous page"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
           </svg>
+          Previous
         </button>
 
         <!-- Page Numbers (truncated) -->
@@ -164,15 +176,16 @@
           }
         }
 
-        <!-- Next -->
+        <!-- Next › -->
         <button
-          class="pagination-btn"
+          class="pagination-btn pagination-btn--nav"
           [class.pagination-btn--disabled]="currentPage === totalPages"
           [disabled]="currentPage === totalPages"
           (click)="goToPage(currentPage + 1)"
           aria-label="Next page"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          Next
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:4px">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
           </svg>
         </button>

@@ -98,7 +98,16 @@ input[type='range']::-webkit-slider-runnable-track {
   box-shadow: 0 4px 16px rgba(74, 108, 247, 0.2);
 }
 
-/* Active / current page — green background as requested */
+/* Previous / Next buttons — wider with text label */
+.pagination-btn--nav {
+  padding: 0 18px;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+
 .pagination-btn--active {
   background: #22c55e !important;        /* green-500 */
   border-color: #16a34a !important;      /* green-600 */

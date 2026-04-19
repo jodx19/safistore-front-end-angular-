@@ -125,6 +125,13 @@ export class ProductsComponent implements OnInit {
   }
 
   /**
+   * Last item number shown on current page (capped at totalProducts)
+   */
+  getPageEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.totalProducts);
+  }
+
+  /**
    * Returns the truncated page number sequence.
    * Always shows first 5 pages, ellipsis, and last page.
    * E.g. for totalPages=192: [1, 2, 3, 4, 5, '...', 192]
