@@ -41,11 +41,18 @@ export class ProductsComponent implements OnInit {
   loading = true;
   error = "";
 
+  // ── Pagination state ──────────────────────────────────────────────────────
+  readonly pageSize = 40;
+  currentPage = 1;
+  totalPages = 1;
+  totalProducts = 0;
+
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       if (params["search"]) {
         this.searchQuery = params["search"];
       }
+      this.currentPage = 1;
       this.loadCategories();
       this.loadProducts();
     });
@@ -64,9 +71,31 @@ export class ProductsComponent implements OnInit {
 
   loadProducts() {
     this.loading = true;
-    this.productService.getAllProducts().subscribe({
-      next: (data: any[]) => {
-        this.products = data.map((product: any) => ({
+    this.error = '';
+    this.productService.getAllProducts({
+      page: this.currentPage,
+      limit: this.pageSize,
+      category: this.selectedCategory || undefined,
+      search: this.searchQuery || undefined,
+    }).subscribe({
+      next: (response: any) => {
+        // The backend returns ApiResponse<PaginatedResult<Product>>
+        // Shape: { success, data: { products[], pagination: { page, pageSize, total, totalPages } } }
+        const paginatedData = response?.data ?? response;
+        const rawList: any[] = paginatedData?.products ?? paginatedData ?? [];
+        const pagination = paginatedData?.pagination;
+
+        if (pagination) {
+          this.totalPages = pagination.totalPages ?? 1;
+          this.totalProducts = pagination.total ?? rawList.length;
+          this.currentPage = pagination.page ?? this.currentPage;
+        } else {
+          // Fallback: if API returns a flat array, paginate client-side
+          this.totalPages = 1;
+          this.totalProducts = rawList.length;
+        }
+
+        this.products = rawList.map((product: any) => ({
           id: product.id,
           title: product.title,
           price: product.price,
@@ -87,26 +116,37 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  applyFilters() {
-    let filtered = [...this.products];
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages || page === this.currentPage) return;
+    this.currentPage = page;
+    this.loadProducts();
+    // Scroll back to top of product grid smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-    if (this.selectedCategory) {
-      filtered = filtered.filter((p) => p.categoryName === this.selectedCategory);
+  /**
+   * Returns the truncated page number sequence.
+   * Always shows first 5 pages, ellipsis, and last page.
+   * E.g. for totalPages=192: [1, 2, 3, 4, 5, '...', 192]
+   */
+  getPaginationPages(): (number | '...')[] {
+    if (this.totalPages <= 7) {
+      return Array.from({ length: this.totalPages }, (_, i) => i + 1);
     }
+    const pages: (number | '...')[] = [1, 2, 3, 4, 5];
+    if (this.totalPages > 6) pages.push('...');
+    pages.push(this.totalPages);
+    return pages;
+  }
+
+  applyFilters() {
+    // Filters that the API already handled server-side: category, search.
+    // We only do client-side price filter on the current page's products.
+    let filtered = [...this.products];
 
     filtered = filtered.filter(
       (p) => p.price >= this.minPrice && p.price <= this.maxPrice
     );
-
-    if (this.searchQuery) {
-      const q = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (p) =>
-          p.title.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          p.categoryName?.toLowerCase().includes(q)
-      );
-    }
 
     // Map to the interface expected by ProductCardComponent
     this.filteredProducts = filtered.map(p => ({
@@ -122,7 +162,8 @@ export class ProductsComponent implements OnInit {
   }
 
   onCategoryChange() {
-    this.applyFilters();
+    this.currentPage = 1;
+    this.loadProducts();
   }
 
   onPriceChange() {
@@ -135,7 +176,8 @@ export class ProductsComponent implements OnInit {
   }
 
   onSearch() {
-    this.applyFilters();
+    this.currentPage = 1;
+    this.loadProducts();
   }
 
   onAddToCart(product: any) {

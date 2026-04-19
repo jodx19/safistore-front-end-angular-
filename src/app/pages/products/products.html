@@ -78,14 +78,16 @@
       <!-- Result Count Info -->
       <div class="hidden lg:flex items-center px-6 h-14 border-l border-white/10 ml-auto mr-2">
         <span class="text-[13px] text-brand-muted">
-          Showing <span class="text-white font-bold">{{ filteredProducts.length }}</span> artifacts found
+          Showing <span class="text-white font-bold">{{ filteredProducts.length }}</span> of
+          <span class="text-white font-bold">{{ totalProducts }}</span> products
+          &nbsp;&middot;&nbsp; Page <span class="text-white font-bold">{{ currentPage }}</span> / {{ totalPages }}
         </span>
       </div>
     </div>
 
     <!-- Error/Loading states -->
     @if (loading) {
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
         @for (i of [1,2,3,4,5,6,7,8]; track i) {
           <div class="aspect-[3/4] rounded-[24px] bg-white/5 animate-shimmer overflow-hidden"></div>
         }
@@ -113,8 +115,8 @@
         </button>
       </div>
     } @else {
-      <!-- Products Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
+      <!-- Products Grid: 2 cols mobile → 4 cols tablet/desktop -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 gap-y-8 md:gap-y-12">
         @for (product of filteredProducts; track product.id; let i = $index) {
           <app-product-card 
             [product]="product" 
@@ -126,16 +128,55 @@
       </div>
     }
 
-    <!-- Pagination / load more (Mock for now) -->
-    <div class="mt-20 flex justify-center">
-      <button class="group flex flex-col items-center gap-3">
-        <span class="w-[60px] h-[60px] rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white/5 transition-all outline-none">
-          <svg class="w-6 h-6 text-brand-muted group-hover:text-brand-blue transition-colors animate-float" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    <!-- ═══════════════════════════════════════════════════════════
+         Truncated Pagination
+         Shows: [Prev] [1] [2] [3] [4] [5] [...] [Last] [Next]
+    ════════════════════════════════════════════════════════════ -->
+    @if (totalPages > 1 && !loading && !error) {
+      <nav class="mt-16 flex justify-center items-center gap-2" aria-label="Product pagination">
+        <!-- Previous -->
+        <button
+          class="pagination-btn"
+          [class.pagination-btn--disabled]="currentPage === 1"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+          aria-label="Previous page"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
           </svg>
-        </span>
-        <span class="text-[11px] font-bold text-brand-muted uppercase tracking-[0.2em] group-hover:text-white transition-colors">Load more logs</span>
-      </button>
-    </div>
+        </button>
+
+        <!-- Page Numbers (truncated) -->
+        @for (page of getPaginationPages(); track $index) {
+          @if (page === '...') {
+            <span class="pagination-ellipsis">&hellip;</span>
+          } @else {
+            <button
+              class="pagination-btn"
+              [class.pagination-btn--active]="currentPage === page"
+              (click)="goToPage(+page)"
+              [attr.aria-label]="'Go to page ' + page"
+              [attr.aria-current]="currentPage === page ? 'page' : null"
+            >
+              {{ page }}
+            </button>
+          }
+        }
+
+        <!-- Next -->
+        <button
+          class="pagination-btn"
+          [class.pagination-btn--disabled]="currentPage === totalPages"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)"
+          aria-label="Next page"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </nav>
+    }
   </div>
 </div>
