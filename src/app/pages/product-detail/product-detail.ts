@@ -99,12 +99,18 @@ export class ProductDetailComponent implements OnInit {
 
   addToCart(): void {
     if (!this.product) return;
-    const success = this.cartService.addToCart(this.product, this.quantity);
-    if (success) {
-      this.notificationService.showSuccess(`${this.quantity} units added to your acquisition log.`);
-    } else {
-      this.notificationService.showError('Acquisition failed. Check local storage capacity.');
-    }
+    
+    this.cartService.addToCart(this.product, this.quantity).subscribe({
+      next: (success) => {
+        if (success) {
+          this.notificationService.showSuccess(`${this.quantity} unit(s) added to cart.`);
+        }
+      },
+      error: (error) => {
+        console.error('Add to cart failed:', error);
+        this.notificationService.showError('Failed to add item to cart.');
+      }
+    });
   }
 
   private loadReviews(): void {

@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { AuthClient, ApiResponse, AuthResponseDto, LoginRequestDto, RegisterRequestDto, RefreshTokenRequestDto } from '../api-client/api-client';
 import { TokenStorageService } from './token-storage.service';
+import { NotificationService } from './notification.service';
 
 /**
  * Backward-compat type alias so components importing `User` still compile.
@@ -32,7 +33,8 @@ export class AuthService {
   constructor(
     private authClient: AuthClient,
     private tokenStorage: TokenStorageService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {
     this.restoreSession();
   }
@@ -50,11 +52,11 @@ export class AuthService {
 
   // ─── Register ─────────────────────────────────────────────────────────────
 
-  register(dto: RegisterRequestDto): Observable<ApiResponse<AuthResponseDto>> {
+  register(dto: RegisterRequestDto): Observable<AuthResponseDto> {
     return this.authClient.register(dto).pipe(
       tap(response => {
-        if (response.success && response.data) {
-          this.handleAuthSuccess(response.data);
+        if (response.success) {
+          this.handleAuthSuccess(response);
         }
       }),
       catchError(err => throwError(() => err))
@@ -63,11 +65,11 @@ export class AuthService {
 
   // ─── Login ────────────────────────────────────────────────────────────────
 
-  login(dto: LoginRequestDto): Observable<ApiResponse<AuthResponseDto>> {
+  login(dto: LoginRequestDto): Observable<AuthResponseDto> {
     return this.authClient.login(dto).pipe(
       tap(response => {
-        if (response.success && response.data) {
-          this.handleAuthSuccess(response.data);
+        if (response.success) {
+          this.handleAuthSuccess(response);
         }
       }),
       catchError(err => throwError(() => err))
@@ -76,11 +78,11 @@ export class AuthService {
 
   // ─── Refresh Token ────────────────────────────────────────────────────────
 
-  refreshToken(dto: RefreshTokenRequestDto): Observable<ApiResponse<AuthResponseDto>> {
+  refreshToken(dto: RefreshTokenRequestDto): Observable<AuthResponseDto> {
     return this.authClient.refreshToken(dto).pipe(
       tap(response => {
-        if (response.success && response.data) {
-          this.handleAuthSuccess(response.data);
+        if (response.success) {
+          this.handleAuthSuccess(response);
         }
       }),
       catchError(err => {
@@ -100,9 +102,10 @@ export class AuthService {
   }
 
   logoutAll(): void {
-    this.authClient.logoutAllDevices().subscribe({ error: () => { } });
-    this.clearSession();
-    this.router.navigate(['/login']);
+    // TODO: Implement logout all devices backend endpoint
+    // For now, just do regular logout
+    this.notificationService.showWarning('Logout all devices feature coming soon');
+    this.logout();
   }
 
   private clearSession(): void {
@@ -171,5 +174,13 @@ export class AuthService {
   setAccessToken(token: string): void {
     const refresh = this.tokenStorage.getRefreshToken() ?? '';
     this.tokenStorage.saveTokens(token, refresh);
+  }
+
+  /**
+   * Update current user data in session
+   */
+  updateCurrentUser(user: CurrentUser): void {
+    this.tokenStorage.saveUser(user);
+    this._currentUser$.next(user);
   }
 }

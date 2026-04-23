@@ -16,7 +16,7 @@
 
 import { Injectable, InjectionToken } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
@@ -149,28 +149,43 @@ export interface UpdateCartItemDto {
 }
 
 // ---------------------------------------------------------------------------
-// Order DTOs
+// Order DTOs  (aligned with backend CreateOrderDto / OrderDto)
 // ---------------------------------------------------------------------------
 
 export interface OrderDto {
   id: number;
-  userId: string;
-  items: OrderItemDto[];
-  totalPrice: number;
-  status: string;
+  userId: number | string;          // backend sends int, kept flexible
   shippingAddress: string;
+  city: string;
+  country: string;
+  postalCode: string;
+  status: string;
   createdAt?: string;
+  totalAmount?: number;
+  total?: number;                   // alias from backend
+  totalPrice?: number;              // legacy alias for frontend templates
+  items?: OrderItemDto[];
 }
 
 export interface OrderItemDto {
-  id: number;
   productId: number;
-  productName: string;
   quantity: number;
-  unitPrice: number;
-  totalPrice: number;
+  /** Display fields – populated when backend returns full order */
+  productName?: string;
+  unitPrice?: number;
+  totalPrice?: number;
 }
 
+/** Sent to POST /api/v1/Orders */
+export interface CreateOrderDto {
+  shippingAddress: string;
+  city: string;
+  country: string;
+  postalCode: string;
+  paymentMethod?: string;
+}
+
+/** @deprecated - use CreateOrderDto */
 export interface CheckoutDto {
   shippingAddress: string;
 }
@@ -181,9 +196,10 @@ export interface CheckoutDto {
 
 export interface ReviewDto {
   id: number;
-  userId: string;
+  userId: number;
   productId: number;
   productName?: string;
+  userName?: string;
   rating: number;
   comment: string;
   createdAt?: string;
@@ -273,24 +289,36 @@ export class ApiClientBase {
 export class AuthClient extends ApiClientBase {
   constructor(http: HttpClient) { super(http); }
 
-  register(dto: RegisterRequestDto): Observable<ApiResponse<AuthResponseDto>> {
-    return this.postJson<ApiResponse<AuthResponseDto>>('/auth/register', dto);
+  register(dto: RegisterRequestDto): Observable<AuthResponseDto> {
+    return this.postJson<AuthResponseDto>('/auth/register', dto);
   }
 
-  login(dto: LoginRequestDto): Observable<ApiResponse<AuthResponseDto>> {
-    return this.postJson<ApiResponse<AuthResponseDto>>('/auth/login', dto);
+  login(dto: LoginRequestDto): Observable<AuthResponseDto> {
+    return this.postJson<AuthResponseDto>('/auth/login', dto);
   }
 
-  refreshToken(dto: RefreshTokenRequestDto): Observable<ApiResponse<AuthResponseDto>> {
-    return this.postJson<ApiResponse<AuthResponseDto>>('/auth/refresh-token', dto);
+  refreshToken(dto: RefreshTokenRequestDto): Observable<AuthResponseDto> {
+    return this.postJson<AuthResponseDto>('/auth/refresh', dto);
   }
 
   logout(): Observable<ApiResponse<null>> {
     return this.postJson<ApiResponse<null>>('/auth/logout', {});
   }
 
-  logoutAllDevices(): Observable<ApiResponse<null>> {
-    return this.postJson<ApiResponse<null>>('/auth/logout-all', {});
+  forgotPassword(email: string): Observable<ApiResponse<null>> {
+    return this.postJson<ApiResponse<null>>('/auth/forgot-password', { email });
+  }
+
+  resetPassword(dto: { email: string; token: string; newPassword: string }): Observable<ApiResponse<null>> {
+    return this.postJson<ApiResponse<null>>('/auth/reset-password', dto);
+  }
+
+  changePassword(dto: { currentPassword: string; newPassword: string }): Observable<ApiResponse<null>> {
+    return this.postJson<ApiResponse<null>>('/auth/change-password', dto);
+  }
+
+  updateProfile(dto: any): Observable<ApiResponse<UserDto>> {
+    return this.putJson<ApiResponse<UserDto>>('/auth/profile', dto);
   }
 }
 
@@ -302,8 +330,11 @@ export class AuthClient extends ApiClientBase {
 export class ProductClient extends ApiClientBase {
   constructor(http: HttpClient) { super(http); }
 
-  getAll(pageNumber = 1, pageSize = 10, search?: string): Observable<ApiResponse<PaginatedResult<ProductDto>>> {
-    return this.getJson<ApiResponse<PaginatedResult<ProductDto>>>('/products', { pageNumber, pageSize, search });
+  getAll(page = 1, pageSize = 10, search?: string, category?: string): Observable<ApiResponse<PaginatedResult<ProductDto>>> {
+    const params: any = { page, pageSize };
+    if (search) params.search = search;
+    if (category) params.category = category;
+    return this.getJson<ApiResponse<PaginatedResult<ProductDto>>>('/products', params);
   }
 
   getById(id: number): Observable<ApiResponse<ProductDto>> {
@@ -367,27 +398,31 @@ export class OrderClient extends ApiClientBase {
   constructor(http: HttpClient) { super(http); }
 
   getMyOrders(): Observable<ApiResponse<OrderDto[]>> {
-    return this.getJson<ApiResponse<OrderDto[]>>('/orders/my-orders');
+    return this.getJson<ApiResponse<OrderDto[]>>('/orders');
   }
 
   getById(id: number): Observable<ApiResponse<OrderDto>> {
     return this.getJson<ApiResponse<OrderDto>>(`/orders/${id}`);
   }
 
-  checkout(dto: CheckoutDto): Observable<ApiResponse<OrderDto>> {
-    return this.postJson<ApiResponse<OrderDto>>('/orders/checkout', dto);
+  checkout(dto: CreateOrderDto): Observable<ApiResponse<{ data: number }>> {
+    // Backend returns ApiResponse<int> (the new order ID)
+    return this.postJson<ApiResponse<{ data: number }>>('/orders', dto);
   }
 
-  cancelOrder(id: number): Observable<ApiResponse<null>> {
-    return this.putJson<ApiResponse<null>>(`/orders/${id}/cancel`, {});
+  /** Admin: list all orders via GET /api/v1/Admin/orders */
+  getAllOrders(page = 1, pageSize = 50): Observable<ApiResponse<any>> {
+    return this.getJson<ApiResponse<any>>('/admin/orders', { page, pageSize });
   }
 
-  getAllOrders(pageNumber = 1, pageSize = 10): Observable<ApiResponse<PaginatedResult<OrderDto>>> {
-    return this.getJson<ApiResponse<PaginatedResult<OrderDto>>>('/orders', { pageNumber, pageSize });
+  /** Admin: update order status via PUT /api/v1/Admin/orders/{id}/status */
+  updateStatus(orderId: number, status: string): Observable<ApiResponse<OrderDto>> {
+    return this.putJson<ApiResponse<OrderDto>>(`/admin/orders/${orderId}/status`, { status });
   }
 
-  updateStatus(id: number, status: string): Observable<ApiResponse<OrderDto>> {
-    return this.patchJson<ApiResponse<OrderDto>>(`/orders/${id}/status`, { status });
+  /** Admin: cancel order via POST /api/v1/Admin/orders/{id}/cancel */
+  cancelOrder(orderId: number): Observable<ApiResponse<OrderDto>> {
+    return this.postJson<ApiResponse<OrderDto>>(`/admin/orders/${orderId}/cancel`, {});
   }
 }
 

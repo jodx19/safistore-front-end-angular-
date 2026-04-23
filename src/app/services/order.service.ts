@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { OrderClient, ApiResponse, OrderDto, CheckoutDto } from '../api-client/api-client';
+import { OrderClient, CreateOrderDto, OrderDto } from '../api-client/api-client';
 
 export interface OrderItem {
   productId: number;
-  title: string;
-  price: number;
+  productName?: string;
+  unitPrice?: number;
   quantity: number;
-  image: string;
+  totalPrice?: number;
+  // Backward compatibility
+  title?: string;
+  price?: number;
+  image?: string;
 }
 
 export interface ShippingAddress {
@@ -26,13 +30,19 @@ export interface PaymentInfo {
   expiryDate: string;
 }
 
+/** Local alias – mirrors OrderDto but keeps templates compiling */
 export interface Order {
   id: number;
-  userId: string;
-  items: OrderItem[];
-  totalPrice: number;
+  userId: string | number;
+  items?: OrderItem[];
+  totalPrice?: number;
+  totalAmount?: number;
+  total?: number;
   status: string;
   shippingAddress: string;
+  city?: string;
+  country?: string;
+  postalCode?: string;
   createdAt?: string;
 }
 
@@ -47,9 +57,10 @@ export class OrderService {
     return throwError(() => new Error(message));
   }
 
-  createOrder(request: { shippingAddress: string }): Observable<OrderDto> {
-    return this.orderClient.checkout(request as CheckoutDto).pipe(
-      map(res => res.data),
+  /** Creates an order – returns the new order ID from the backend */
+  createOrder(request: CreateOrderDto): Observable<number> {
+    return this.orderClient.checkout(request).pipe(
+      map(res => (res as any).data),
       catchError(err => this.handleError(err))
     );
   }
@@ -64,19 +75,6 @@ export class OrderService {
   getMyOrders(): Observable<OrderDto[]> {
     return this.orderClient.getMyOrders().pipe(
       map(res => res.data ?? []),
-      catchError(err => this.handleError(err))
-    );
-  }
-
-  updateOrderStatus(id: number, status: string): Observable<OrderDto> {
-    return this.orderClient.updateStatus(id, status).pipe(
-      map(res => res.data),
-      catchError(err => this.handleError(err))
-    );
-  }
-
-  cancelOrder(id: number): Observable<ApiResponse<null>> {
-    return this.orderClient.cancelOrder(id).pipe(
       catchError(err => this.handleError(err))
     );
   }

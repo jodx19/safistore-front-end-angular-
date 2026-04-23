@@ -1,127 +1,250 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, throwError, of } from "rxjs";
+import { catchError, tap, map } from "rxjs/operators";
 import { Router } from "@angular/router";
-import { AuthService } from "../services/auth.service"; // عدّل المسار إذا كان مختلفاً
+import { AuthService } from "../services/auth.service";
+import { NotificationService } from "./notification.service";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "../../environments/environment";
 
 export interface CartItem {
   id: number;
-  name: string;
-  price: number;
-  image: string;
+  productId: number;
+  productTitle: string;
+  productImage: string;
   quantity: number;
+  priceAtAddition: number;
+  totalPrice: number;
+  /** Alias for templates using `item.image` */
+  image?: string;
+  /** Alias for templates using `item.name` */
+  name?: string;
+  /** Alias for templates using `item.price` (unit price) */
+  price?: number;
+}
+
+interface BackendCartItem {
+  id: number;
+  productId: number;
+  productTitle: string;
+  productImage: string;
+  quantity: number;
+  priceAtAddition: number;
+  totalPrice: number;
+}
+
+interface CartResponse {
+  items: BackendCartItem[];
+  total: number;
 }
 
 @Injectable({
   providedIn: "root",
 })
 export class CartService {
-  private readonly STORAGE_KEY_PREFIX = "cart_";
+  private apiUrl = `${environment.apiUrl}/cart`;
 
   private cartItems = new BehaviorSubject<CartItem[]>([]);
   public cartItems$ = this.cartItems.asObservable();
 
-  constructor(private authService: AuthService, private router: Router) {
-    // Subscribe to auth changes to load user-specific cart
+  private cartTotal = new BehaviorSubject<number>(0);
+  public cartTotal$ = this.cartTotal.asObservable();
+
+  private isLoading = new BehaviorSubject<boolean>(false);
+  public isLoading$ = this.isLoading.asObservable();
+
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private router: Router,
+    private notificationService: NotificationService
+  ) {
+    // Load cart when user logs in
     this.authService.currentUser$.subscribe((user) => {
       if (user) {
-        this.loadCartFromStorage();
+        this.loadCartFromBackend();
       } else {
         // Clear cart when user logs out
         this.cartItems.next([]);
+        this.cartTotal.next(0);
       }
     });
   }
 
   /**
-   * Get storage key for current user's cart
+   * Load cart from backend API
    */
-  private getStorageKey(): string {
-    const user = this.authService.getCurrentUser();
-    const userId = user?.id || 'guest';
-    return `${this.STORAGE_KEY_PREFIX}${userId}`;
-  }
-
-  /**
-   * Adds a product to cart with stock validation.
-   * If user is NOT logged in -> redirect to /login and do NOT add.
-   * Keeps immutability (create new array) to avoid in-place mutations.
-   * @param product - Product to add to cart
-   * @param availableStock - Available stock quantity (optional, for validation)
-   * @returns true if added successfully, false otherwise
-   */
-  addToCart(product: any, availableStock?: number): boolean {
-    // 1) prevent adding if user not logged in
-    if (!this.authService.isLoggedIn()) {
-      this.router.navigate(["/login"]);
-      return false;
-    }
-
-    // 2) normalize incoming product fields (fallbacks)
-    const productId = Number(product?.id);
-    const productName = product?.title || product?.name || "Product";
-    const productPrice = Number(product?.price) || 0;
-    const productImage = product?.imageUrl || product?.image || product?.thumbnail || "";
-
-    // 3) work on a new array (avoid mutating BehaviorSubject.value directly)
-    const items = [...this.cartItems.value];
-    const idx = items.findIndex((i) => i.id === productId);
-
-    if (idx !== -1) {
-      // Check stock before increasing quantity
-      const newQuantity = items[idx].quantity + 1;
-      if (availableStock !== undefined && newQuantity > availableStock) {
-        return false; // Stock limit reached
-      }
-      // increase quantity (cap sanity at 99 or available stock)
-      const maxQuantity = availableStock !== undefined ? Math.min(99, availableStock) : 99;
-      const updatedItem = { ...items[idx], quantity: Math.min(newQuantity, maxQuantity) };
-      items[idx] = updatedItem;
-    } else {
-      // Check stock for new item
-      if (availableStock !== undefined && availableStock < 1) {
-        return false; // Out of stock
-      }
-      const cartItem: CartItem = {
-        id: productId,
-        name: productName,
-        price: productPrice,
-        image: productImage,
-        quantity: 1,
-      };
-      items.push(cartItem);
-    }
-
-    this.cartItems.next(items);
-    this.saveCartToStorage();
-    return true;
-  }
-
-  removeFromCart(itemId: number): void {
-    const items = this.cartItems.value.filter((item) => item.id !== itemId);
-    this.cartItems.next(items);
-    this.saveCartToStorage();
-  }
-
-  updateQuantity(itemId: number, quantity: number): void {
-    if (quantity <= 0) {
-      // remove item if set to 0
-      this.removeFromCart(itemId);
+  private loadCartFromBackend(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.cartItems.next([]);
+      this.cartTotal.next(0);
       return;
     }
 
-    const items = [...this.cartItems.value];
-    const idx = items.findIndex((i) => i.id === itemId);
-    if (idx !== -1) {
-      const updated = { ...items[idx], quantity: Math.floor(quantity) };
-      items[idx] = updated;
-      this.cartItems.next(items);
-      this.saveCartToStorage();
-    }
+    this.isLoading.next(true);
+    this.http.get<{ success: boolean; data: CartResponse }>(this.apiUrl)
+      .pipe(
+        catchError((error) => {
+          console.error('Failed to load cart:', error);
+          this.notificationService.showError('⚠️ Failed to load cart. Please refresh the page.');
+          return of({ success: false, data: { items: [], total: 0 } });
+        })
+      )
+      .subscribe((response) => {
+        if (response?.success && response.data?.items) {
+          const mappedItems: CartItem[] = response.data.items.map(item => ({
+            id: item.id,
+            productId: item.productId,
+            productTitle: item.productTitle,
+            productImage: item.productImage,
+            quantity: item.quantity,
+            priceAtAddition: item.priceAtAddition,
+            totalPrice: item.totalPrice,
+            image: item.productImage,
+            name: item.productTitle,
+            price: item.priceAtAddition
+          }));
+          this.cartItems.next(mappedItems);
+          this.cartTotal.next(response.data.total);
+        } else {
+          this.cartItems.next([]);
+          this.cartTotal.next(0);
+        }
+        this.isLoading.next(false);
+      });
   }
 
+  /**
+   * Adds a product to cart with backend API call.
+   * If user is NOT logged in -> redirect to /login and do NOT add.
+   * @param product - Product to add to cart
+   * @param quantity - Quantity to add (default: 1)
+   * @returns Observable<boolean> - true if added successfully, false otherwise
+   */
+  addToCart(product: any, quantity: number = 1): Observable<boolean> {
+    // 1) Prevent adding if user not logged in
+    if (!this.authService.isLoggedIn()) {
+      this.notificationService.showWarning('🔐 Please log in to add items to cart.');
+      this.router.navigate(["/login"]);
+      return of(false);
+    }
+
+    const productId = Number(product?.id);
+    if (!productId || productId <= 0) {
+      this.notificationService.showError('❌ Invalid product.');
+      return of(false);
+    }
+
+    this.isLoading.next(true);
+
+    const payload = {
+      productId: productId,
+      quantity: quantity
+    };
+
+    return this.http.post<{ success: boolean; data: BackendCartItem }>(
+      `${this.apiUrl}/items`,
+      payload
+    ).pipe(
+      tap((response) => {
+        if (response?.success && response.data) {
+          // Reload cart from backend to get updated state
+          this.loadCartFromBackend();
+          this.notificationService.showSuccess(
+            `✅ ${product?.title || product?.name || 'Product'} added to cart`
+          );
+        }
+        this.isLoading.next(false);
+      }),
+      map((response) => response?.success ?? false),
+      catchError((error) => {
+        console.error('Failed to add to cart:', error);
+        const message = error?.error?.message || error?.error?.error?.message || 'Failed to add item to cart';
+        this.notificationService.showError(`❌ ${message}`);
+        this.isLoading.next(false);
+        return of(false);
+      })
+    );
+  }
+
+  /**
+   * Remove item from cart via backend API
+   */
+  removeFromCart(cartItemId: number): void {
+    this.isLoading.next(true);
+    
+    this.http.delete<{ success: boolean }>(`${this.apiUrl}/items/${cartItemId}`)
+      .pipe(
+        catchError((error) => {
+          console.error('Failed to remove item:', error);
+          this.notificationService.showError('❌ Failed to remove item from cart.');
+          this.isLoading.next(false);
+          return of({ success: false });
+        })
+      )
+      .subscribe((response) => {
+        if (response?.success) {
+          // Reload cart from backend
+          this.loadCartFromBackend();
+          this.notificationService.showSuccess('✅ Item removed from cart');
+        }
+        this.isLoading.next(false);
+      });
+  }
+
+  /**
+   * Update item quantity via backend API
+   */
+  updateQuantity(cartItemId: number, quantity: number): void {
+    if (quantity <= 0) {
+      this.removeFromCart(cartItemId);
+      return;
+    }
+
+    this.isLoading.next(true);
+    
+    this.http.put<{ success: boolean; data: BackendCartItem }>(
+      `${this.apiUrl}/items/${cartItemId}`,
+      { quantity: Math.floor(quantity) }
+    ).pipe(
+      catchError((error) => {
+        console.error('Failed to update quantity:', error);
+        const message = error?.error?.message || error?.error?.error?.message || 'Failed to update quantity';
+        this.notificationService.showError(`❌ ${message}`);
+        this.isLoading.next(false);
+        return of({ success: false, data: null });
+      })
+    ).subscribe((response) => {
+      if (response?.success) {
+        this.loadCartFromBackend();
+      }
+      this.isLoading.next(false);
+    });
+  }
+
+  /**
+   * Clear cart via backend API
+   */
   clearCart(): void {
-    this.cartItems.next([]);
-    this.saveCartToStorage();
+    this.isLoading.next(true);
+    
+    this.http.delete<{ success: boolean }>(this.apiUrl)
+      .pipe(
+        catchError((error) => {
+          console.error('Failed to clear cart:', error);
+          this.notificationService.showError('❌ Failed to clear cart.');
+          this.isLoading.next(false);
+          return of({ success: false });
+        })
+      )
+      .subscribe((response) => {
+        if (response?.success) {
+          this.cartItems.next([]);
+          this.cartTotal.next(0);
+          this.notificationService.showSuccess('✅ Cart cleared');
+        }
+        this.isLoading.next(false);
+      });
   }
 
   // ---------- Helpers / selectors ----------
@@ -135,53 +258,10 @@ export class CartService {
   }
 
   getCartTotal(): { subtotal: number; shipping: number; tax: number; total: number } {
-    const subtotal = this.cartItems.value.reduce((sum, it) => sum + it.price * it.quantity, 0);
-    const tax = +(subtotal * 0.10).toFixed(2); // 10% VAT (example)
+    const subtotal = this.cartTotal.value;
+    const tax = +(subtotal * 0.10).toFixed(2); // 10% VAT
     const shipping = subtotal > 0 ? 10 : 0;
     const total = +(subtotal + tax + shipping).toFixed(2);
     return { subtotal: +subtotal.toFixed(2), shipping, tax, total };
-  }
-
-  // ---------- Storage persistence ----------
-
-  private saveCartToStorage(): void {
-    try {
-      const storageKey = this.getStorageKey();
-      localStorage.setItem(storageKey, JSON.stringify(this.cartItems.value));
-    } catch {
-      // Storage unavailable — cart will not persist this session
-    }
-  }
-
-  private loadCartFromStorage(): void {
-    try {
-      const storageKey = this.getStorageKey();
-      const saved = localStorage.getItem(storageKey);
-      if (!saved) {
-        this.cartItems.next([]);
-        return;
-      }
-
-      const parsed = JSON.parse(saved);
-      if (!Array.isArray(parsed)) {
-        this.cartItems.next([]);
-        return;
-      }
-
-      // basic validation of each item
-      const items: CartItem[] = parsed
-        .map((it: any) => ({
-          id: Number(it.id) || 0,
-          name: it.name || "Product",
-          price: Number(it.price) || 0,
-          image: it.image || "",
-          quantity: Math.max(1, Math.floor(it.quantity || 1)),
-        }))
-        .filter((it) => it.id > 0);
-
-      this.cartItems.next(items);
-    } catch {
-      this.cartItems.next([]);
-    }
   }
 }

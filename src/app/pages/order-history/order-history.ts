@@ -72,7 +72,7 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
     }
 
     const customerId = user.id?.toString() || user.email;
-    this.orderService.getOrdersByCustomer(customerId)
+    this.orderService.getMyOrders()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (orders) => {
@@ -103,7 +103,7 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
   /**
    * View order details
    */
-  viewOrder(orderId?: string): void {
+  viewOrder(orderId?: number): void {
     if (orderId) {
       this.router.navigate(['/track'], { queryParams: { orderId } });
     }

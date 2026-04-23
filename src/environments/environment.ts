@@ -5,7 +5,7 @@ export const environment = {
   production: false,
 
   // Main API Base URL - points to .NET Web API
-  apiUrl: 'https://safistore.runasp.net/api/v1',
+  apiUrl: 'http://localhost:5084/api/v1',
 
   // Specific endpoint paths (used by Angular services)
   endpoints: {

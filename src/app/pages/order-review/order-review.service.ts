@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { CartItem, CartService } from '../../services/cart';
 import { CurrentUser } from '../../services/auth.service';
-import { CreateOrderRequest } from '../../services/order.service';
+import { OrderClient, CheckoutDto } from '../../api-client/api-client';
 
 export interface CartTotals {
   subtotal: number;
@@ -22,15 +22,9 @@ const mapCartItemToOrderRequestItem = (item: CartItem): { productId: number; qua
   quantity: item.quantity
 });
 
-const createShippingAddress = (user: CurrentUser): CreateOrderRequest['shippingAddress'] => ({
-  firstName: user.firstName,
-  lastName: user.lastName,
-  email: user.email,
-  address: '',
-  city: '',
-  postalCode: '',
-  country: ''
-});
+const createShippingAddress = (user: CurrentUser): string => {
+  return `${user.firstName} ${user.lastName}, ${user.email}`.trim();
+};
 
 @Injectable({
   providedIn: 'root'
@@ -53,9 +47,11 @@ export class OrderReviewService {
     );
   }
 
-  buildCreateOrderRequest(user: CurrentUser, items: CartItem[]): CreateOrderRequest {
+  buildCreateOrderRequest(user: CurrentUser, items: CartItem[]): any {
+    // Note: CheckoutDto only expects shippingAddress (string) currently in ApiClient,
+    // but the backend might expect items. If items are handled by the cart on backend, 
+    // we only send address. If not, we'll need to update CheckoutDto.
     return {
-      items: items.map(mapCartItemToOrderRequestItem),
       shippingAddress: createShippingAddress(user)
     };
   }

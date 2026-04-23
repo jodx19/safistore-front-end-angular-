@@ -143,7 +143,7 @@ export class WishlistComponent implements OnInit, OnDestroy {
       id: product.id,
       title: product.title,
       price: product.price,
-      image: product.image,
+      image: product.imageUrl || product.image || '',
       addedAt: Date.now()
     };
 
@@ -185,15 +185,25 @@ export class WishlistComponent implements OnInit, OnDestroy {
       price: item.price,
       description: '',
       image: item.image,
+      imageUrl: item.image,
       rating: 0,
       stock: 100, // Default stock
-      category: ''
+      category: '',
+      categoryName: '',
+      categoryId: 0
     };
 
-    const success = this.cartService.addToCart(product);
-    if (success) {
-      this.notificationService.showSuccess(`${item.title} added to cart!`);
-    }
+    this.cartService.addToCart(product).subscribe({
+      next: (success) => {
+        if (success) {
+          this.notificationService.showSuccess(`${item.title} added to cart!`);
+        }
+      },
+      error: (error) => {
+        console.error('Failed to add to cart:', error);
+        this.notificationService.showError('Failed to add item to cart');
+      }
+    });
   }
 
   /**

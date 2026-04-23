@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "https://safistore.runasp.net/swagger/v1/swagger.json",
+      "url": "e:/ITI/MY-Projects/SafiiStore Front_end/swagger.json",
       "output": null,
       "newLineBehavior": "Auto"
     }
@@ -27,7 +27,7 @@
       "generateDtoTypes": true,
       "exportTypes": true,
       "extensionCode": null,
-      "outputFilePath": "src/app/api-client/api-client.ts",
+      "outputFilePath": "e:/ITI/MY-Projects/SafiiStore Front_end/src/app/api-client/api-client.ts",
       "clientBaseClass": null,
       "configurationClass": null,
       "useExtensionInterface": false,

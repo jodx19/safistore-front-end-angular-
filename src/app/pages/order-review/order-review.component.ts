@@ -121,7 +121,7 @@ export class OrderReviewComponent implements OnInit, OnDestroy {
         next: (order) => {
           this.loading = false;
           this.cartService.clearCart();
-          this.notificationService.showSuccess(`Order placed successfully! Order #${order.id}`);
+          this.notificationService.showSuccess(`Order placed successfully! Order #${order}`);
           setTimeout(() => {
             this.router.navigate(['/orders']);
           }, 1500);

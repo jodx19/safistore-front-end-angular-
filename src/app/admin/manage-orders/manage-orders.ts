@@ -3,7 +3,7 @@ import { CommonModule } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 import { NotificationService } from "../../services/notification.service";
-import { OrderClient, OrderDto } from "../../api-client/api-client";
+import { OrderClient, OrderDto, ApiResponse, PaginatedResult } from "../../api-client/api-client";
 import { Subject, takeUntil } from "rxjs";
 
 @Component({
@@ -44,8 +44,9 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
     this.orderClient.getAllOrders(1, 50)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (resp) => {
-          this.orders = resp.data.items;
+        next: (resp: ApiResponse<any>) => {
+          const payload = resp.data;
+          this.orders = payload?.orders ?? payload?.products ?? [];
           this.loading = false;
         },
         error: () => {

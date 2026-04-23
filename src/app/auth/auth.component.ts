@@ -151,8 +151,12 @@ export class AuthComponent implements OnInit {
     this.isRegLoading = true;
     this.registerError = '';
 
+    const [firstName, ...rest] = String(this.registerForm.value.fullName || '').trim().split(/\s+/);
+    const lastName = rest.join(' ') || '-';
+
     const dto: RegisterRequestDto = {
-      fullName: this.registerForm.value.fullName.trim(),
+      firstName: firstName || '-',
+      lastName,
       email: this.registerForm.value.email,
       password: this.registerForm.value.password,
       confirmPassword: this.registerForm.value.confirmPassword

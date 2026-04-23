@@ -53,7 +53,8 @@ export class RegisterComponent {
       email: this.email,
       password: this.password,
       confirmPassword: this.confirmPassword,
-      fullName: `${this.firstName} ${this.lastName}`.trim()
+      firstName: this.firstName,
+      lastName: this.lastName
     }).subscribe({
       next: (response) => {
         this.loading = false;

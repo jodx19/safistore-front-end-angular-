@@ -6,7 +6,7 @@ import { ReviewClient, ReviewDto, AddReviewDto, UpdateReviewDto } from '../api-c
 export interface Review {
   id: number;
   productId: number;
-  userId: string;
+  userId: number;
   userName?: string;
   rating: number;
   comment: string;
@@ -33,14 +33,24 @@ export class ReviewService {
 
   addReview(dto: AddReviewDto): Observable<ReviewDto> {
     return this.reviewClient.add(dto).pipe(
-      map(res => res.data),
+      map(res => {
+        if (res.data == null) {
+          throw new Error(res.message || 'Failed to add review');
+        }
+        return res.data;
+      }),
       catchError(err => this.handleError(err))
     );
   }
 
   updateReview(id: number, dto: UpdateReviewDto): Observable<ReviewDto> {
     return this.reviewClient.update(id, dto).pipe(
-      map(res => res.data),
+      map(res => {
+        if (res.data == null) {
+          throw new Error(res.message || 'Failed to update review');
+        }
+        return res.data;
+      }),
       catchError(err => this.handleError(err))
     );
   }
@@ -56,6 +66,23 @@ export class ReviewService {
     return this.reviewClient.getProductSummary(productId).pipe(
       map(res => res.data?.averageRating ?? 0),
       catchError(() => of(0))
+    );
+  }
+
+  getProductSummary(productId: number): Observable<{ averageRating: number; totalReviews: number }> {
+    return this.reviewClient.getProductSummary(productId).pipe(
+      map(res => ({
+        averageRating: res.data?.averageRating ?? 0,
+        totalReviews: res.data?.totalReviews ?? 0
+      })),
+      catchError(() => of({ averageRating: 0, totalReviews: 0 }))
+    );
+  }
+
+  getMyReviews(): Observable<ReviewDto[]> {
+    return this.reviewClient.getMyReviews().pipe(
+      map(res => res.data ?? []),
+      catchError(err => this.handleError(err))
     );
   }
 }

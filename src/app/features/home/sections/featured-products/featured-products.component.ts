@@ -44,8 +44,9 @@ export class FeaturedProductsComponent {
   products: Product[] = [
     {
       id: 1,
-      name: 'Sonic Master Pro',
-      category: 'Audio',
+      title: 'Sonic Master Pro',
+      categoryName: 'Audio',
+      categoryId: 1,
       price: 299,
       originalPrice: 399,
       discount: 25,
@@ -55,8 +56,9 @@ export class FeaturedProductsComponent {
     },
     {
       id: 2,
-      name: 'Titan Spectre X',
-      category: 'Laptops',
+      title: 'Titan Spectre X',
+      categoryName: 'Laptops',
+      categoryId: 2,
       price: 1899,
       rating: 4.9,
       reviews: 86,
@@ -64,8 +66,9 @@ export class FeaturedProductsComponent {
     },
     {
       id: 3,
-      name: 'Elite Series Catalyst',
-      category: 'Wearables',
+      title: 'Elite Series Catalyst',
+      categoryName: 'Wearables',
+      categoryId: 3,
       price: 399,
       originalPrice: 499,
       discount: 20,
@@ -75,8 +78,9 @@ export class FeaturedProductsComponent {
     },
     {
       id: 4,
-      name: 'Neural Key 75',
-      category: 'Gaming',
+      title: 'Neural Key 75',
+      categoryName: 'Gaming',
+      categoryId: 4,
       price: 159,
       rating: 4.7,
       reviews: 342,

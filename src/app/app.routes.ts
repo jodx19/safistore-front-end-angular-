@@ -29,23 +29,35 @@ export const routes: Routes = [
     redirectTo: 'auth/register',
     pathMatch: 'full'
   },
+  {
+    path: 'forgot-password',
+    loadComponent: () => import('./pages/forgot-password/forgot-password').then(m => m.ForgotPasswordComponent)
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./pages/reset-password/reset-password').then(m => m.ResetPasswordComponent)
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./pages/profile/profile').then(m => m.ProfileComponent),
+    canActivate: [AuthGuard]
+  },
   
-  // Protected Routes - Require authentication
+  // Public Routes - No authentication required
   {
     path: 'search',
-    loadComponent: () => import('./pages/search-results/search-results').then(m => m.SearchResultsComponent),
-    canActivate: [AuthGuard]
+    loadComponent: () => import('./pages/search-results/search-results').then(m => m.SearchResultsComponent)
   },
   {
     path: 'products',
-    loadComponent: () => import('./pages/products/products').then(m => m.ProductsComponent),
-    canActivate: [AuthGuard]
+    loadComponent: () => import('./pages/products/products').then(m => m.ProductsComponent)
   },
   {
     path: 'products/:id',
-    loadComponent: () => import('./pages/product-detail/product-detail').then(m => m.ProductDetailComponent),
-    canActivate: [AuthGuard]
+    loadComponent: () => import('./pages/product-detail/product-detail').then(m => m.ProductDetailComponent)
   },
+  
+  // Protected Routes - Require authentication
   {
     path: 'cart',
     loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent),
@@ -97,5 +109,11 @@ export const routes: Routes = [
     path: 'admin/admins',
     loadComponent: () => import('./admin/manage-admins/manage-admins').then(m => m.ManageAdminsComponent),
     canActivate: [AdminGuard]
+  },
+  
+  // 404 Not Found - Wildcard route (must be last)
+  {
+    path: '**',
+    loadComponent: () => import('./pages/not-found/not-found').then(m => m.NotFoundComponent)
   }
 ];

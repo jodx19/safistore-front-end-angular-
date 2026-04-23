@@ -20,7 +20,7 @@ import { ApiResponse, AuthResponseDto } from '../api-client/api-client';
 let isRefreshing = false;
 const refreshDone$ = new BehaviorSubject<string | null>(null);
 
-const PUBLIC_ENDPOINTS = ['/auth/login', '/auth/register', '/auth/refresh-token'];
+const PUBLIC_ENDPOINTS = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/forgot-password', '/auth/reset-password'];
 
 function isApiUrl(url: string): boolean {
   return url.startsWith(environment.apiUrl);
@@ -75,7 +75,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       refreshDone$.next(null);
 
       return http
-        .post<ApiResponse<AuthResponseDto>>(`${environment.apiUrl}/auth/refresh-token`, {
+        .post<ApiResponse<AuthResponseDto>>(`${environment.apiUrl}/auth/refresh`, {
           accessToken: currentAccess,
           refreshToken: refreshToken
         })

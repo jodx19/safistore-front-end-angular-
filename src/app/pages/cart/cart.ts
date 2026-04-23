@@ -2,17 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CartService } from '../../services/cart';
+import { CartService, CartItem } from '../../services/cart';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
 
 @Component({
   selector: 'app-cart',
@@ -47,12 +39,12 @@ export class CartComponent implements OnInit {
   }
 
   calculateTotals() {
-    this.subtotal = this.cartItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    this.tax = +(this.subtotal * 0.1).toFixed(2);
-    this.total = +(this.subtotal + this.tax + this.shipping).toFixed(2);
+    // Use the backend-calculated total from cartTotal$
+    const totals = this.cartService.getCartTotal();
+    this.subtotal = totals.subtotal;
+    this.tax = totals.tax;
+    this.shipping = totals.shipping;
+    this.total = totals.total;
   }
 
   updateQuantity(itemId: number, quantity: number) {
