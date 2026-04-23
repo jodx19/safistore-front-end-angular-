@@ -35,7 +35,7 @@
 
         <div class="order-items-summary">
           <p class="items-count">
-            {{ order.items.length }} {{ order.items.length === 1 ? 'item' : 'items' }}
+            {{ order.items?.length || 0 }} {{ (order.items?.length || 0) === 1 ? 'item' : 'items' }}
           </p>
           <p class="order-total">Total: ${{ order.totalPrice | number: '1.2-2' }}</p>
         </div>

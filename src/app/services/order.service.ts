@@ -34,7 +34,7 @@ export interface PaymentInfo {
 export interface Order {
   id: number;
   userId: string | number;
-  items?: OrderItem[];
+  items: OrderItem[];
   totalPrice?: number;
   totalAmount?: number;
   total?: number;
@@ -65,16 +65,22 @@ export class OrderService {
     );
   }
 
-  getOrderById(id: number): Observable<OrderDto> {
+  getOrderById(id: number): Observable<Order> {
     return this.orderClient.getById(id).pipe(
-      map(res => res.data),
+      map(res => ({
+        ...res.data,
+        items: res.data.items ?? []
+      } as Order)),
       catchError(err => this.handleError(err))
     );
   }
 
-  getMyOrders(): Observable<OrderDto[]> {
+  getMyOrders(): Observable<Order[]> {
     return this.orderClient.getMyOrders().pipe(
-      map(res => res.data ?? []),
+      map(res => (res.data ?? []).map(order => ({
+        ...order,
+        items: order.items ?? []
+      } as Order))),
       catchError(err => this.handleError(err))
     );
   }
