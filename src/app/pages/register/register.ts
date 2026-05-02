@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -60,7 +61,20 @@ export class RegisterComponent {
         this.loading = false;
         if (response.success) {
           this.successMessage = 'Registration successful! Redirecting...';
-          setTimeout(() => this.router.navigate(['/products']), 1500);
+          
+          Swal.fire({
+            title: `Welcome, ${this.firstName}!`,
+            text: 'Your account has been successfully created.',
+            icon: 'success',
+            background: '#0B132B',
+            color: '#fff',
+            confirmButtonColor: '#4A6CF7',
+            timer: 2000,
+            showConfirmButton: false,
+            backdrop: `rgba(10, 22, 40, 0.85)`
+          }).then(() => {
+            this.router.navigate(['/']);
+          });
         } else {
           this.error = response.message ?? 'Registration failed.';
         }
