@@ -195,8 +195,8 @@ export class ProductsComponent implements OnInit {
   }
 
   onAddToWishlist(product: Product) {
-    // Wishlist functionality will be handled by the ProductCard component
-    this.notificationService.showSuccess(`${product.name} added to wishlist!`);
+    // Wishlist functionality is handled internally by the ProductCard component
+    // which calls WishlistService and shows its own notification.
   }
 
   onBrandToggle(brand: string) {
