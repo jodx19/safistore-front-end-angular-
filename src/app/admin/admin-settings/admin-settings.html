@@ -1,0 +1,236 @@
+<div class="min-h-screen bg-[#050B18] flex">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="flex-1 ml-[260px] flex flex-col min-h-screen">
+
+    <!-- Top Bar -->
+    <header class="sticky top-0 z-40 flex items-center px-8 py-5 bg-[#050B18]/90 backdrop-blur-xl border-b border-[rgba(255,255,255,0.06)]">
+      <div>
+        <h1 class="text-[22px] font-display font-bold text-white">Settings</h1>
+        <p class="text-[#94A3B8] text-[13px]">Configure your store preferences</p>
+      </div>
+    </header>
+
+    <div class="flex-1 p-8 flex gap-8">
+
+      <!-- Tabs Sidebar -->
+      <div class="w-48 flex-shrink-0">
+        <div class="bg-[rgba(13,31,60,0.8)] border border-[rgba(255,255,255,0.07)] rounded-2xl p-2 space-y-1 sticky top-28">
+          @for (tab of tabs; track tab.id) {
+            <button (click)="activeTab = tab.id"
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium transition-all text-left"
+                    [class]="activeTab === tab.id ? 'bg-[rgba(108,79,246,0.15)] border border-[rgba(108,79,246,0.3)] text-white' : 'text-[#94A3B8] hover:text-white hover:bg-white/5'">
+              <span>{{ tab.icon }}</span>
+              {{ tab.label }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="flex-1">
+
+        <!-- ── GENERAL ── -->
+        @if (activeTab === 'general') {
+          <div class="bg-[rgba(13,31,60,0.8)] border border-[rgba(255,255,255,0.07)] rounded-2xl p-8 space-y-6">
+            <h2 class="text-white font-bold text-[18px] mb-6 pb-4 border-b border-white/[0.07]">General Settings</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              @for (field of [
+                {label:'Store Name', key:'storeName', type:'text', placeholder:'Your store name'},
+                {label:'Store Email', key:'storeEmail', type:'email', placeholder:'store@example.com'},
+                {label:'Currency', key:'currency', type:'text', placeholder:'USD'},
+                {label:'Tax Rate (%)', key:'taxRate', type:'number', placeholder:'10'}
+              ]; track field.key) {
+                <div>
+                  <label class="block text-[#94A3B8] text-[12px] uppercase tracking-wider font-bold mb-2">{{ field.label }}</label>
+                  <input [type]="field.type"
+                         [(ngModel)]="general[field.key as keyof typeof general]"
+                         [placeholder]="field.placeholder"
+                         class="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white text-[14px] placeholder-[#94A3B8]/60 outline-none focus:border-[#6C4FF6]/50 focus:bg-white/10 transition-all"/>
+                </div>
+              }
+
+              <div>
+                <label class="block text-[#94A3B8] text-[12px] uppercase tracking-wider font-bold mb-2">Timezone</label>
+                <select [(ngModel)]="general.timezone"
+                        class="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white text-[14px] outline-none focus:border-[#6C4FF6]/50 transition-all appearance-none cursor-pointer">
+                  <option value="America/New_York">America/New_York (EST)</option>
+                  <option value="America/Los_Angeles">America/Los_Angeles (PST)</option>
+                  <option value="Europe/London">Europe/London (GMT)</option>
+                  <option value="Europe/Berlin">Europe/Berlin (CET)</option>
+                  <option value="Asia/Dubai">Asia/Dubai (GST)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[#94A3B8] text-[12px] uppercase tracking-wider font-bold mb-2">Language</label>
+                <select [(ngModel)]="general.language"
+                        class="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white text-[14px] outline-none focus:border-[#6C4FF6]/50 transition-all appearance-none cursor-pointer">
+                  <option value="en">English</option>
+                  <option value="ar">Arabic (عربي)</option>
+                  <option value="fr">French (Français)</option>
+                  <option value="de">German (Deutsch)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="pt-4">
+              <button (click)="saveGeneral()" [disabled]="isSaving"
+                      class="h-12 px-8 bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] rounded-xl text-white font-bold text-[14px] hover:shadow-[0_8px_24px_rgba(108,79,246,0.5)] hover:-translate-y-0.5 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-2">
+                @if (isSaving) {
+                  <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                  Saving...
+                } @else {
+                  Save Changes
+                }
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- ── SHIPPING ── -->
+        @if (activeTab === 'shipping') {
+          <div class="bg-[rgba(13,31,60,0.8)] border border-[rgba(255,255,255,0.07)] rounded-2xl p-8">
+            <h2 class="text-white font-bold text-[18px] mb-6 pb-4 border-b border-white/[0.07]">Shipping Zones & Rates</h2>
+            <div class="space-y-4">
+              @for (zone of shippingZones; track zone.id) {
+                <div class="flex items-center gap-6 p-5 bg-white/[0.03] border border-white/[0.06] rounded-xl">
+                  <div class="flex-1">
+                    <p class="text-white font-semibold text-[15px]">{{ zone.name }}</p>
+                    <p class="text-[#94A3B8] text-[13px]">{{ zone.days }} business days · Min order: ${{ zone.minOrder }}</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-white font-bold text-[18px]">{{ zone.rate === 0 ? 'FREE' : '$' + zone.rate }}</p>
+                  </div>
+                  <button class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[#94A3B8] hover:text-white text-[13px] font-medium transition-all">Edit</button>
+                </div>
+              }
+            </div>
+            <button class="mt-6 flex items-center gap-2 h-11 px-6 rounded-xl border border-dashed border-[#6C4FF6]/40 text-[#6C4FF6] hover:bg-[rgba(108,79,246,0.08)] text-[14px] font-medium transition-all">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Add Shipping Zone
+            </button>
+          </div>
+        }
+
+        <!-- ── PAYMENT ── -->
+        @if (activeTab === 'payment') {
+          <div class="bg-[rgba(13,31,60,0.8)] border border-[rgba(255,255,255,0.07)] rounded-2xl p-8">
+            <h2 class="text-white font-bold text-[18px] mb-6 pb-4 border-b border-white/[0.07]">Payment Gateways</h2>
+            <div class="space-y-4">
+              @for (gw of paymentGateways; track gw.id) {
+                <div class="flex items-center gap-5 p-5 bg-white/[0.03] border rounded-xl transition-all"
+                     [class]="gw.enabled ? 'border-[rgba(108,79,246,0.25)]' : 'border-white/[0.06]'">
+                  <span class="text-3xl">{{ gw.icon }}</span>
+                  <div class="flex-1">
+                    <p class="text-white font-bold text-[15px]">{{ gw.name }}</p>
+                    <p class="text-[#94A3B8] text-[13px]">{{ gw.description }}</p>
+                  </div>
+                  <!-- Toggle -->
+                  <button (click)="gw.enabled = !gw.enabled"
+                          class="relative w-12 h-6 rounded-full transition-all duration-300"
+                          [class]="gw.enabled ? 'bg-[#6C4FF6]' : 'bg-white/10'">
+                    <span class="absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300"
+                          [class]="gw.enabled ? 'left-7' : 'left-1'"></span>
+                  </button>
+                  <span class="text-[12px] font-medium w-16 text-right"
+                        [class]="gw.enabled ? 'text-[#10B981]' : 'text-[#94A3B8]'">
+                    {{ gw.enabled ? 'Active' : 'Inactive' }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- ── NOTIFICATIONS ── -->
+        @if (activeTab === 'notifications') {
+          <div class="bg-[rgba(13,31,60,0.8)] border border-[rgba(255,255,255,0.07)] rounded-2xl p-8">
+            <h2 class="text-white font-bold text-[18px] mb-6 pb-4 border-b border-white/[0.07]">Email Notification Triggers</h2>
+            <div class="space-y-3">
+              @for (item of [
+                {key:'newOrder', label:'New order placed', desc:'Notify when a customer places an order'},
+                {key:'orderShipped', label:'Order shipped', desc:'Notify when an order is dispatched'},
+                {key:'lowStock', label:'Low stock alert', desc:'Notify when product stock falls below 5'},
+                {key:'newCustomer', label:'New customer registration', desc:'Notify on each new signup'},
+                {key:'abandonedCart', label:'Abandoned cart', desc:'Notify when cart is abandoned for 24h'},
+                {key:'reviewPosted', label:'New review posted', desc:'Notify on each new product review'},
+                {key:'refundRequest', label:'Refund request', desc:'Notify when a customer requests refund'},
+                {key:'weeklyReport', label:'Weekly summary report', desc:'Send weekly analytics summary'}
+              ]; track item.key) {
+                <div class="flex items-center gap-5 p-4 bg-white/[0.03] border border-white/[0.05] rounded-xl">
+                  <div class="flex-1">
+                    <p class="text-white font-medium text-[14px]">{{ item.label }}</p>
+                    <p class="text-[#94A3B8] text-[12px]">{{ item.desc }}</p>
+                  </div>
+                  <button (click)="notifications[item.key as keyof typeof notifications] = !notifications[item.key as keyof typeof notifications]"
+                          class="relative w-12 h-6 rounded-full transition-all duration-300"
+                          [class]="notifications[item.key as keyof typeof notifications] ? 'bg-[#6C4FF6]' : 'bg-white/10'">
+                    <span class="absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300"
+                          [class]="notifications[item.key as keyof typeof notifications] ? 'left-7' : 'left-1'"></span>
+                  </button>
+                </div>
+              }
+            </div>
+            <div class="pt-6">
+              <button (click)="saveGeneral()" class="h-12 px-8 bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] rounded-xl text-white font-bold text-[14px] hover:shadow-[0_8px_24px_rgba(108,79,246,0.5)] hover:-translate-y-0.5 transition-all">
+                Save Preferences
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- ── TEAM ── -->
+        @if (activeTab === 'team') {
+          <div class="space-y-6">
+            <!-- Current Team -->
+            <div class="bg-[rgba(13,31,60,0.8)] border border-[rgba(255,255,255,0.07)] rounded-2xl p-8">
+              <h2 class="text-white font-bold text-[18px] mb-6 pb-4 border-b border-white/[0.07]">Team Members</h2>
+              <div class="space-y-4">
+                @for (member of teamMembers; track member.email) {
+                  <div class="flex items-center gap-4 p-4 bg-white/[0.03] border border-white/[0.05] rounded-xl">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6C4FF6] to-[#3B82F6] flex items-center justify-center text-white text-[13px] font-black flex-shrink-0">
+                      {{ member.avatar }}
+                    </div>
+                    <div class="flex-1">
+                      <p class="text-white font-semibold text-[14px]">{{ member.name }}</p>
+                      <p class="text-[#94A3B8] text-[12px]">{{ member.email }}</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-[rgba(108,79,246,0.12)] text-[#6C4FF6] border border-[rgba(108,79,246,0.25)]">
+                      {{ member.role }}
+                    </span>
+                    <button class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[#94A3B8] hover:text-[#EF4444] hover:border-[rgba(239,68,68,0.3)] text-[12px] font-medium transition-all">Remove</button>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Invite New Admin -->
+            <div class="bg-[rgba(13,31,60,0.8)] border border-[rgba(255,255,255,0.07)] rounded-2xl p-8">
+              <h2 class="text-white font-bold text-[18px] mb-6 pb-4 border-b border-white/[0.07]">Invite Team Member</h2>
+              <div class="flex gap-4">
+                <input type="email" [(ngModel)]="inviteEmail" placeholder="colleague@safistore.com"
+                       class="flex-1 h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white text-[14px] placeholder-[#94A3B8]/60 outline-none focus:border-[#6C4FF6]/50 focus:bg-white/10 transition-all"/>
+                <select [(ngModel)]="inviteRole"
+                        class="h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white text-[14px] outline-none focus:border-[#6C4FF6]/50 transition-all appearance-none cursor-pointer">
+                  <option value="Manager">Manager</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Viewer">Viewer</option>
+                </select>
+                <button (click)="sendInvite()"
+                        class="h-12 px-6 bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] rounded-xl text-white font-bold text-[14px] hover:shadow-[0_8px_24px_rgba(108,79,246,0.5)] hover:-translate-y-0.5 transition-all whitespace-nowrap">
+                  Send Invite
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+      </div>
+    </div>
+  </div>
+</div>

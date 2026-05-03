@@ -5,21 +5,33 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'bg-primary': '#050B18',
+        'bg-secondary': '#0A1628',
+        'bg-card': '#0D1F3C',
+        'accent-purple': '#6C4FF6',
+        'accent-blue': '#3B82F6',
+        'accent-cyan': '#22D3EE',
+        'text-primary': '#FFFFFF',
+        'text-secondary': '#94A3B8',
+        'border': 'rgba(255,255,255,0.08)',
+        'success': '#10B981',
+        'error': '#EF4444',
+        'warning': '#F59E0B',
         brand: {
-          navy: '#0a1628',
-          dark: '#0d1f35',
-          card: '#111f38',
-          blue: '#4a6cf7',
-          purple: '#6a3de8',
-          sky: '#0ea5e9',
-          white: '#f0f4ff',
-          muted: 'rgba(240,244,255,0.5)',
+          navy: '#0A1628',
+          dark: '#0D1F3C',
+          card: '#0D1F3C',
+          blue: '#3B82F6',
+          purple: '#6C4FF6',
+          sky: '#22D3EE',
+          white: '#FFFFFF',
+          muted: 'rgba(148,163,184,0.5)',
           border: 'rgba(255,255,255,0.08)',
         }
       },
       fontFamily: {
-        display: ['Syne', 'sans-serif'],
-        body: ['DM Sans', 'sans-serif']
+        display: ['Inter', 'sans-serif'],
+        body: ['Inter', 'sans-serif']
       },
       boxShadow: {
         'card': '0 32px 80px rgba(0,0,0,0.4)',

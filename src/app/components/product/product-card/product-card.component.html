@@ -1,0 +1,113 @@
+<div 
+  class="card-glass group cursor-pointer transition-all duration-300 hover:shadow-glow hover:-translate-y-1"
+  (click)="navigateToProduct()"
+>
+  <!-- Product Image Container -->
+  <div class="relative overflow-hidden rounded-t-2xl">
+    <img 
+      [src]="product.thumbnail" 
+      [alt]="product.name"
+      class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+      loading="lazy"
+    />
+    
+    <!-- Overlay on Hover -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div class="absolute bottom-4 left-4 right-4">
+        <button 
+          *ngIf="showQuickView"
+          class="w-full btn-primary text-sm"
+          (click)="navigateToProduct()"
+        >
+          Quick View
+        </button>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="absolute top-4 left-4 flex flex-col gap-2">
+      <app-badge variant="info" size="sm">
+        {{ product.category }}
+      </app-badge>
+      
+      <app-badge 
+        *ngIf="product.isNew" 
+        variant="success" 
+        size="sm"
+      >
+        New
+      </app-badge>
+      
+      <app-badge 
+        *ngIf="product.isSale" 
+        variant="error" 
+        size="sm"
+      >
+        -{{ discountPercentage }}%
+      </app-badge>
+    </div>
+
+    <!-- Wishlist Button -->
+    <button 
+      *ngIf="showWishlist"
+      class="absolute top-4 right-4 p-2 rounded-full bg-bg-card/80 backdrop-blur-sm border border-border hover:bg-accent-purple/20 transition-colors duration-300"
+      (click)="toggleWishlist($event)"
+      [attr.aria-label]="isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'"
+    >
+      <svg 
+        class="w-5 h-5 transition-colors duration-300"
+        [class.text-accent-purple]="isInWishlist"
+        [class.text-text-secondary]="!isInWishlist"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Product Info -->
+  <div class="p-6">
+    <!-- Product Name -->
+    <h3 class="text-text-primary font-semibold text-lg mb-2 line-clamp-2 group-hover:text-accent-purple transition-colors duration-300">
+      {{ product.name }}
+    </h3>
+
+    <!-- Rating and Reviews -->
+    <div class="flex items-center gap-2 mb-3">
+      <app-rating [rating]="product.rating" [showCount]="true" [reviewCount]="product.reviewCount" size="sm" readonly="true"></app-rating>
+    </div>
+
+    <!-- Price -->
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-2xl font-bold text-accent-purple">
+        ${{ product.price }}
+      </span>
+      <span 
+        *ngIf="product.comparePrice && product.comparePrice > product.price"
+        class="text-lg text-text-secondary line-through"
+      >
+        ${{ product.comparePrice }}
+      </span>
+    </div>
+
+    <!-- Stock Status -->
+    <div class="mb-4">
+      <span class="text-sm font-medium" [ngClass]="stockStatusClass">
+        {{ stockStatus }}
+      </span>
+    </div>
+
+    <!-- Action Button -->
+    <button 
+      class="w-full btn-primary"
+      [disabled]="product.stock === 0"
+      (click)="addToCart(); $event.stopPropagation()"
+    >
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+      </svg>
+      {{ product.stock === 0 ? 'Out of Stock' : 'Add to Cart' }}
+    </button>
+  </div>
+</div>

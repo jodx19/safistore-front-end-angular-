@@ -1,0 +1,30 @@
+<div class="space-y-2">
+  <label *ngIf="label" [for]="inputId" class="block text-sm font-medium text-text-primary">
+    {{ label }}
+    <span *ngIf="required" class="text-error ml-1">*</span>
+  </label>
+  
+  <div class="relative">
+    <input
+      [type]="type"
+      [id]="inputId"
+      [name]="name"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [required]="required"
+      [autocomplete]="autocomplete"
+      [ngClass]="classes"
+      [(ngModel)]="value"
+      (input)="onValueChange($event)"
+      (blur)="onBlur()"
+    />
+    
+    <div *ngIf="icon" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary">
+      <ng-container [ngComponentOutlet]="icon"></ng-container>
+    </div>
+  </div>
+  
+  <div *ngIf="error" class="text-sm text-error">
+    {{ error }}
+  </div>
+</div>

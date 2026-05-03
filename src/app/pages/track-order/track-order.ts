@@ -56,5 +56,10 @@ export class TrackOrderComponent {
     const statusIndex = this.statuses.indexOf(status);
     return statusIndex <= currentIndex;
   }
+
+  copyNumber(): void {
+    if (this.tracking) {
+      navigator.clipboard.writeText(`794-${this.tracking.orderNumber}-XX`);
+    }
+  }
 }
-export class TrackOrder {}

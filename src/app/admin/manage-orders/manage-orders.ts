@@ -5,11 +5,12 @@ import { Router } from "@angular/router";
 import { NotificationService } from "../../services/notification.service";
 import { OrderClient, OrderDto, ApiResponse, PaginatedResult } from "../../api-client/api-client";
 import { Subject, takeUntil } from "rxjs";
+import { AdminLayoutComponent } from "../admin-layout/admin-layout";
 
 @Component({
   selector: "app-manage-orders",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AdminLayoutComponent],
   templateUrl: "./manage-orders.html",
   styleUrls: ["./manage-orders.css"],
 })
@@ -76,15 +77,17 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   getStatusColor(status: string): string {
     switch (status.toLowerCase()) {
       case "pending":
-        return "bg-gray-100 text-gray-800";
+        return "#F59E0B";
       case "confirmed":
-        return "bg-blue-100 text-blue-800";
+        return "#3B82F6";
       case "shipped":
-        return "bg-yellow-100 text-yellow-800";
+        return "#22D3EE";
       case "delivered":
-        return "bg-green-100 text-green-800";
+        return "#10B981";
+      case "cancelled":
+        return "#EF4444";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "#6C4FF6";
     }
   }
 }

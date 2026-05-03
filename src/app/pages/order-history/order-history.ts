@@ -91,13 +91,13 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
    */
   getStatusClass(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'pending': 'bg-yellow-100 text-yellow-800',
-      'processing': 'bg-blue-100 text-blue-800',
-      'shipped': 'bg-purple-100 text-purple-800',
-      'delivered': 'bg-green-100 text-green-800',
-      'cancelled': 'bg-red-100 text-red-800'
+      'pending': 'bg-[#F59E0B]/15 border border-[#F59E0B]/30 text-[#F59E0B]',
+      'processing': 'bg-[#3B82F6]/15 border border-[#3B82F6]/30 text-[#3B82F6]',
+      'shipped': 'bg-[#6C4FF6]/15 border border-[#6C4FF6]/30 text-[#6C4FF6]',
+      'delivered': 'bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981]',
+      'cancelled': 'bg-[#EF4444]/15 border border-[#EF4444]/30 text-[#EF4444]'
     };
-    return statusMap[status] || 'bg-gray-100 text-gray-800';
+    return statusMap[status] || 'bg-slate-500/15 border border-slate-500/30 text-slate-400';
   }
 
   /**

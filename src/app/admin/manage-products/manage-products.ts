@@ -6,11 +6,12 @@ import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 import { ProductClient, ProductDto, CreateProductDto, UpdateProductDto } from "../../api-client/api-client";
 import { Subject, takeUntil } from "rxjs";
+import { AdminLayoutComponent } from "../admin-layout/admin-layout";
 
 @Component({
   selector: "app-manage-products",
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AdminLayoutComponent],
   templateUrl: "./manage-products.html",
   styleUrls: ["./manage-products.css"],
 })

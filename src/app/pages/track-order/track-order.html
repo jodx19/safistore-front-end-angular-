@@ -1,62 +1,187 @@
-<div class="min-h-screen bg-gradient-to-b from-sky-50 to-white py-12">
-  <div class="max-w-2xl mx-auto px-4">
-    <h1 class="text-4xl font-bold gradient-text mb-8">Track Your Order</h1>
+<div class="min-h-screen bg-[#050B18] relative overflow-hidden">
 
-    <!-- Search Form -->
-    <div class="bg-white p-6 rounded-lg shadow mb-8">
-      <div class="flex gap-4">
-        <input
-          type="text"
-          [(ngModel)]="orderNumber"
-          placeholder="Enter order number (e.g., ORD-123456)"
-          class="flex-1 px-4 py-2 border border-sky-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
-        />
-        <button
-          (click)="trackOrder()"
-          [disabled]="loading"
-          class="bg-sky-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-sky-700 disabled:opacity-50"
-        >
-          {{ loading ? 'Tracking...' : 'Track' }}
-        </button>
-      </div>
-      <p *ngIf="error" class="text-red-600 mt-2">{{ error }}</p>
+  <!-- Background glow orbs -->
+  <div class="absolute w-[600px] h-[600px] rounded-full bg-[rgba(74,108,247,0.12)] 
+       blur-[120px] -top-48 -left-48 pointer-events-none animate-pulse-slow"></div>
+  <div class="absolute w-[500px] h-[500px] rounded-full bg-[rgba(106,61,232,0.1)] 
+       blur-[100px] top-1/2 -right-24 pointer-events-none animate-drift"></div>
+
+  <div class="container mx-auto px-6 py-24">
+
+    <!-- Page header -->
+    <div class="text-center mb-12">
+      <span class="inline-block px-4 py-1.5 rounded-full bg-[#6C4FF6]/10 
+                   border border-[#6C4FF6]/20 text-[#6C4FF6] text-[11px] 
+                   font-bold tracking-[0.2em] uppercase">ORDER TRACKING</span>
+      <h1 class="text-4xl md:text-5xl font-black text-white mb-4">
+        Track Your <span class="bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] bg-clip-text text-transparent">Order</span>
+      </h1>
+      <p class="text-slate-400 text-lg">Real-time visibility into your shipment status</p>
     </div>
 
-    <!-- Tracking Timeline -->
-    <div *ngIf="tracking" class="bg-white p-6 rounded-lg shadow">
-      <h2 class="text-xl font-bold text-sky-900 mb-6">Order {{ tracking.orderNumber }}</h2>
+    <!-- Search form -->
+    <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6 mb-8 max-w-2xl mx-auto">
+      <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex-1 relative">
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input type="text"
+                 [(ngModel)]="orderNumber"
+                 (keyup.enter)="trackOrder()"
+                 placeholder="Enter order number (e.g. SAF-2025-12345)"
+                 class="w-full h-12 bg-white/5 border border-white/5 rounded-xl pl-12 pr-4 text-white 
+                        placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                        focus:bg-white/10 transition-all" />
+        </div>
+        <button (click)="trackOrder()" [disabled]="loading"
+                class="h-12 px-8 bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
+                       rounded-xl hover:opacity-90 transition-all 
+                       shadow-[0_0_20px_rgba(108,79,246,0.4)] disabled:opacity-50 
+                       flex items-center gap-2 whitespace-nowrap">
+          @if (loading) {
+            <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018 0V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            Tracking...
+          } @else {
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+            </svg>
+            Track Order
+          }
+        </button>
+      </div>
 
-      <!-- Timeline -->
-      <div class="space-y-4">
-        <div *ngFor="let status of statuses" class="flex gap-4">
-          <div class="flex flex-col items-center">
-            <div
-              [ngClass]="
-                isStatusActive(status) ? 'bg-sky-600 text-white' : 'bg-gray-200 text-gray-500'
-              "
-              class="w-10 h-10 rounded-full flex items-center justify-center font-bold"
-            >
-              {{ getStatusIcon(status) }}
+      @if (error) {
+        <div class="mt-4 flex items-center gap-3 px-4 py-3 bg-[#EF4444]/15 border border-[#EF4444]/30 rounded-xl">
+          <svg class="w-4 h-4 text-[#EF4444] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          <span class="text-[#EF4444] text-sm">{{ error }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Tracking result -->
+    @if (tracking) {
+      <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden max-w-4xl mx-auto">
+
+        <!-- Top accent -->
+        <div class="h-1 bg-gradient-to-r from-[#6C4FF6] to-[#22D3EE]"></div>
+
+        <div class="p-8">
+          <!-- Order header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+              <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Order Number</p>
+              <h2 class="text-white font-bold text-2xl">{{ tracking.orderNumber }}</h2>
             </div>
-            <div
-              *ngIf="status !== 'delivered'"
-              [ngClass]="isStatusActive(status) ? 'bg-sky-600' : 'bg-gray-200'"
-              class="w-1 h-12 mt-2"
-            ></div>
+            <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#6C4FF6]/15 border border-[#6C4FF6]/30">
+              <span class="w-2 h-2 rounded-full bg-[#6C4FF6] animate-pulse"></span>
+              <span class="text-[#6C4FF6] font-bold text-sm capitalize">{{ tracking.status }}</span>
+            </div>
           </div>
-          <div class="pt-2">
-            <p class="font-bold text-sky-900 capitalize">
-              {{ status === 'in-transit' ? 'In Transit' : status }}
-            </p>
-            <p *ngIf="status === tracking.status" class="text-sky-600">
-              Current location: {{ tracking.location }}
-            </p>
-            <p *ngIf="status === 'delivered'" class="text-sky-600">
-              Estimated: {{ tracking.estimatedDelivery }}
-            </p>
+
+          <!-- Visual timeline -->
+          <div class="relative mb-8">
+            <!-- Progress line -->
+            <div class="absolute top-5 left-5 right-5 h-0.5 bg-white/5 hidden sm:block"></div>
+            <div class="absolute top-5 left-5 h-0.5 bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] hidden sm:block transition-all duration-700"
+                 [style.width.%]="(statuses.indexOf(tracking.status) / (statuses.length - 1)) * (100 - (10 / statuses.length))"></div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-4">
+              @for (status of statuses; track status; let i = $index) {
+                <div class="flex sm:flex-col items-center gap-3 relative">
+
+                  <!-- Status circle -->
+                  <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border-2 transition-all duration-300 z-10"
+                       [class]="isStatusActive(status)
+                         ? 'bg-gradient-to-br from-[#6C4FF6] to-[#3B82F6] border-[#6C4FF6] shadow-[0_0_20px_rgba(108,79,246,0.5)]'
+                         : 'bg-white/5 border-white/10'">
+                    @if (isStatusActive(status)) {
+                      <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    } @else {
+                      <span class="w-2 h-2 rounded-full bg-white/20"></span>
+                    }
+                  </div>
+
+                  <!-- Label -->
+                  <div class="sm:text-center">
+                    <p class="font-bold text-sm capitalize"
+                         [class]="isStatusActive(status) ? 'text-white' : 'text-slate-400'">
+                      {{ status === 'in-transit' ? 'In Transit' : status }}
+                    </p>
+                    @if (status === tracking.status) {
+                      <p class="text-[#6C4FF6] text-xs font-medium mt-1">{{ tracking.location }}</p>
+                    }
+                    @if (status === 'delivered') {
+                      <p class="text-slate-400 text-xs mt-1">Est. {{ tracking.estimatedDelivery }}</p>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Courier info -->
+          <div class="bg-white/[0.02] border border-white/5 rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#F59E0B] to-[#D97706] flex items-center justify-center text-white text-xl flex-shrink-0">
+              🚚
+            </div>
+            <div class="flex-1">
+              <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Courier Service</p>
+              <p class="text-white font-bold text-lg">FedEx Express</p>
+            </div>
+            <div class="flex-1">
+              <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Tracking Number</p>
+              <div class="flex items-center gap-2">
+                <p class="text-white font-mono font-bold">794-{{ tracking.orderNumber }}-XX</p>
+                <button class="w-6 h-6 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-all"
+                        (click)="copyNumber()">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="flex-1">
+              <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Est. Delivery</p>
+              <p class="text-white font-bold">{{ tracking.estimatedDelivery }}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    }
+
+    <!-- Empty state -->
+    @if (!tracking && !loading && !error) {
+      <div class="text-center py-16 max-w-md mx-auto">
+        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-[#6C4FF6]/10 flex items-center justify-center">
+          <svg class="w-10 h-10 text-[#6C4FF6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-3">Track Your Order</h2>
+        <p class="text-slate-400 mb-8">Enter your order number above to see real-time tracking updates</p>
+        <div class="flex gap-4 justify-center">
+          <button routerLink="/order-history" 
+                  class="bg-white/5 border border-white/10 rounded-xl px-6 py-3 text-white 
+                         hover:bg-white/10 transition-all text-sm">
+            View Order History
+          </button>
+          <button routerLink="/products" 
+                  class="bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
+                         px-6 py-3 rounded-xl hover:opacity-90 transition-all 
+                         shadow-[0_0_20px_rgba(108,79,246,0.4)] text-sm">
+            Continue Shopping
+          </button>
+        </div>
+      </div>
+    }
+
   </div>
 </div>

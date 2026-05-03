@@ -4,9 +4,9 @@
 
 @layer base {
   html, body {
-    background: #0a1628;
-    color: #f0f4ff;
-    font-family: 'DM Sans', sans-serif;
+    background: #050B18;
+    color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     overflow-x: hidden;
     scroll-behavior: smooth;
@@ -14,7 +14,7 @@
   }
 
   h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
 
   ::selection {
@@ -96,7 +96,7 @@
 
   /* Card Glassmorphism */
   .card-glass {
-    background: rgba(17, 31, 56, 0.7);
+    background: rgba(13, 31, 60, 0.8);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -106,7 +106,7 @@
 
   /* Premium Buttons */
   .btn-primary {
-    @apply h-12 px-8 flex items-center justify-center rounded-xl bg-gradient-to-tr from-brand-blue to-brand-purple text-white font-bold transition-all duration-300 hover:shadow-glow hover:-translate-y-0.5 active:scale-95;
+    @apply h-12 px-8 flex items-center justify-center rounded-xl bg-gradient-to-tr from-accent-purple to-accent-blue text-white font-bold transition-all duration-300 hover:shadow-glow hover:-translate-y-0.5 active:scale-95;
   }
 
   .btn-secondary {
