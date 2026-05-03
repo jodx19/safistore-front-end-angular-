@@ -1,14 +1,22 @@
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { CartService } from "../../services/cart";
-import { ProductService, Product } from "../../services/product";
 import { NotificationService } from '../../services/notification.service';
-import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader';
-import { EmptyStateComponent } from '../../components/empty-state/empty-state';
-import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
-import { RevealDirective } from '../../shared/directives/reveal.directive';
+import { ProductGridComponent } from '../../components/product/product-grid/product-grid.component';
+import { ButtonComponent } from '../../components/ui/button/button.component';
+import { BadgeComponent } from '../../components/ui/badge/badge.component';
+import { InputComponent } from '../../components/ui/input/input.component';
+import { SpinnerComponent } from '../../components/ui/spinner/spinner.component';
+import { 
+  MOCK_PRODUCTS, 
+  CATEGORIES, 
+  BRANDS, 
+  getProductsByCategory, 
+  searchProducts,
+  Product 
+} from '../../data/mock-data';
 
 @Component({
   selector: "app-products",
@@ -17,103 +25,61 @@ import { RevealDirective } from '../../shared/directives/reveal.directive';
     CommonModule, 
     FormsModule, 
     RouterModule, 
-    SkeletonLoaderComponent, 
-    EmptyStateComponent,
-    ProductCardComponent,
-    RevealDirective
+    ProductGridComponent,
+    ButtonComponent,
+    BadgeComponent,
+    InputComponent,
+    SpinnerComponent
   ],
   templateUrl: "./products.html",
   styleUrls: ["./products.css"],
 })
 export class ProductsComponent implements OnInit {
-  private cartService = inject(CartService);
-  private productService = inject(ProductService);
-  private route = inject(ActivatedRoute);
-  private notificationService = inject(NotificationService);
-
   products: Product[] = [];
-  filteredProducts: any[] = []; // Using any[] to match ProductCard expectations
-  categories: string[] = [];
-  selectedCategory = "";
+  filteredProducts: Product[] = [];
+  categories: string[] = CATEGORIES;
+  selectedCategory = "All";
+  selectedBrands: string[] = [];
   minPrice = 0;
-  maxPrice = 2000;
+  maxPrice = 5000;
   searchQuery = "";
-  loading = true;
+  sortBy = "featured";
+  loading = false;
   error = "";
+  inStockOnly = false;
 
-  // ── Pagination state ──────────────────────────────────────────────────────
-  readonly pageSize = 40;
+  // Pagination
+  readonly pageSize = 12;
   currentPage = 1;
   totalPages = 1;
   totalProducts = 0;
 
+  constructor(
+    private cartService: CartService,
+    private route: ActivatedRoute,
+    private notificationService: NotificationService
+  ) {}
+
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe((params: any) => {
       if (params["search"]) {
         this.searchQuery = params["search"];
       }
       this.currentPage = 1;
-      this.loadCategories();
       this.loadProducts();
-    });
-  }
-
-  loadCategories() {
-    this.productService.getCategories().subscribe({
-      next: (data: string[]) => {
-        this.categories = data;
-      },
-      error: () => {
-        this.error = 'Failed to load categories.';
-      }
     });
   }
 
   loadProducts() {
     this.loading = true;
     this.error = '';
-    this.productService.getAllProducts({
-      page: this.currentPage,
-      limit: this.pageSize,
-      category: this.selectedCategory || undefined,
-      search: this.searchQuery || undefined,
-    }).subscribe({
-      next: (response: any) => {
-        // The backend returns ApiResponse<PaginatedResult<Product>>
-        // Shape: { success, data: { products[], pagination: { page, pageSize, total, totalPages } } }
-        const paginatedData = response?.data ?? response;
-        const rawList: any[] = paginatedData?.products ?? paginatedData ?? [];
-        const pagination = paginatedData?.pagination;
-
-        if (pagination) {
-          this.totalPages = pagination.totalPages ?? 1;
-          this.totalProducts = pagination.total ?? rawList.length;
-          this.currentPage = pagination.page ?? this.currentPage;
-        } else {
-          // Fallback: if API returns a flat array, paginate client-side
-          this.totalPages = 1;
-          this.totalProducts = rawList.length;
-        }
-
-        this.products = rawList.map((product: any) => ({
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          description: product.description,
-          imageUrl: product.imageUrl,
-          rating: product.rating ?? 0,
-          stock: product.stock ?? 0,
-          categoryName: product.categoryName,
-          categoryId: product.categoryId ?? 0,
-        }));
-        this.loading = false;
-        this.applyFilters();
-      },
-      error: () => {
-        this.error = 'Failed to load products. Please refresh or try again later.';
-        this.loading = false;
-      }
-    });
+    
+    // Simulate API call delay
+    setTimeout(() => {
+      this.products = [...MOCK_PRODUCTS];
+      this.applyFilters();
+      this.loading = false;
+    }, 500);
   }
 
   goToPage(page: number): void {
@@ -147,25 +113,56 @@ export class ProductsComponent implements OnInit {
   }
 
   applyFilters() {
-    // Filters that the API already handled server-side: category, search.
-    // We only do client-side price filter on the current page's products.
     let filtered = [...this.products];
 
-    filtered = filtered.filter(
-      (p) => p.price >= this.minPrice && p.price <= this.maxPrice
-    );
+    // Category filter
+    if (this.selectedCategory !== 'All') {
+      filtered = filtered.filter(p => p.category === this.selectedCategory);
+    }
 
-    // Map to the interface expected by ProductCardComponent
-    this.filteredProducts = filtered.map(p => ({
-      id: p.id,
-      title: p.title,
-      categoryName: p.categoryName,
-      price: p.price,
-      rating: p.rating,
-      reviews: Math.floor(Math.random() * 50) + 5,
-      image: p.imageUrl || '',
-      isNew: Math.random() > 0.8
-    }));
+    // Brand filter
+    if (this.selectedBrands.length > 0) {
+      filtered = filtered.filter(p => this.selectedBrands.includes(p.brand));
+    }
+
+    // Price filter
+    filtered = filtered.filter(p => p.price >= this.minPrice && p.price <= this.maxPrice);
+
+    // Stock filter
+    if (this.inStockOnly) {
+      filtered = filtered.filter(p => p.stock > 0);
+    }
+
+    // Search filter
+    if (this.searchQuery.trim()) {
+      filtered = searchProducts(this.searchQuery).filter(p => 
+        filtered.some(fp => fp.id === p.id)
+      );
+    }
+
+    // Sort
+    switch (this.sortBy) {
+      case 'price-low':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-high':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'rating':
+        filtered.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'newest':
+        filtered.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+        break;
+      case 'featured':
+      default:
+        filtered.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+        break;
+    }
+
+    this.filteredProducts = filtered;
+    this.totalProducts = filtered.length;
+    this.totalPages = Math.ceil(filtered.length / this.pageSize);
   }
 
   onCategoryChange() {
@@ -187,30 +184,33 @@ export class ProductsComponent implements OnInit {
     this.loadProducts();
   }
 
-  onAddToCart(product: any) {
-    // Map back to service expectations
-    const serviceProduct: Product = {
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      description: '',
-      imageUrl: product.image,
-      rating: product.rating,
-      stock: 99,
-      categoryName: product.categoryName,
-      categoryId: 0
-    };
-    
-    const success = this.cartService.addToCart(serviceProduct, 1);
-    if (success) {
-      this.notificationService.showSuccess(`${product.title} added to cart!`);
-    } else {
-      this.notificationService.showError(`Failed to add ${product.title} to cart.`);
-    }
+  onAddToCart(product: Product) {
+    this.cartService.addToCart(product, 1).subscribe({
+      next: (success) => {
+        if (success) {
+          this.notificationService.showSuccess(`${product.name} added to cart!`);
+        }
+      }
+    });
   }
 
-  onAddToWishlist(product: any) {
-    this.notificationService.showSuccess(`${product.title} added to wishlist!`);
+  onAddToWishlist(product: Product) {
+    // Wishlist functionality will be handled by the ProductCard component
+    this.notificationService.showSuccess(`${product.name} added to wishlist!`);
+  }
+
+  onBrandToggle(brand: string) {
+    const index = this.selectedBrands.indexOf(brand);
+    if (index > -1) {
+      this.selectedBrands.splice(index, 1);
+    } else {
+      this.selectedBrands.push(brand);
+    }
+    this.applyFilters();
+  }
+
+  onSortChange() {
+    this.applyFilters();
   }
 }
 

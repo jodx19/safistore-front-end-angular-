@@ -1,29 +1,40 @@
-<div class="min-h-screen w-full bg-[#0a1628] relative overflow-hidden font-body text-white">
+<div class="min-h-screen w-full bg-bg-primary relative overflow-hidden font-body text-text-primary">
   <!-- Dynamic Backgrounds -->
-  <div class="absolute w-[800px] h-[800px] rounded-full pointer-events-none bg-[rgba(74,108,247,0.15)] blur-[150px] -top-96 -right-48 animate-drift"></div>
-  <div class="absolute w-[600px] h-[600px] rounded-full pointer-events-none bg-[rgba(106,61,232,0.1)] blur-[120px] bottom-0 left-0 animate-pulse-slow"></div>
+  <div class="absolute w-[800px] h-[800px] rounded-full pointer-events-none bg-accent-purple/15 blur-[150px] -top-96 -right-48 animate-drift"></div>
+  <div class="absolute w-[600px] h-[600px] rounded-full pointer-events-none bg-accent-blue/10 blur-[120px] bottom-0 left-0 animate-pulse-slow"></div>
 
   <div class="relative z-10 container mx-auto px-6 py-12">
     <!-- Navigation / Breadcrumbs -->
-    <nav class="flex items-center gap-3 mb-12 text-[12px] font-bold tracking-[0.15em] uppercase text-brand-muted" appReveal>
-      <a routerLink="/" class="hover:text-brand-blue transition-colors">Home</a>
+    <nav class="flex items-center gap-3 mb-12 text-[12px] font-bold tracking-[0.15em] uppercase text-text-secondary">
+      <a routerLink="/" class="hover:text-accent-purple transition-colors">Home</a>
       <span class="opacity-30">/</span>
-      <a routerLink="/products" class="hover:text-brand-blue transition-colors">Catalog</a>
+      <a routerLink="/products" class="hover:text-accent-purple transition-colors">Catalog</a>
       <span class="opacity-30">/</span>
-      <span class="text-brand-blue">{{ product?.categoryName }}</span>
+      <span class="text-accent-purple">{{ product?.category }}</span>
     </nav>
 
     @if (loading) {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-        <div class="aspect-square bg-white/5 rounded-[32px] animate-shimmer"></div>
+        <div class="aspect-square bg-bg-secondary/20 rounded-[32px] animate-shimmer"></div>
         <div class="space-y-6">
-          <div class="h-12 w-3/4 bg-white/5 rounded-xl animate-shimmer"></div>
-          <div class="h-6 w-1/2 bg-white/5 rounded-xl animate-shimmer"></div>
-          <div class="h-[200px] w-full bg-white/5 rounded-2xl animate-shimmer"></div>
+          <div class="h-12 w-3/4 bg-bg-secondary/20 rounded-xl animate-shimmer"></div>
+          <div class="h-6 w-1/2 bg-bg-secondary/20 rounded-xl animate-shimmer"></div>
+          <div class="h-[200px] w-full bg-bg-secondary/20 rounded-2xl animate-shimmer"></div>
         </div>
       </div>
     } @else if (error) {
-      <app-empty-state icon="✕" title="System Error" [message]="error" actionLabel="Return to Catalog" [actionCallback]="navigateToProducts.bind(this)"></app-empty-state>
+      <div class="text-center py-20 card-glass">
+        <div class="w-20 h-20 bg-error/20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h2 class="text-2xl font-display font-bold text-text-primary mb-2">Product Not Found</h2>
+        <p class="text-text-secondary mb-8">{{ error }}</p>
+        <app-button variant="primary" (onClick)="navigateToProducts()">
+          Return to Catalog
+        </app-button>
+      </div>
     } @else if (product) {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 mb-32">
         <!-- Gallery Section -->

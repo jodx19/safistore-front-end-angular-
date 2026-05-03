@@ -4,11 +4,12 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
+import { AdminLayoutComponent } from "../admin-layout/admin-layout";
 
 @Component({
   selector: "app-manage-admins",
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AdminLayoutComponent],
   templateUrl: "./manage-admins.html",
   styleUrls: ["./manage-admins.css"],
 })

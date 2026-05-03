@@ -1,0 +1,121 @@
+<div class="min-h-screen bg-[#050B18] text-white flex">
+
+  <!-- Fixed Sidebar (w-64) -->
+  <aside class="fixed left-0 top-0 h-full w-64 bg-[#080F1E] 
+                border-r border-white/5 z-40 flex flex-col">
+
+    <!-- Logo Section -->
+    <div class="p-6 border-b border-white/5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6C4FF6] to-[#3B82F6] flex items-center justify-center">
+          <span class="text-white font-bold text-lg">S</span>
+        </div>
+        <span class="text-xl font-black text-white">SafiStore</span>
+      </div>
+      <span class="inline-block px-3 py-1 rounded-full bg-[#6C4FF6]/10 
+                   border border-[#6C4FF6]/20 text-[#6C4FF6] text-[10px] 
+                   font-bold tracking-[0.2em] uppercase">Admin Panel</span>
+    </div>
+
+    <!-- Navigation Links with routerLinkActive -->
+    <nav class="flex-1 p-4 space-y-1">
+      <a routerLink="/admin/dashboard" 
+         routerLinkActive="bg-[#6C4FF6]/15 text-[#6C4FF6] border-[#6C4FF6]/30"
+         class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm 
+                font-semibold text-slate-400 hover:text-white hover:bg-white/5 
+                transition-all border border-transparent">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+        </svg>
+        Dashboard
+      </a>
+
+      <a routerLink="/admin/products" 
+         routerLinkActive="bg-[#6C4FF6]/15 text-[#6C4FF6] border-[#6C4FF6]/30"
+         class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm 
+                font-semibold text-slate-400 hover:text-white hover:bg-white/5 
+                transition-all border border-transparent">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+        </svg>
+        Products
+      </a>
+
+      <a routerLink="/admin/orders" 
+         routerLinkActive="bg-[#6C4FF6]/15 text-[#6C4FF6] border-[#6C4FF6]/30"
+         class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm 
+                font-semibold text-slate-400 hover:text-white hover:bg-white/5 
+                transition-all border border-transparent">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+        </svg>
+        Orders
+      </a>
+
+      <a routerLink="/admin/admins" 
+         routerLinkActive="bg-[#6C4FF6]/15 text-[#6C4FF6] border-[#6C4FF6]/30"
+         class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm 
+                font-semibold text-slate-400 hover:text-white hover:bg-white/5 
+                transition-all border border-transparent">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+        Admins
+      </a>
+
+      <div class="border-t border-white/5 my-4"></div>
+
+      <a routerLink="/products" 
+         class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm 
+                font-semibold text-slate-400 hover:text-white hover:bg-white/5 
+                transition-all border border-transparent">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back to Store
+      </a>
+
+      <button (click)="logout()" 
+              class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm 
+                     font-semibold text-red-400 hover:text-red-300 hover:bg-red-500/10 
+                     transition-all border border-transparent w-full text-left">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+        Logout
+      </button>
+    </nav>
+  </aside>
+
+  <!-- Main area: ml-64 -->
+  <div class="ml-64 flex-1 flex flex-col">
+
+    <!-- Sticky top bar -->
+    <header class="sticky top-0 z-30 bg-[#050B18]/80 backdrop-blur-xl 
+                   border-b border-white/5 px-8 py-4 
+                   flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-black text-white">{{ pageTitle }}</h1>
+        <p class="text-xs text-slate-500 mt-0.5">{{ pageSubtitle }}</p>
+      </div>
+      <!-- Admin avatar with first letter -->
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br 
+                  from-[#6C4FF6] to-[#3B82F6] flex items-center 
+                  justify-center text-white font-bold text-sm
+                  shadow-[0_0_20px_rgba(108,79,246,0.4)]">
+        {{ adminInitial }}
+      </div>
+    </header>
+
+    <!-- Page Content via <ng-content> -->
+    <main class="flex-1 p-8">
+      <ng-content></ng-content>
+    </main>
+  </div>
+</div>

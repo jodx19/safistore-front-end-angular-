@@ -1,0 +1,17 @@
+.confetti-particle {
+  position: fixed;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 999;
+  transition: top 0.03s linear;
+}
+
+@keyframes ping-once {
+  0% { transform: scale(1); opacity: 0.8; }
+  80% { transform: scale(1.8); opacity: 0; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.animate-ping-once {
+  animation: ping-once 1s ease-out forwards;
+}

@@ -45,6 +45,10 @@ export const routes: Routes = [
   
   // Public Routes - No authentication required
   {
+    path: 'about',
+    loadComponent: () => import('./pages/about/about').then(m => m.AboutComponent)
+  },
+  {
     path: 'search',
     loadComponent: () => import('./pages/search-results/search-results').then(m => m.SearchResultsComponent)
   },
@@ -74,6 +78,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'order-success',
+    loadComponent: () => import('./pages/order-success/order-success').then(m => m.OrderSuccessComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'wishlist',
     loadComponent: () => import('./components/wishlist/wishlist').then(m => m.WishlistComponent),
     canActivate: [AuthGuard]
@@ -90,6 +99,11 @@ export const routes: Routes = [
   },
   
   // Admin Routes - Require admin role
+  {
+    path: 'admin',
+    redirectTo: 'admin/dashboard',
+    pathMatch: 'full'
+  },
   {
     path: 'admin/dashboard',
     loadComponent: () => import('./admin/admin-dashboard/admin-dashboard').then(m => m.AdminDashboardComponent),
@@ -108,6 +122,21 @@ export const routes: Routes = [
   {
     path: 'admin/admins',
     loadComponent: () => import('./admin/manage-admins/manage-admins').then(m => m.ManageAdminsComponent),
+    canActivate: [AdminGuard]
+  },
+  {
+    path: 'admin/customers',
+    loadComponent: () => import('./admin/manage-customers/manage-customers').then(m => m.ManageCustomersComponent),
+    canActivate: [AdminGuard]
+  },
+  {
+    path: 'admin/analytics',
+    loadComponent: () => import('./admin/analytics/analytics').then(m => m.AnalyticsComponent),
+    canActivate: [AdminGuard]
+  },
+  {
+    path: 'admin/settings',
+    loadComponent: () => import('./admin/admin-settings/admin-settings').then(m => m.AdminSettingsComponent),
     canActivate: [AdminGuard]
   },
   
