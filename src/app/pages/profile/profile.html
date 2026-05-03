@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-[#050B18] relative overflow-hidden">
+<div class="min-h-screen bg-[#050B18] relative overflow-hidden pt-24">
 
   <!-- Background glow orbs -->
   <div class="absolute w-[600px] h-[600px] rounded-full bg-[rgba(74,108,247,0.12)] 
@@ -6,262 +6,212 @@
   <div class="absolute w-[500px] h-[500px] rounded-full bg-[rgba(106,61,232,0.1)] 
        blur-[100px] top-1/2 -right-24 pointer-events-none animate-drift"></div>
 
-  <div class="container mx-auto px-6 py-24">
+  <div class="container mx-auto px-6 pb-24">
 
-    <!-- Page header -->
-    <div class="text-center mb-12">
-      <span class="inline-block px-4 py-1.5 rounded-full bg-[#6C4FF6]/10 
-                   border border-[#6C4FF6]/20 text-[#6C4FF6] text-[11px] 
-                   font-bold tracking-[0.2em] uppercase">MY ACCOUNT</span>
-      <h1 class="text-4xl md:text-5xl font-black text-white mb-4">
-        My <span class="bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] bg-clip-text text-transparent">Profile</span>
-      </h1>
-      <p class="text-slate-400 text-lg">Manage your account settings and preferences</p>
+    <!-- Profile Hero Card -->
+    <div class="max-w-5xl mx-auto mb-8">
+      <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="flex items-center gap-5">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#6C4FF6] to-[#3B82F6] flex items-center justify-center text-white font-black text-2xl shadow-[0_0_20px_rgba(108,79,246,0.4)]">
+            {{ profileForm.firstName?.charAt(0) || 'U' }}
+          </div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-black text-white">
+              {{ profileForm.firstName }} {{ profileForm.lastName }}
+            </h1>
+            <span class="inline-flex items-center mt-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-slate-300 text-xs font-semibold">
+              {{ profileForm.email }}
+            </span>
+            <p class="text-xs text-slate-500 mt-2">Member since …</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="inline-block px-4 py-1.5 rounded-full bg-[#6C4FF6]/10 
+                       border border-[#6C4FF6]/20 text-[#6C4FF6] text-[11px] 
+                       font-bold tracking-[0.2em] uppercase">MY ACCOUNT</span>
+        </div>
+      </div>
     </div>
 
-    @if (isLoading) {
-      <!-- Loading state -->
-      <div class="flex items-center justify-center py-20">
-        <div class="animate-spin w-12 h-12 rounded-full border-4 border-t-[#6C4FF6] border-r-[#6C4FF6] border-b-[#6C4FF6]/20 border-l-[#6C4FF6]/20"></div>
-      </div>
-    } @else {
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Loading state -->
+    <div *ngIf="isLoading" class="flex items-center justify-center py-20">
+      <div class="animate-spin w-12 h-12 rounded-full border-4 border-t-[#6C4FF6] border-r-[#6C4FF6] border-b-[#6C4FF6]/20 border-l-[#6C4FF6]/20"></div>
+    </div>
 
-        <!-- Left column: Profile info -->
-        <div class="lg:col-span-2 space-y-6">
-          
-          <!-- Personal Information Card -->
-          <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
-            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <span class="w-6 h-6 rounded-full bg-[#6C4FF6]/15 flex items-center justify-center text-[#6C4FF6] text-xs font-bold">👤</span>
-              Personal Information
-            </h2>
+    <div *ngIf="!isLoading" class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <form (ngSubmit)="updateProfile()" class="space-y-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-slate-400 text-sm font-medium mb-2">First Name</label>
-                  <input type="text" [(ngModel)]="profileForm.firstName" name="firstName"
-                         class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                                placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                                focus:bg-white/10 transition-all"
-                         placeholder="John" />
-                </div>
-                <div>
-                  <label class="block text-slate-400 text-sm font-medium mb-2">Last Name</label>
-                  <input type="text" [(ngModel)]="profileForm.lastName" name="lastName"
-                         class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                                placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                                focus:bg-white/10 transition-all"
-                         placeholder="Doe" />
-                </div>
-              </div>
+      <!-- Left column -->
+      <div class="lg:col-span-2 space-y-6">
 
-              <div>
-                <label class="block text-slate-400 text-sm font-medium mb-2">Email</label>
-                <input type="email" [(ngModel)]="profileForm.email" name="email" disabled
-                       class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                              placeholder-slate-500 outline-none cursor-not-allowed opacity-60"
-                       placeholder="john@example.com" />
-                <p class="text-xs text-slate-500 mt-1">Email cannot be changed</p>
-              </div>
-
-              <div class="pt-4 border-t border-white/5">
-                <h3 class="text-lg font-semibold text-white mb-4">Address Information</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div class="md:col-span-2">
-                    <label class="block text-slate-400 text-sm font-medium mb-2">Street Address</label>
-                    <input type="text" [(ngModel)]="profileForm.address" name="address"
-                           class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                                  placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                                  focus:bg-white/10 transition-all"
-                           placeholder="123 Innovation Drive" />
-                  </div>
-                  <div>
-                    <label class="block text-slate-400 text-sm font-medium mb-2">City</label>
-                    <input type="text" [(ngModel)]="profileForm.city" name="city"
-                           class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                                  placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                                  focus:bg-white/10 transition-all"
-                           placeholder="New York" />
-                  </div>
-                  <div>
-                    <label class="block text-slate-400 text-sm font-medium mb-2">Postal Code</label>
-                    <input type="text" [(ngModel)]="profileForm.postalCode" name="postalCode"
-                           class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                                  placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                                  focus:bg-white/10 transition-all"
-                           placeholder="10001" />
-                  </div>
-                  <div>
-                    <label class="block text-slate-400 text-sm font-medium mb-2">Country</label>
-                    <select [(ngModel)]="profileForm.country" name="country"
-                            class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                                   outline-none focus:border-[#6C4FF6]/40 focus:bg-white/10 transition-all">
-                      <option value="" disabled>Select Country</option>
-                      <option value="US">United States</option>
-                      <option value="UK">United Kingdom</option>
-                      <option value="CA">Canada</option>
-                      <option value="AU">Australia</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex gap-4 pt-4">
-                <button type="submit" [disabled]="isUpdating"
-                        class="flex-1 bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
-                               px-6 py-3 rounded-xl hover:opacity-90 transition-all 
-                               shadow-[0_0_20px_rgba(108,79,246,0.4)] disabled:opacity-50 
-                               flex items-center justify-center gap-2">
-                  @if (isUpdating) {
-                    <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018 0V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3.7.938l3-2.647z"></path>
-                    </svg>
-                    Updating...
-                  } @else {
-                    Update Profile
-                  }
-                </button>
-              </div>
-            </form>
+        <!-- Personal Information Card -->
+        <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-[#6C4FF6]/15 border border-[#6C4FF6]/30 flex items-center justify-center">
+              <svg class="w-5 h-5 text-[#6C4FF6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1118.88 17.8M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-white">Personal Information</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Update your profile details.</p>
+            </div>
           </div>
 
-          <!-- Security Settings Card -->
-          <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
-            <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                <span class="w-6 h-6 rounded-full bg-[#6C4FF6]/15 flex items-center justify-center text-[#6C4FF6] text-xs font-bold">🔒</span>
-                Security Settings
-              </h2>
-              <button type="button" (click)="showPasswordForm = !showPasswordForm"
-                      class="text-[#6C4FF6] hover:text-[#6C4FF6]/80 font-semibold text-sm">
-                {{ showPasswordForm ? 'Cancel' : 'Change Password' }}
-              </button>
+          <form (ngSubmit)="updateProfile()" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-slate-400 text-sm font-semibold mb-2">First Name</label>
+                <input type="text" [(ngModel)]="profileForm.firstName" name="firstName"
+                       class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                              placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                              focus:bg-white/10 transition-all"
+                       placeholder="First name" />
+              </div>
+              <div>
+                <label class="block text-slate-400 text-sm font-semibold mb-2">Last Name</label>
+                <input type="text" [(ngModel)]="profileForm.lastName" name="lastName"
+                       class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                              placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                              focus:bg-white/10 transition-all"
+                       placeholder="Last name" />
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-slate-400 text-sm font-semibold mb-2">Email</label>
+                <input type="email" [(ngModel)]="profileForm.email" name="email" disabled
+                       class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                              placeholder-slate-500 outline-none cursor-not-allowed opacity-60"
+                       placeholder="email@example.com" />
+                <p class="text-xs text-slate-500 mt-1">Email is read-only.</p>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-slate-400 text-sm font-semibold mb-2">Address</label>
+                <input type="text" [(ngModel)]="profileForm.address" name="address"
+                       class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                              placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                              focus:bg-white/10 transition-all"
+                       placeholder="Street address" />
+              </div>
+              <div>
+                <label class="block text-slate-400 text-sm font-semibold mb-2">City</label>
+                <input type="text" [(ngModel)]="profileForm.city" name="city"
+                       class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                              placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                              focus:bg-white/10 transition-all"
+                       placeholder="City" />
+              </div>
+              <div>
+                <label class="block text-slate-400 text-sm font-semibold mb-2">Postal Code</label>
+                <input type="text" [(ngModel)]="profileForm.postalCode" name="postalCode"
+                       class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                              placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                              focus:bg-white/10 transition-all"
+                       placeholder="Postal code" />
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-slate-400 text-sm font-semibold mb-2">Country</label>
+                <input type="text" [(ngModel)]="profileForm.country" name="country"
+                       class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                              placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                              focus:bg-white/10 transition-all"
+                       placeholder="Country" />
+              </div>
             </div>
 
-            @if (showPasswordForm) {
-              <form (ngSubmit)="changePassword()" class="space-y-4 pt-4 border-t border-white/5">
-                <div>
-                  <label class="block text-slate-400 text-sm font-medium mb-2">Current Password</label>
-                  <input type="password" [(ngModel)]="passwordForm.currentPassword" name="currentPassword"
-                         class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                                placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                                focus:bg-white/10 transition-all"
-                         placeholder="••••••••••" />
-                </div>
+            <button type="submit" [disabled]="isUpdating"
+                    class="w-full bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
+                           px-6 py-3 rounded-xl hover:opacity-90 transition-all 
+                           shadow-[0_0_20px_rgba(108,79,246,0.4)] disabled:opacity-50 
+                           flex items-center justify-center gap-2">
+              <ng-container *ngIf="isUpdating; else saveLabel">
+                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+                Saving...
+              </ng-container>
+              <ng-template #saveLabel>Save Changes</ng-template>
+            </button>
+          </form>
+        </div>
 
-                <div>
-                  <label class="block text-slate-400 text-sm font-medium mb-2">New Password</label>
-                  <input type="password" [(ngModel)]="passwordForm.newPassword" name="newPassword"
-                         class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                                placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                                focus:bg-white/10 transition-all"
-                         placeholder="••••••••••" />
-                  <p class="text-xs text-slate-500 mt-1">Must be at least 8 characters</p>
-                </div>
+        <!-- Change Password Card -->
+        <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-black text-white">Change Password</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Keep your account secure.</p>
+            </div>
+            <button type="button" (click)="showPasswordForm = !showPasswordForm"
+                    class="text-[#6C4FF6] hover:opacity-80 font-bold text-sm">
+              {{ showPasswordForm ? 'Hide' : 'Update' }}
+            </button>
+          </div>
 
-                <div>
-                  <label class="block text-slate-400 text-sm font-medium mb-2">Confirm New Password</label>
-                  <input type="password" [(ngModel)]="passwordForm.confirmPassword" name="confirmPassword"
-                         class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                                placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                                focus:bg-white/10 transition-all"
-                         placeholder="••••••••••" />
-                </div>
+          <form *ngIf="showPasswordForm" (ngSubmit)="changePassword()" class="space-y-4 pt-6 mt-6 border-t border-white/5">
+            <div>
+              <label class="block text-slate-400 text-sm font-semibold mb-2">Current Password</label>
+              <input type="password" [(ngModel)]="passwordForm.currentPassword" name="currentPassword"
+                     class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                            placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                            focus:bg-white/10 transition-all"
+                     placeholder="••••••••••" />
+            </div>
+            <div>
+              <label class="block text-slate-400 text-sm font-semibold mb-2">New Password</label>
+              <input type="password" [(ngModel)]="passwordForm.newPassword" name="newPassword"
+                     class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                            placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                            focus:bg-white/10 transition-all"
+                     placeholder="••••••••••" />
+            </div>
+            <div>
+              <label class="block text-slate-400 text-sm font-semibold mb-2">Confirm Password</label>
+              <input type="password" [(ngModel)]="passwordForm.confirmPassword" name="confirmPassword"
+                     class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                            placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                            focus:bg-white/10 transition-all"
+                     placeholder="••••••••••" />
+            </div>
+            <button type="submit" [disabled]="isChangingPassword"
+                    class="w-full bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
+                           px-6 py-3 rounded-xl hover:opacity-90 transition-all 
+                           shadow-[0_0_20px_rgba(108,79,246,0.4)] disabled:opacity-50 
+                           flex items-center justify-center gap-2">
+              <ng-container *ngIf="isChangingPassword; else passLabel">
+                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+                Updating...
+              </ng-container>
+              <ng-template #passLabel>Update Password</ng-template>
+            </button>
+          </form>
+        </div>
 
-                <button type="submit" [disabled]="isChangingPassword"
-                        class="w-full bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
-                               px-6 py-3 rounded-xl hover:opacity-90 transition-all 
-                               shadow-[0_0_20px_rgba(108,79,246,0.4)] disabled:opacity-50 
-                               flex items-center justify-center gap-2">
-                  @if (isChangingPassword) {
-                    <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018 0V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3.7.938l3-2.647z"></path>
-                    </svg>
-                    Changing Password...
-                  } @else {
-                    Change Password
-                  }
-                </button>
-              </form>
-            } @else {
-              <p class="text-slate-400 text-sm">Keep your account secure by using a strong password</p>
-            }
+        <!-- Danger Zone -->
+        <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-[#EF4444]/25 rounded-2xl p-6">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-black text-[#EF4444]">Danger Zone</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Permanent actions. Proceed carefully.</p>
+            </div>
+            <button type="button" class="px-5 py-3 rounded-xl border border-[#EF4444]/40 text-[#EF4444] font-bold hover:bg-[#EF4444]/10 transition-all">
+              Delete Account
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Right column: Account actions -->
+      <!-- Right column -->
       <div class="lg:col-span-1">
         <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6 lg:sticky lg:top-24">
-          <h2 class="text-xl font-bold text-white mb-6">Quick Actions</h2>
-
-          <div class="space-y-4">
-            <!-- View Orders -->
-            <button routerLink="/orders"
-                    class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                           hover:bg-white/10 transition-all flex items-center justify-center gap-3">
-              <svg class="w-5 h-5 text-[#6C4FF6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v3a2 2 0 002 2h2a2 2 0 002-2V5z"></path>
-              </svg>
-              View My Orders
-            </button>
-
-            <!-- Shopping Cart -->
-            <button routerLink="/cart"
-                    class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                           hover:bg-white/10 transition-all flex items-center justify-center gap-3">
-              <svg class="w-5 h-5 text-[#6C4FF6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-              </svg>
-              Shopping Cart
-            </button>
-
-            <!-- Account Settings -->
-            <button routerLink="/settings"
-                    class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                           hover:bg-white/10 transition-all flex items-center justify-center gap-3">
-              <svg class="w-5 h-5 text-[#6C4FF6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 00-.573-.619L5.312 3.011a1.724 1.724 0 00-.573.619l-5.74 5.74a1.724 1.724 0 00-.574-.619 0-3.35 2.924 1.756 3.35z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              </svg>
-              Account Settings
-            </button>
-
-            <!-- Logout -->
-            <button (click)="logout()"
-                    class="w-full bg-[#EF4444]/15 border border-[#EF4444]/30 rounded-xl px-4 py-3 text-[#EF4444] 
-                           hover:bg-[#EF4444]/20 transition-all flex items-center justify-center gap-3">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4 4m4-4v4m-4-4h4m-4 4h4m6-10V7a4 4 0 00-8 0v4h8z"></path>
-              </svg>
-              Logout
-            </button>
-          </div>
-
-          <!-- Account Stats -->
-          <div class="pt-6 border-t border-white/5 mt-6">
-            <h3 class="text-lg font-semibold text-white mb-4">Account Statistics</h3>
-            <div class="space-y-3">
-              <div class="flex justify-between text-sm">
-                <span class="text-slate-400">Member Since</span>
-                <span class="text-white font-medium">Jan 2024</span>
-              </div>
-              <div class="flex justify-between text-sm">
-                <span class="text-slate-400">Total Orders</span>
-                <span class="text-white font-medium">12</span>
-              </div>
-              <div class="flex justify-between text-sm">
-                <span class="text-slate-400">Account Status</span>
-                <span class="text-[#10B981] font-medium">Active</span>
-              </div>
-            </div>
-          </div>
+          <h2 class="text-lg font-black text-white mb-4">Account</h2>
+          <button (click)="logout()" class="w-full bg-[#EF4444]/15 border border-[#EF4444]/30 rounded-xl px-4 py-3 text-[#EF4444] font-bold hover:bg-[#EF4444]/20 transition-all">
+            Logout
+          </button>
         </div>
       </div>
-    }
+    </div>
   </div>
 </div>

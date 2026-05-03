@@ -26,8 +26,8 @@ export class AdminSettingsComponent {
   general = {
     storeName: 'SafiStore',
     storeEmail: 'contact@safistore.com',
-    currency: 'USD',
-    timezone: 'America/New_York',
+    currency: 'EGP',
+    timezone: 'Africa/Cairo',
     language: 'en',
     taxRate: 10
   };
