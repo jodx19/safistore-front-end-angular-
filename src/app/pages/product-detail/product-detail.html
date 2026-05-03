@@ -40,13 +40,13 @@
         <!-- Gallery Section -->
         <div class="space-y-8" appReveal="100">
           <div class="relative group aspect-square rounded-[40px] overflow-hidden bg-white/5 border border-white/5 shadow-2xl transition-all duration-500 hover:border-brand-blue/20">
-            <img [src]="product.image" [alt]="product.title" class="w-full h-full object-contain p-12 transition-transform duration-700 group-hover:scale-105" />
+            <img [src]="product.thumbnail || product.images[0]" [alt]="product.title" class="w-full h-full object-contain p-12 transition-transform duration-700 group-hover:scale-105" />
             
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             
             <!-- Floating Badge -->
             <div class="absolute top-8 left-8">
-              <app-badge [variant]="product.stock > 0 ? 'success' : 'danger'" size="md">
+              <app-badge [variant]="product.stock > 0 ? 'success' : 'error'" size="md">
                 {{ product.stock > 0 ? 'Available' : 'Out of Stock' }}
               </app-badge>
             </div>
@@ -55,11 +55,11 @@
           <!-- Thumbnail Gallery (Mocking if more images existed) -->
           <div class="flex gap-4">
              <div class="w-24 h-24 rounded-2xl border-2 border-brand-blue p-2 bg-white/5">
-                <img [src]="product.image" class="w-full h-full object-contain opacity-100" />
+                <img [src]="product.thumbnail || product.images[0]" class="w-full h-full object-contain opacity-100" />
              </div>
              @for (i of [1,2,3]; track i) {
                <div class="w-24 h-24 rounded-2xl border-2 border-white/5 p-2 bg-white/5 opacity-40 grayscale pointer-events-none">
-                  <img [src]="product.image" class="w-full h-full object-contain" />
+                  <img [src]="product.thumbnail || product.images[0]" class="w-full h-full object-contain" />
                </div>
              }
           </div>
@@ -68,7 +68,7 @@
         <!-- Info Section -->
         <div class="flex flex-col" [appReveal]="200">
           <div class="mb-8">
-            <span class="text-brand-blue text-[13px] font-bold tracking-[0.2em] uppercase mb-4 block">{{ product.categoryName }}</span>
+            <span class="text-brand-blue text-[13px] font-bold tracking-[0.2em] uppercase mb-4 block">{{ product.category }}</span>
             <h1 class="text-[40px] md:text-[52px] font-display font-bold leading-tight mb-6">
               {{ product.title }}
             </h1>
@@ -192,7 +192,7 @@
                     }
                   </div>
                 </div>
-                <span class="ml-auto text-[11px] font-bold text-brand-muted uppercase tracking-widest">{{ review.createdAt | date:'MMM d, y' }}</span>
+                <span class="ml-auto text-[11px] font-bold text-brand-muted uppercase tracking-widest">{{ review.date | date:'MMM d, y' }}</span>
               </div>
               <p class="text-brand-muted leading-relaxed italic">"{{ review.comment }}"</p>
             </div>

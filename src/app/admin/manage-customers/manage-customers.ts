@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar';
+import { AdminLayoutComponent } from '../admin-layout/admin-layout';
 
 interface Customer {
   id: number;
@@ -18,7 +18,7 @@ interface Customer {
 @Component({
   selector: 'app-manage-customers',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, RouterModule, AdminLayoutComponent],
   templateUrl: './manage-customers.html',
   styleUrls: ['./manage-customers.css']
 })

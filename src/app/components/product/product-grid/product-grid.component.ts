@@ -1,12 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Product } from '../../../data/mock-data';
 import { ProductCardComponent } from '../product-card/product-card.component';
+import { SpinnerComponent } from '../../ui/spinner/spinner.component';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-product-grid',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent],
+  imports: [CommonModule, ProductCardComponent, SpinnerComponent],
   templateUrl: './product-grid.component.html',
   styleUrls: ['./product-grid.component.css']
 })

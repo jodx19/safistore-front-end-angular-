@@ -18,6 +18,7 @@ import {
   Product, 
   Review 
 } from '../../data/mock-data';
+import { RevealDirective } from '../../shared/directives/reveal.directive';
 
 @Component({
   selector: 'app-product-detail',
@@ -31,7 +32,8 @@ import {
     RatingComponent,
     SpinnerComponent,
     ModalComponent,
-    InputComponent
+    InputComponent,
+    RevealDirective
   ],
   templateUrl: './product-detail.html',
   styleUrls: ['./product-detail.css']

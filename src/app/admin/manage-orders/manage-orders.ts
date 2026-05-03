@@ -20,6 +20,22 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   error = "";
   private destroy$ = new Subject<void>();
 
+  get pendingOrders(): OrderDto[] {
+    return this.orders.filter(o => o.status?.toLowerCase() === 'pending');
+  }
+
+  get confirmedOrders(): OrderDto[] {
+    return this.orders.filter(o => o.status?.toLowerCase() === 'confirmed');
+  }
+
+  get shippedOrders(): OrderDto[] {
+    return this.orders.filter(o => o.status?.toLowerCase() === 'shipped');
+  }
+
+  get deliveredOrders(): OrderDto[] {
+    return this.orders.filter(o => o.status?.toLowerCase() === 'delivered');
+  }
+
   constructor(
     private authService: AuthService,
     private router: Router,

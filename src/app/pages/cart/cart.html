@@ -46,9 +46,9 @@
               <div class="flex gap-4">
                 <!-- Product Image -->
                 <div class="w-20 h-20 rounded-xl overflow-hidden bg-white/5 border border-white/5 flex-shrink-0">
-                  @if (item.productImage || item.imageUrl) {
-                    <img [src]="item.productImage || item.imageUrl" 
-                         [alt]="item.productTitle || item.title" 
+                  @if (item.productImage || item.image) {
+                    <img [src]="item.productImage || item.image" 
+                         [alt]="item.productTitle || item.name" 
                          class="w-full h-full object-cover" />
                   } @else {
                     <div class="w-full h-full flex items-center justify-center text-slate-500">
@@ -63,11 +63,11 @@
                 <div class="flex-1">
                   <div class="flex justify-between items-start mb-3">
                     <div>
-                      <h3 class="text-white font-semibold mb-1">{{ item.productTitle || item.title }}</h3>
+                      <h3 class="text-white font-semibold mb-1">{{ item.productTitle || item.name }}</h3>
                       <span class="inline-block px-2 py-1 rounded-full bg-[#6C4FF6]/10 
                                    border border-[#6C4FF6]/20 text-[#6C4FF6] text-[10px] 
                                    font-bold tracking-[0.2em] uppercase">
-                        {{ item.categoryName || 'Electronics' }}
+                        Electronics
                       </span>
                     </div>
                     <button (click)="removeItem(item.id)" 
@@ -107,7 +107,7 @@
                     <div>
                       <p class="text-slate-400 text-sm">Total Price</p>
                     </div>
-                    <p class="text-[#6C4FF6] font-bold text-lg">${{ (item.totalPrice || (item.priceAtAddition || item.price) * (item.quantity || 1)) }}</p>
+                    <p class="text-[#6C4FF6] font-bold text-lg">${{ item.totalPrice || (item.priceAtAddition && item.priceAtAddition * item.quantity) || (item.price && item.price * item.quantity) || 0 }}</p>
                   </div>
                 </div>
               </div>

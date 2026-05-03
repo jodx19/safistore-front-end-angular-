@@ -37,8 +37,8 @@
       @for (item of cartItems; track item.id) {
         <div class="flex gap-4 group">
           <div class="w-20 h-20 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0 relative cursor-pointer" (click)="closeDrawer(); router.navigate(['/products', item.productId || item.id])">
-            @if (item.imageUrl) {
-              <img [src]="item.imageUrl" [alt]="item.name || item.title" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            @if (item.productImage || item.image) {
+              <img [src]="item.productImage || item.image" [alt]="item.productTitle || item.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
             } @else {
               <span class="text-2xl">📦</span>
             }
@@ -47,7 +47,7 @@
           <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
             <div class="flex justify-between items-start gap-2">
               <h4 class="text-white font-bold text-[14px] leading-tight truncate hover:text-[#6C4FF6] cursor-pointer transition-colors" (click)="closeDrawer(); router.navigate(['/products', item.productId || item.id])">
-                {{ item.name || item.title }}
+                {{ item.productTitle || item.name }}
               </h4>
               <button (click)="removeItem(item.id)" class="text-[#94A3B8] hover:text-[#EF4444] transition-colors p-1">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
