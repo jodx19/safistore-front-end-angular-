@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { OrderClient, OrderDto } from '../../api-client/api-client';
 
 /** Matches `GET /api/v1/auth/me` — raw `UserDto` body (no ApiResponse wrapper). */
 interface AuthMeUserDto {
@@ -55,12 +56,17 @@ export class ProfileComponent implements OnInit {
   showPasswordForm = false;
   isLoading = true;
 
+  totalOrders = 0;
+  memberSince = 'Jan 2024';
+  accountStatus = 'Active';
+
   private apiUrl = `${environment.apiUrl}/auth`;
 
   constructor(
     private authService: AuthService,
     private notificationService: NotificationService,
     private http: HttpClient,
+    private orderClient: OrderClient,
     private router: Router
   ) {}
 
@@ -75,6 +81,13 @@ export class ProfileComponent implements OnInit {
         this.profileForm.firstName = user.firstName || '';
         this.profileForm.lastName = user.lastName || '';
         this.profileForm.email = user.email || '';
+        
+        // Format member since date
+        if (user.createdAt) {
+          const date = new Date(user.createdAt);
+          this.memberSince = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        }
+        
         this.isLoading = false;
       },
       error: (error) => {
@@ -82,6 +95,16 @@ export class ProfileComponent implements OnInit {
         this.notificationService.showError('❌ Failed to load profile data.');
         this.isLoading = false;
       }
+    });
+
+    // Load total orders
+    this.orderClient.getMyOrders().subscribe({
+      next: (response) => {
+        if (response?.success && response.data) {
+          this.totalOrders = response.data.length;
+        }
+      },
+      error: (err) => console.error('Failed to load orders', err)
     });
   }
 
