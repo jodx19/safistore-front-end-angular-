@@ -45,7 +45,7 @@
                 <div>
                   <label class="block text-[#94A3B8] text-[12px] uppercase tracking-wider font-bold mb-2">{{ field.label }}</label>
                   <input [type]="field.type"
-                         [(ngModel)]="general[field.key as keyof typeof general]"
+                         [(ngModel)]="$any(general)[field.key]"
                          [placeholder]="field.placeholder"
                          class="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white text-[14px] placeholder-[#94A3B8]/60 outline-none focus:border-[#6C4FF6]/50 focus:bg-white/10 transition-all"/>
                 </div>
@@ -167,11 +167,11 @@
                     <p class="text-white font-medium text-[14px]">{{ item.label }}</p>
                     <p class="text-[#94A3B8] text-[12px]">{{ item.desc }}</p>
                   </div>
-                  <button (click)="notifications[item.key as keyof typeof notifications] = !notifications[item.key as keyof typeof notifications]"
+                  <button (click)="toggleNotif(item.key)"
                           class="relative w-12 h-6 rounded-full transition-all duration-300"
-                          [class]="notifications[item.key as keyof typeof notifications] ? 'bg-[#6C4FF6]' : 'bg-white/10'">
+                          [class]="notifOn(item.key) ? 'bg-[#6C4FF6]' : 'bg-white/10'">
                     <span class="absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300"
-                          [class]="notifications[item.key as keyof typeof notifications] ? 'left-7' : 'left-1'"></span>
+                          [class]="notifOn(item.key) ? 'left-7' : 'left-1'"></span>
                   </button>
                 </div>
               }

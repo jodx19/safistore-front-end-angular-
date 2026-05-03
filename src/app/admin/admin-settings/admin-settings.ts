@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AdminLayoutComponent } from '../admin-layout/admin-layout';
+import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-admin-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, AdminLayoutComponent],
+  imports: [CommonModule, FormsModule, RouterModule, AdminSidebarComponent],
   templateUrl: './admin-settings.html',
   styleUrls: ['./admin-settings.css']
 })
@@ -87,5 +87,14 @@ export class AdminSettingsComponent {
     }
     this.notificationService.showSuccess(`✅ Invitation sent to ${this.inviteEmail}`);
     this.inviteEmail = '';
+  }
+
+  toggleNotif(key: string): void {
+    const rec = this.notifications as Record<string, boolean>;
+    rec[key] = !rec[key];
+  }
+
+  notifOn(key: string): boolean {
+    return (this.notifications as Record<string, boolean>)[key];
   }
 }
