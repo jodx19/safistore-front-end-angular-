@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from "@angular/router";
 import { CartService } from "../../services/cart";
 import { AuthService, User } from "../../services/auth.service";
+import { WishlistService } from "../../services/wishlist.service";
 import { Observable } from "rxjs";
 import { filter } from "rxjs/operators";
 
@@ -16,6 +17,7 @@ import { filter } from "rxjs/operators";
 })
 export class HeaderComponent implements OnInit {
   cartCount = 0;
+  wishlistCount = 0;
   searchQuery = "";
   isAuthenticated$: Observable<User | null>;
   currentUser: User | null = null;
@@ -30,6 +32,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private cartService: CartService,
+    private wishlistService: WishlistService,
     private authService: AuthService,
     private router: Router
   ) {
@@ -42,6 +45,10 @@ export class HeaderComponent implements OnInit {
         (sum: number, item: any) => sum + item.quantity,
         0
       );
+    });
+
+    this.wishlistService.wishlistItems$.subscribe((items: any[]) => {
+      this.wishlistCount = items.length;
     });
 
     this.isAuthenticated$.subscribe((user) => {
