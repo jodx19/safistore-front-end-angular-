@@ -15,18 +15,9 @@ export class CartDrawerComponent implements OnInit {
   cartItems: CartItem[] = [];
   total = 0;
 
-  constructor(private cartService: CartService, private router: Router) {}
+  constructor(private cartService: CartService, public router: Router) {}
 
   ngOnInit() {
-    this.cartService.cartDrawerOpen$.subscribe(isOpen => {
-      this.isOpen = isOpen;
-      if (isOpen) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
-    });
-
     this.cartService.cartItems$.subscribe(items => {
       this.cartItems = items;
       this.total = this.cartService.getCartTotal().total;
@@ -34,7 +25,9 @@ export class CartDrawerComponent implements OnInit {
   }
 
   closeDrawer() {
-    this.cartService.closeCartDrawer();
+    // Close drawer by setting isOpen to false
+    this.isOpen = false;
+    document.body.style.overflow = '';
   }
 
   updateQuantity(itemId: number, quantity: number) {

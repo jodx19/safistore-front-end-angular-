@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RevealDirective } from '../../shared/directives/reveal.directive';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule, RouterModule, RevealDirective],
+  imports: [CommonModule, FormsModule, RouterModule, RevealDirective],
   templateUrl: './about.html',
   styleUrls: ['./about.css']
 })

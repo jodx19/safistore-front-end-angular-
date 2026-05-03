@@ -38,6 +38,7 @@ export class CheckoutComponent implements OnInit {
 
   cartItems: any[] = [];
   cartTotal = 0;
+  orderNumber = '';
 
   isSubmitting = false;
   orderSuccess = false;
@@ -51,9 +52,9 @@ export class CheckoutComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.cartService.items$.subscribe(items => {
+    this.cartService.cartItems$.subscribe(items => {
       this.cartItems = items;
-      this.cartTotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+      this.cartTotal = items.reduce((acc: number, item: any) => acc + ((item.price || item.priceAtAddition) * item.quantity), 0);
     });
 
     const user = this.authService.getCurrentUser();

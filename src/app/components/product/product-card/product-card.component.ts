@@ -1,11 +1,16 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Product } from '../../../data/mock-data';
 import { CartService } from '../../../services/cart';
 import { WishlistService } from '../../../services/wishlist.service';
 import { Router } from '@angular/router';
+import { BadgeComponent } from '../../ui/badge/badge.component';
+import { RatingComponent } from '../../ui/rating/rating.component';
 
 @Component({
   selector: 'app-product-card',
+  standalone: true,
+  imports: [CommonModule, BadgeComponent, RatingComponent],
   templateUrl: './product-card.component.html',
   styleUrls: ['./product-card.component.css']
 })
