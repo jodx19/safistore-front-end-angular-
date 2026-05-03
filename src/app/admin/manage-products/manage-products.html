@@ -1,194 +1,257 @@
-<app-admin-layout pageTitle="Manage Products">
+<app-admin-layout pageTitle="Manage Products" pageSubtitle="Create, update, and monitor inventory">
+  <div class="relative">
+    <!-- Background glow orbs -->
+    <div class="absolute w-[600px] h-[600px] rounded-full bg-[rgba(74,108,247,0.12)] 
+         blur-[120px] -top-48 -left-48 pointer-events-none animate-pulse-slow"></div>
+    <div class="absolute w-[500px] h-[500px] rounded-full bg-[rgba(106,61,232,0.1)] 
+         blur-[100px] top-1/2 -right-24 pointer-events-none animate-drift"></div>
 
-  <!-- Background glow orbs -->
-  <div class="absolute w-[600px] h-[600px] rounded-full bg-[rgba(74,108,247,0.12)] 
-       blur-[120px] -top-48 -left-48 pointer-events-none animate-pulse-slow"></div>
-  <div class="absolute w-[500px] h-[500px] rounded-full bg-[rgba(106,61,232,0.1)] 
-       blur-[100px] top-1/2 -right-24 pointer-events-none animate-drift"></div>
+    <!-- Top action bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <h2 class="text-2xl font-black text-white">Product Catalog</h2>
+        <span class="inline-block mt-2 px-4 py-1.5 rounded-full bg-[#6C4FF6]/10 
+                     border border-[#6C4FF6]/20 text-[#6C4FF6] text-[11px] 
+                     font-bold tracking-[0.2em] uppercase">
+          {{ products.length }} Products
+        </span>
+      </div>
 
-  <!-- Top action bar -->
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <h2 class="text-xl font-bold text-white">Product Catalog</h2>
-      <span class="inline-block px-3 py-1 rounded-full bg-[#6C4FF6]/10 
-                   border border-[#6C4FF6]/20 text-[#6C4FF6] text-[11px] 
-                   font-bold tracking-[0.2em] uppercase">
-        {{ products.length }} Products
-      </span>
+      <button
+        type="button"
+        (click)="showForm = !showForm"
+        class="bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
+               px-6 py-3 rounded-xl hover:opacity-90 transition-all 
+               shadow-[0_0_20px_rgba(108,79,246,0.4)] inline-flex items-center gap-2"
+      >
+        <svg *ngIf="!showForm" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        <svg *ngIf="showForm" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+        {{ showForm ? 'Cancel' : 'Add New Product' }}
+      </button>
     </div>
-    <button (click)="showForm = !showForm"
-            class="bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
-                   px-6 py-3 rounded-xl hover:opacity-90 transition-all 
-                   shadow-[0_0_20px_rgba(108,79,246,0.4)] flex items-center gap-2">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        @if (showForm) {
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        } @else {
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        }
-      </svg>
-      {{ showForm ? 'Cancel' : 'Add New Product' }}
-    </button>
-  </div>
 
-  <!-- Success/Error notifications -->
-  @if (success) {
-    <div class="bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] p-4 rounded-xl mb-6 flex items-center gap-3">
-      <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-      </svg>
-      <span class="font-bold text-sm">{{ success }}</span>
+    <!-- Success/Error notification -->
+    <div *ngIf="success" class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-4 mb-6 flex items-start gap-3 border-l-4 border-l-[#10B981]">
+      <div class="w-10 h-10 rounded-xl bg-[#10B981]/15 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-[#10B981]" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+      </div>
+      <div>
+        <p class="text-sm font-bold text-white">Success</p>
+        <p class="text-xs text-slate-400 mt-0.5">{{ success }}</p>
+      </div>
     </div>
-  }
 
-  @if (error) {
-    <div class="bg-[#EF4444]/15 border border-[#EF4444]/30 text-[#EF4444] p-4 rounded-xl mb-6 flex items-center gap-3">
-      <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-      </svg>
-      <span class="font-bold text-sm">{{ error }}</span>
+    <div *ngIf="error" class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-4 mb-6 flex items-start gap-3 border-l-4 border-l-[#EF4444]">
+      <div class="w-10 h-10 rounded-xl bg-[#EF4444]/15 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-[#EF4444]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+      </div>
+      <div>
+        <p class="text-sm font-bold text-white">Error</p>
+        <p class="text-xs text-slate-400 mt-0.5">{{ error }}</p>
+      </div>
     </div>
-  }
 
-  <!-- Add/Edit Product Form -->
-  @if (showForm) {
-    <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6 mb-6">
-      <h3 class="text-lg font-bold text-white mb-6">
-        {{ editingProduct ? 'Edit Product Details' : 'Configure New Product' }}
-      </h3>
+    <!-- Add/Edit Product Form -->
+    <div *ngIf="showForm" class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6 mb-6">
+      <div class="flex items-center justify-between gap-4 mb-6">
+        <h3 class="text-lg font-black text-white">
+          {{ editingProduct ? 'Edit Product Details' : 'Configure New Product' }}
+        </h3>
+        <span class="text-xs text-slate-400">
+          {{ editingProduct ? 'Update fields then save changes.' : 'Fill in details then publish.' }}
+        </span>
+      </div>
 
       <form class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-slate-400 text-sm font-medium mb-2">Product Name</label>
-          <input type="text" [(ngModel)]="newProduct.title" name="title"
-                 class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                        placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                        focus:bg-white/10 transition-all"
-                 placeholder="e.g. Premium Wireless Headphones" />
+          <label class="block text-slate-400 text-sm font-semibold mb-2">Product Name</label>
+          <input
+            type="text"
+            [(ngModel)]="newProduct.title"
+            name="title"
+            class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                   placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                   focus:bg-white/10 transition-all"
+            placeholder="e.g. Premium Wireless Headphones"
+          />
         </div>
+
         <div>
-          <label class="block text-slate-400 text-sm font-medium mb-2">Price USD</label>
-          <input type="number" [(ngModel)]="newProduct.price" name="price"
-                 class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                        placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                        focus:bg-white/10 transition-all"
-                 placeholder="0.00" />
+          <label class="block text-slate-400 text-sm font-semibold mb-2">Price USD</label>
+          <input
+            type="number"
+            [(ngModel)]="newProduct.price"
+            name="price"
+            class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                   placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                   focus:bg-white/10 transition-all"
+            placeholder="0.00"
+          />
         </div>
+
         <div>
-          <label class="block text-slate-400 text-sm font-medium mb-2">Stock</label>
-          <input type="number" [(ngModel)]="newProduct.stock" name="stock"
-                 class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                        placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                        focus:bg-white/10 transition-all"
-                 placeholder="0" />
+          <label class="block text-slate-400 text-sm font-semibold mb-2">Stock</label>
+          <input
+            type="number"
+            [(ngModel)]="newProduct.stock"
+            name="stock"
+            class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                   placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                   focus:bg-white/10 transition-all"
+            placeholder="0"
+          />
         </div>
+
         <div>
-          <label class="block text-slate-400 text-sm font-medium mb-2">Category</label>
-          <select [(ngModel)]="newProduct.categoryId" name="categoryId"
-                  class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                         outline-none focus:border-[#6C4FF6]/40 focus:bg-white/10 transition-all">
-            <option [value]="1">Electronics</option>
-            <option [value]="2">Fashion</option>
-            <option [value]="3">Home</option>
-            <option [value]="4">Sports</option>
-            <option [value]="5">Books</option>
+          <label class="block text-slate-400 text-sm font-semibold mb-2">Category</label>
+          <select
+            [(ngModel)]="newProduct.categoryId"
+            name="categoryId"
+            class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                   outline-none focus:border-[#6C4FF6]/40 focus:bg-white/10 transition-all"
+          >
+            <option [value]="1" class="bg-[#0A1628]">Electronics</option>
+            <option [value]="2" class="bg-[#0A1628]">Fashion</option>
+            <option [value]="3" class="bg-[#0A1628]">Home</option>
+            <option [value]="4" class="bg-[#0A1628]">Sports</option>
+            <option [value]="5" class="bg-[#0A1628]">Books</option>
           </select>
         </div>
+
         <div class="md:col-span-2">
-          <label class="block text-slate-400 text-sm font-medium mb-2">Description</label>
-          <textarea [(ngModel)]="newProduct.description" name="description" rows="3"
-                    class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                           placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                           focus:bg-white/10 transition-all"
-                    placeholder="Describe product value proposition..."></textarea>
+          <label class="block text-slate-400 text-sm font-semibold mb-2">Description</label>
+          <textarea
+            [(ngModel)]="newProduct.description"
+            name="description"
+            rows="3"
+            class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                   placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                   focus:bg-white/10 transition-all"
+            placeholder="Describe product value proposition..."
+          ></textarea>
         </div>
+
         <div class="md:col-span-2">
-          <label class="block text-slate-400 text-sm font-medium mb-2">Image URL</label>
-          <input type="text" [(ngModel)]="newProduct.imageUrl" name="imageUrl"
-                 class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-white 
-                        placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
-                        focus:bg-white/10 transition-all"
-                 placeholder="https://example.com/image.jpg" />
+          <label class="block text-slate-400 text-sm font-semibold mb-2">Image URL</label>
+          <input
+            type="text"
+            [(ngModel)]="newProduct.imageUrl"
+            name="imageUrl"
+            class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
+                   placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
+                   focus:bg-white/10 transition-all"
+            placeholder="https://example.com/image.jpg"
+          />
         </div>
-        <div class="md:col-span-2 flex gap-4">
-          <button (click)="editingProduct ? saveEdit() : addProduct()" [disabled]="loading"
-                  class="flex-1 bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
-                         px-6 py-3 rounded-xl hover:opacity-90 transition-all 
-                         shadow-[0_0_20px_rgba(108,79,246,0.4)] disabled:opacity-50">
+
+        <div class="md:col-span-2 flex flex-col sm:flex-row gap-4 pt-2">
+          <button
+            type="button"
+            (click)="editingProduct ? saveEdit() : addProduct()"
+            [disabled]="loading"
+            class="flex-1 bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
+                   px-6 py-3 rounded-xl hover:opacity-90 transition-all 
+                   shadow-[0_0_20px_rgba(108,79,246,0.4)] disabled:opacity-50"
+          >
             {{ editingProduct ? 'Save Changes' : 'Publish Product' }}
           </button>
-          <button type="button" (click)="cancelEdit()"
-                  class="px-6 py-3 bg-white/5 border border-white/5 rounded-xl text-white font-bold 
-                         hover:bg-white/10 transition-all">
+          <button
+            type="button"
+            (click)="cancelEdit()"
+            class="px-6 py-3 bg-white/5 border border-white/5 rounded-xl text-white font-bold 
+                   hover:bg-white/10 transition-all"
+          >
             Cancel
           </button>
         </div>
       </form>
     </div>
-  }
 
-  <!-- Products Table -->
-  <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl">
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead>
-          <tr class="border-b border-white/5">
-            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">#</th>
-            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Image</th>
-            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
-            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</th>
-            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
-            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Stock</th>
-            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (product of products; track product.id; let i = $index) {
-            <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
-              <td class="py-3 px-4 text-sm text-slate-400">{{ i + 1 }}</td>
-              <td class="py-3 px-4">
+    <!-- Products Table -->
+    <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-white/5">
+              <th class="text-left py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider">#</th>
+              <th class="text-left py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider">Image</th>
+              <th class="text-left py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+              <th class="text-left py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</th>
+              <th class="text-left py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
+              <th class="text-left py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider">Stock</th>
+              <th class="text-left py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of products; let i = index" class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+              <td class="py-4 px-6 text-sm text-slate-400">{{ i + 1 }}</td>
+              <td class="py-4 px-6">
                 <div class="w-14 h-14 rounded-xl overflow-hidden bg-white/5 border border-white/5">
-                  @if (product.imageUrl) {
-                    <img [src]="product.imageUrl" class="w-full h-full object-cover" />
-                  } @else {
+                  <img *ngIf="product.imageUrl; else noImage" [src]="product.imageUrl" class="w-full h-full object-cover" />
+                  <ng-template #noImage>
                     <div class="w-full h-full flex items-center justify-center text-slate-500">
                       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 17h18M5 7l2 10h10l2-10"></path>
                       </svg>
                     </div>
-                  }
+                  </ng-template>
                 </div>
               </td>
-              <td class="py-3 px-4">
-                <div class="text-sm font-medium text-white">{{ product.title }}</div>
+              <td class="py-4 px-6">
+                <div class="text-sm font-semibold text-white">{{ product.title }}</div>
               </td>
-              <td class="py-3 px-4 text-sm text-slate-400">{{ product.categoryName || product.categoryId }}</td>
-              <td class="py-3 px-4 text-sm font-semibold text-white">${{ product.price }}</td>
-              <td class="py-3 px-4">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      [class]="product.stock > 10
-                        ? 'bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30'
-                        : (product.stock > 0 ? 'bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30' : 'bg-[#EF4444]/15 text-[#EF4444] border border-[#EF4444]/30')">
+              <td class="py-4 px-6 text-sm text-slate-400">{{ product.categoryName || product.categoryId }}</td>
+              <td class="py-4 px-6 text-sm font-bold text-white">${{ product.price }}</td>
+              <td class="py-4 px-6">
+                <span
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
+                  [ngClass]="{
+                    'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30': product.stock > 10,
+                    'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30': product.stock > 0 && product.stock <= 10,
+                    'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30': product.stock === 0
+                  }"
+                >
                   {{ product.stock }} units
                 </span>
               </td>
-              <td class="py-3 px-4">
-                <div class="flex items-center gap-2">
-                  <button (click)="editProduct(product)" 
-                          class="text-[#3B82F6] hover:text-[#3B82F6]/80 text-sm font-semibold">
+              <td class="py-4 px-6">
+                <div class="flex items-center gap-3">
+                  <button
+                    type="button"
+                    (click)="editProduct(product)"
+                    class="text-[#3B82F6] hover:opacity-80 text-sm font-bold"
+                  >
                     Edit
                   </button>
-                  <button (click)="deleteProduct(product.id)" 
-                          class="text-[#EF4444] hover:text-[#EF4444]/80 text-sm font-semibold">
+                  <button
+                    type="button"
+                    (click)="deleteProduct(product.id)"
+                    class="text-[#EF4444] hover:opacity-80 text-sm font-bold"
+                  >
                     Delete
                   </button>
                 </div>
               </td>
             </tr>
-          }
-        </tbody>
-      </table>
+
+            <tr *ngIf="!loading && products.length === 0">
+              <td colspan="7" class="px-6 py-12">
+                <div class="text-center text-slate-400">
+                  No products available yet.
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-
 </app-admin-layout>
