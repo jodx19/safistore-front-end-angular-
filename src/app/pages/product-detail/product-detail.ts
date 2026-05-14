@@ -8,10 +8,6 @@ import { AuthService } from '../../services/auth.service';
 import { WishlistService } from '../../services/wishlist.service';
 import { ButtonComponent } from '../../components/ui/button/button.component';
 import { BadgeComponent } from '../../components/ui/badge/badge.component';
-import { RatingComponent } from '../../components/ui/rating/rating.component';
-import { SpinnerComponent } from '../../components/ui/spinner/spinner.component';
-import { ModalComponent } from '../../components/ui/modal/modal.component';
-import { InputComponent } from '../../components/ui/input/input.component';
 import { 
   getProductById, 
   getReviewsByProductId, 
@@ -29,10 +25,6 @@ import { RevealDirective } from '../../shared/directives/reveal.directive';
     RouterModule,
     ButtonComponent,
     BadgeComponent,
-    RatingComponent,
-    SpinnerComponent,
-    ModalComponent,
-    InputComponent,
     RevealDirective
   ],
   templateUrl: './product-detail.html',
@@ -166,7 +158,7 @@ export class ProductDetailComponent implements OnInit {
     this.authService.currentUser$.subscribe(user => {
       if (!user) {
         this.notificationService.showError('Authentication required to publish review.');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/auth/login']);
         return;
       }
 
@@ -199,7 +191,7 @@ export class ProductDetailComponent implements OnInit {
   toggleReviewForm(): void {
     if (!this.authService.isAuthenticated()) {
       this.notificationService.showError('Authentication required.');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/login']);
       return;
     }
     this.showReviewForm = !this.showReviewForm;

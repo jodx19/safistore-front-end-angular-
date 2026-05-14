@@ -8,7 +8,7 @@ import { AdminLayoutComponent } from '../admin-layout/admin-layout';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, AdminLayoutComponent],
+  imports: [CommonModule, RouterLink, AdminLayoutComponent],
   templateUrl: './admin-dashboard.html',
   styleUrls: ['./admin-dashboard.css']
 })

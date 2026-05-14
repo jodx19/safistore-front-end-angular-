@@ -5,15 +5,12 @@ import { Router } from '@angular/router';
 import { CartService, CartItem } from '../../services/cart';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
-import { ButtonComponent } from '../../components/ui/button/button.component';
-import { BadgeComponent } from '../../components/ui/badge/badge.component';
-import { InputComponent } from '../../components/ui/input/input.component';
-import { SpinnerComponent } from '../../components/ui/spinner/spinner.component';
+
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, BadgeComponent, InputComponent, SpinnerComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './cart.html',
   styleUrls: ['./cart.css']
 })
@@ -104,7 +101,7 @@ export class CartComponent implements OnInit {
     // ✅ Prevent checkout without login
     if (!this.authService.isAuthenticated()) {
       this.notificationService.showError('Please log in to proceed to checkout.');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/login']);
       return;
     }
 

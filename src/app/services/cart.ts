@@ -53,6 +53,10 @@ export class CartService {
   private isLoading = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoading.asObservable();
 
+  public cartCount$ = this.cartItems.pipe(
+    map(items => items.reduce((sum, item) => sum + item.quantity, 0))
+  );
+
   constructor(
     private http: HttpClient,
     private authService: AuthService,
@@ -125,7 +129,7 @@ export class CartService {
     // 1) Prevent adding if user not logged in
     if (!this.authService.isLoggedIn()) {
       this.notificationService.showWarning('🔐 Please log in to add items to cart.');
-      this.router.navigate(["/login"]);
+      this.router.navigate(["/auth/login"]);
       return of(false);
     }
 

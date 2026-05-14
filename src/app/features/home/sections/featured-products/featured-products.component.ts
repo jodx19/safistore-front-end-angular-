@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ProductGridComponent } from '../../../../components/product/product-grid/product-grid.component';
-import { getFeaturedProducts, Product } from '../../../../data/mock-data';
+import { getFeaturedProducts } from '../../../../data/mock-data';
+import { Product } from '../../../../services/product';
 import { CartService } from '../../../../services/cart';
 import { WishlistService } from '../../../../services/wishlist.service';
 
@@ -49,7 +50,30 @@ export class FeaturedProductsComponent {
     private cartService: CartService,
     private wishlistService: WishlistService
   ) {
-    this.featuredProducts = getFeaturedProducts().slice(0, 8); // Show first 8 featured products
+    const mockProducts = getFeaturedProducts().slice(0, 8);
+    this.featuredProducts = mockProducts.map(p => ({
+      id: p.id,
+      title: p.title || p.name,
+      description: p.description,
+      price: p.price,
+      stock: p.stock,
+      categoryName: p.category,
+      imageUrl: p.thumbnail || p.images?.[0],
+      image: p.thumbnail || p.images?.[0],
+      rating: p.rating,
+      categoryId: 0,
+      name: p.name,
+      brand: p.brand,
+      isNew: p.isNew,
+      isFeatured: p.isFeatured,
+      isSale: p.isSale,
+      comparePrice: p.comparePrice,
+      shortDescription: p.shortDescription,
+      images: p.images,
+      thumbnail: p.thumbnail,
+      reviewCount: p.reviewCount,
+      category: p.category
+    }));
   }
 
   onWishlistToggle(product: Product): void {

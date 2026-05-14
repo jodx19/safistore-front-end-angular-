@@ -105,7 +105,7 @@ export class OrderReviewComponent implements OnInit, OnDestroy {
     const user = this.getCurrentUser();
     if (!user) {
       this.notificationService.showError('Please log in to place an order');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/login']);
       return;
     }
 

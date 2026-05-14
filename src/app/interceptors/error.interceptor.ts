@@ -84,8 +84,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         const message = resolveErrorMessage(error);
         notification.showError(message);
 
-        if (error.status === 403 && !router.url.includes('/login')) {
-          router.navigate(['/unauthorized']);
+        if (error.status === 403 && !router.url.includes('/auth/login')) {
+          router.navigate(['/auth/login']);
         }
       }
 

@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Product } from '../../../data/mock-data';
+import { Product } from '../../../services/product';
 import { CartService } from '../../../services/cart';
 import { WishlistService } from '../../../services/wishlist.service';
 import { Router } from '@angular/router';

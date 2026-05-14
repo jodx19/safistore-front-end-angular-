@@ -38,10 +38,15 @@
       </button>
 
       <!-- Wishlist -->
-      <a routerLink="/wishlist" class="text-white/60 hover:text-[#EF4444] p-2 transition-colors hidden sm:block">
+      <a routerLink="/wishlist" class="relative text-white/60 hover:text-[#EF4444] p-2 transition-colors hidden sm:block">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
         </svg>
+        @if ((wishlistCount$ | async) !== null && (wishlistCount$ | async)! > 0) {
+          <span class="absolute top-0 right-0 h-4 min-w-[16px] px-1 flex items-center justify-center bg-[#EF4444] text-[10px] font-bold text-white rounded-full border border-[#050B18]">
+            {{ wishlistCount$ | async }}
+          </span>
+        }
       </a>
 
       <!-- Cart (Triggers Drawer in future, currently routes to /cart) -->
@@ -61,7 +66,7 @@
         @if (currentUser$ | async; as user) {
           <div class="relative group cursor-pointer flex items-center gap-2 py-2">
             <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#6C4FF6] to-[#3B82F6] flex items-center justify-center text-white font-bold text-sm uppercase shadow-lg shadow-[#6C4FF6]/20 border border-white/10">
-              {{ user.firstName?.charAt(0) || user.email?.charAt(0) || 'U' }}
+              {{ user.firstName.charAt(0) || user.email.charAt(0) || 'U' }}
             </div>
             
             <!-- Dropdown -->

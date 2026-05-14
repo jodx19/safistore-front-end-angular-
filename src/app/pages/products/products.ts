@@ -7,16 +7,7 @@ import { NotificationService } from '../../services/notification.service';
 import { ProductGridComponent } from '../../components/product/product-grid/product-grid.component';
 import { ButtonComponent } from '../../components/ui/button/button.component';
 import { BadgeComponent } from '../../components/ui/badge/badge.component';
-import { InputComponent } from '../../components/ui/input/input.component';
-import { SpinnerComponent } from '../../components/ui/spinner/spinner.component';
-import { 
-  MOCK_PRODUCTS, 
-  CATEGORIES, 
-  BRANDS, 
-  getProductsByCategory, 
-  searchProducts,
-  Product 
-} from '../../data/mock-data';
+import { ProductService, Product } from '../../services/product';
 
 @Component({
   selector: "app-products",
@@ -27,9 +18,7 @@ import {
     RouterModule, 
     ProductGridComponent,
     ButtonComponent,
-    BadgeComponent,
-    InputComponent,
-    SpinnerComponent
+    BadgeComponent
   ],
   templateUrl: "./products.html",
   styleUrls: ["./products.css"],
@@ -37,7 +26,7 @@ import {
 export class ProductsComponent implements OnInit {
   products: Product[] = [];
   filteredProducts: Product[] = [];
-  categories: string[] = CATEGORIES;
+  categories: string[] = ['Computers', 'Audio', 'Wearables', 'Gaming', 'Accessories', 'Phone'];
   selectedCategory = "All";
   selectedBrands: string[] = [];
   minPrice = 0;
@@ -57,7 +46,8 @@ export class ProductsComponent implements OnInit {
   constructor(
     private cartService: CartService,
     private route: ActivatedRoute,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private productService: ProductService
   ) {}
 
   ngOnInit() {
@@ -74,12 +64,39 @@ export class ProductsComponent implements OnInit {
     this.loading = true;
     this.error = '';
     
-    // Simulate API call delay
-    setTimeout(() => {
-      this.products = [...MOCK_PRODUCTS];
-      this.applyFilters();
-      this.loading = false;
-    }, 500);
+    this.productService.getAllProducts().subscribe({
+      next: (response: any) => {
+        // Handle various possible backend response formats
+        let items = [];
+        if (Array.isArray(response)) {
+          items = response;
+        } else if (response?.data?.items) {
+          items = response.data.items;
+        } else if (response?.data && Array.isArray(response.data)) {
+          items = response.data;
+        } else if (response?.items) {
+          items = response.items;
+        }
+
+        this.products = items.map((p: any) => ({
+          ...p,
+          id: p.id,
+          title: p.title || p.name,
+          categoryName: p.categoryName || p.category,
+          price: p.price,
+          rating: p.rating || 0,
+          stock: p.stock || 0,
+          image: p.imageUrl || p.image || 'https://via.placeholder.com/300'
+        }));
+        this.applyFilters();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching products:', err);
+        this.error = 'Failed to load products. Please try again later.';
+        this.loading = false;
+      }
+    });
   }
 
   goToPage(page: number): void {
@@ -122,7 +139,7 @@ export class ProductsComponent implements OnInit {
 
     // Brand filter
     if (this.selectedBrands.length > 0) {
-      filtered = filtered.filter(p => this.selectedBrands.includes(p.brand));
+      filtered = filtered.filter(p => p.brand && this.selectedBrands.includes(p.brand));
     }
 
     // Price filter
@@ -135,8 +152,10 @@ export class ProductsComponent implements OnInit {
 
     // Search filter
     if (this.searchQuery.trim()) {
-      filtered = searchProducts(this.searchQuery).filter(p => 
-        filtered.some(fp => fp.id === p.id)
+      const query = this.searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(p => 
+        (p.title && p.title.toLowerCase().includes(query)) || 
+        (p.description && p.description.toLowerCase().includes(query))
       );
     }
 

@@ -22,6 +22,18 @@ export interface Product {
   category?: string;
   image?: string;
   name?: string;
+  brand?: string;
+  isNew?: boolean;
+  isFeatured?: boolean;
+  isSale?: boolean;
+  comparePrice?: number;
+  shortDescription?: string;
+  images?: string[];
+  thumbnail?: string;
+  reviewCount?: number;
+  discountPercentage?: number;
+  specifications?: Record<string, string>;
+  variants?: { color: string; size?: string; price?: number; stock?: number }[];
 }
 
 @Injectable({

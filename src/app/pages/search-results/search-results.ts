@@ -7,8 +7,7 @@ import { ProductService, Product } from '../../services/product';
 import { CartService } from '../../services/cart';
 import { NotificationService } from '../../services/notification.service';
 import { BreadcrumbsComponent, BreadcrumbItem } from '../../components/breadcrumbs/breadcrumbs';
-import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader';
-import { EmptyStateComponent } from '../../components/empty-state/empty-state';
+
 
 /**
  * Search Results Component
@@ -21,9 +20,7 @@ import { EmptyStateComponent } from '../../components/empty-state/empty-state';
     CommonModule,
     FormsModule,
     RouterModule,
-    BreadcrumbsComponent,
-    SkeletonLoaderComponent,
-    EmptyStateComponent
+    BreadcrumbsComponent
   ],
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.css']
