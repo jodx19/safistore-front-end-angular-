@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { BreadcrumbItem } from '../../components/breadcrumbs/breadcrumbs';
 import { Subject, takeUntil } from 'rxjs';
 import { OrderService, Order } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
-import { BreadcrumbsComponent, BreadcrumbItem } from '../../components/breadcrumbs/breadcrumbs';
-import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader';
-import { EmptyStateComponent } from '../../components/empty-state/empty-state';
+
 
 /**
  * Order History Component
@@ -18,10 +17,7 @@ import { EmptyStateComponent } from '../../components/empty-state/empty-state';
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    BreadcrumbsComponent,
-    SkeletonLoaderComponent,
-    EmptyStateComponent
+    RouterModule
   ],
   templateUrl: './order-history.html',
   styleUrls: ['./order-history.css']
@@ -67,7 +63,7 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
     if (!user) {
       this.loading = false;
       this.notificationService.showError('Please log in to view your orders');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/login']);
       return;
     }
 

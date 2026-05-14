@@ -156,11 +156,11 @@
                 <span
                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
                   [ngClass]="{
-                    'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30': order.status?.toLowerCase() === 'pending',
-                    'bg-[#3B82F6]/15 text-[#3B82F6] border-[#3B82F6]/30': order.status?.toLowerCase() === 'confirmed',
-                    'bg-[#22D3EE]/15 text-[#22D3EE] border-[#22D3EE]/30': order.status?.toLowerCase() === 'shipped',
-                    'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30': order.status?.toLowerCase() === 'delivered',
-                    'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30': order.status?.toLowerCase() === 'cancelled',
+                    'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30': order.status.toLowerCase() === 'pending',
+                    'bg-[#3B82F6]/15 text-[#3B82F6] border-[#3B82F6]/30': order.status.toLowerCase() === 'confirmed',
+                    'bg-[#22D3EE]/15 text-[#22D3EE] border-[#22D3EE]/30': order.status.toLowerCase() === 'shipped',
+                    'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30': order.status.toLowerCase() === 'delivered',
+                    'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30': order.status.toLowerCase() === 'cancelled',
                     'bg-[#6C4FF6]/15 text-[#6C4FF6] border-[#6C4FF6]/30': order.status && ['pending','confirmed','shipped','delivered','cancelled'].indexOf(order.status.toLowerCase()) === -1
                   }"
                 >
@@ -172,7 +172,7 @@
                 <div class="flex items-center gap-2">
                   <select
                     (change)="updateStatus(order, $event)"
-                    [value]="order.status?.toLowerCase()"
+                    [value]="order.status.toLowerCase()"
                     class="h-10 bg-white/5 border border-white/5 rounded-xl px-3 text-xs text-white 
                            outline-none focus:border-[#6C4FF6]/40 focus:bg-white/10 transition-all"
                   >

@@ -1,8 +1,10 @@
 import { Component, HostListener, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { CartService } from '../../services/cart.service';
+import { CartService } from '../../../services/cart';
 import { AuthService } from '../../../services/auth.service';
+import { WishlistService } from '../../../services/wishlist.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -14,12 +16,16 @@ import { AuthService } from '../../../services/auth.service';
 export class NavbarComponent {
   private cartService = inject(CartService);
   private authService = inject(AuthService);
+  private wishlistService = inject(WishlistService);
   
   isScrolled = false;
   isMenuOpen = false;
   
   cartCount$ = this.cartService.cartCount$;
   currentUser$ = this.authService.currentUser$;
+  wishlistCount$ = this.wishlistService.wishlistItems$.pipe(
+    map(items => items.length)
+  );
 
   get isAdmin(): boolean {
     return this.authService.isAdmin();

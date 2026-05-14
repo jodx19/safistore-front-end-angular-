@@ -98,7 +98,7 @@ export class AuthService {
     // Fire-and-forget server-side logout (revoke refresh token)
     this.authClient.logout().subscribe({ error: () => { } });
     this.clearSession();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 
   logoutAll(): void {

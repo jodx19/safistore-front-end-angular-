@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Product } from '../../../data/mock-data';
+import { Product } from '../../../services/product';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { SpinnerComponent } from '../../ui/spinner/spinner.component';
 import { CommonModule } from '@angular/common';

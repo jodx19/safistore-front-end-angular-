@@ -105,11 +105,11 @@
                 <span
                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
                   [ngClass]="{
-                    'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30': order.status?.toLowerCase() === 'pending',
-                    'bg-[#3B82F6]/15 text-[#3B82F6] border-[#3B82F6]/30': order.status?.toLowerCase() === 'confirmed',
-                    'bg-[#22D3EE]/15 text-[#22D3EE] border-[#22D3EE]/30': order.status?.toLowerCase() === 'shipped' || order.status?.toLowerCase() === 'in transit',
-                    'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30': order.status?.toLowerCase() === 'delivered',
-                    'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30': order.status?.toLowerCase() === 'cancelled',
+                    'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30': order.status.toLowerCase() === 'pending',
+                    'bg-[#3B82F6]/15 text-[#3B82F6] border-[#3B82F6]/30': order.status.toLowerCase() === 'confirmed',
+                    'bg-[#22D3EE]/15 text-[#22D3EE] border-[#22D3EE]/30': order.status.toLowerCase() === 'shipped' || order.status.toLowerCase() === 'in transit',
+                    'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30': order.status.toLowerCase() === 'delivered',
+                    'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30': order.status.toLowerCase() === 'cancelled',
                     'bg-[#6C4FF6]/15 text-[#6C4FF6] border-[#6C4FF6]/30': order.status && ['pending','confirmed','shipped','in transit','delivered','cancelled'].indexOf(order.status.toLowerCase()) === -1
                   }"
                 >

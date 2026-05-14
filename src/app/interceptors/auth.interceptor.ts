@@ -12,7 +12,7 @@ import { ApiResponse, AuthResponseDto } from '../api-client/api-client';
  * 1. Attaches `Authorization: Bearer <token>` to all API requests.
  * 2. On 401: attempts a single token refresh.
  * 3. If refresh succeeds → retries original request with new token.
- * 4. If refresh fails → clears session and navigates to /login.
+ * 4. If refresh fails → clears session and navigates to /auth/login.
  *
  * Public endpoints (login, register, refresh-token) skip the bearer header.
  */
@@ -58,7 +58,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (!refreshToken || !currentAccess) {
         tokenStorage.clear();
-        router.navigate(['/login']);
+        router.navigate(['/auth/login']);
         return throwError(() => error);
       }
 
@@ -87,7 +87,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
             if (!newAccess) {
               tokenStorage.clear();
-              router.navigate(['/login']);
+              router.navigate(['/auth/login']);
               return throwError(() => new Error('Refresh response missing token'));
             }
 
@@ -100,7 +100,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             isRefreshing = false;
             refreshDone$.next(null);
             tokenStorage.clear();
-            router.navigate(['/login']);
+            router.navigate(['/auth/login']);
             return throwError(() => refreshError);
           })
         );
