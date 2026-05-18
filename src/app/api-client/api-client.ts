@@ -437,6 +437,36 @@ export class OrderClient extends ApiClientBase {
 }
 
 // ---------------------------------------------------------------------------
+// Notification Client
+// ---------------------------------------------------------------------------
+
+export interface NotificationDto {
+  id: number;
+  type: string;
+  message: string;
+  relatedOrderId: number | null;
+  isRead: boolean;
+  createdAt: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class NotificationClient extends ApiClientBase {
+  constructor(http: HttpClient) { super(http); }
+
+  getNotifications(): Observable<{ success: boolean; data: NotificationDto[]; unreadCount: number }> {
+    return this.getJson<{ success: boolean; data: NotificationDto[]; unreadCount: number }>('/notifications');
+  }
+
+  markAsRead(id: number): Observable<{ success: boolean }> {
+    return this.postJson<{ success: boolean }>(`/notifications/${id}/read`, {});
+  }
+
+  markAllAsRead(): Observable<{ success: boolean }> {
+    return this.postJson<{ success: boolean }>('/notifications/read-all', {});
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Review Client
 // ---------------------------------------------------------------------------
 
