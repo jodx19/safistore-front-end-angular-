@@ -108,20 +108,47 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
    */
   private loadProducts(): void {
     this.loading = true;
-    this.productService.getAllProducts()
+    this.productService.getAllProducts({ search: this.searchQuery || undefined })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (data: any[]) => {
-          this.products = data.map((product: any) => ({
+        next: (response: any) => {
+          let items: any[] = [];
+          if (response?.data?.products) {
+            items = response.data.products;
+          } else if (Array.isArray(response)) {
+            items = response;
+          } else if (response?.data?.items) {
+            items = response.data.items;
+          } else if (response?.data && Array.isArray(response.data)) {
+            items = response.data;
+          } else if (response?.items) {
+            items = response.items;
+          }
+
+          this.products = items.map((product: any) => ({
             id: product.id,
-            title: product.title,
+            title: product.title || product.name,
+            name: product.name || product.title,
+            description: product.description || '',
             price: product.price,
-            description: product.description,
-            imageUrl: product.imageUrl,
-            rating: product.rating ?? 0,
             stock: product.stock ?? 0,
-            categoryName: product.categoryName,
-            categoryId: product.categoryId ?? 0
+            categoryId: product.categoryId ?? 0,
+            categoryName: product.categoryName || product.category || '',
+            category: product.category || product.categoryName || '',
+            imageUrl: product.imageUrl,
+            image: product.imageUrl || 'https://via.placeholder.com/300',
+            thumbnail: product.imageUrl || 'https://via.placeholder.com/300',
+            rating: product.rating ?? 0,
+            comparePrice: product.comparePrice,
+            isNew: !!product.isNew,
+            isSale: !!product.isSale,
+            isFeatured: !!product.isFeatured,
+            createdAt: product.createdAt || new Date().toISOString(),
+            updatedAt: product.updatedAt || new Date().toISOString(),
+            brand: product.brand || '',
+            reviewCount: product.reviewCount || 0,
+            tags: product.tags || [],
+            specifications: product.specifications || {}
           }));
           this.loading = false;
           this.applyFilters();
@@ -140,12 +167,14 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     this.productService.getCategories()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (data: string[]) => {
-          this.categories = data;
+        next: (response: any) => {
+          if (Array.isArray(response)) {
+            this.categories = response.map((c: any) => c.name || c);
+          } else if (response?.data && Array.isArray(response.data)) {
+            this.categories = response.data.map((c: any) => c.name || c);
+          }
         },
-        error: (error) => {
-          // Silent fail for categories
-        }
+        error: () => {}
       });
   }
 
@@ -250,16 +279,13 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
    * Add product to cart
    */
   addToCart(product: Product): void {
-    const success = this.cartService.addToCart(product, product.stock);
-    if (success) {
-      this.notificationService.showSuccess(`${product.title} added to cart!`);
-    } else {
-      if (product.stock === 0) {
-        this.notificationService.showError(`${product.title} is out of stock.`);
-      } else {
-        this.notificationService.showWarning(`Cannot add more. Only ${product.stock} available.`);
+    this.cartService.addToCart(product, 1).subscribe({
+      next: (success) => {
+        if (success) {
+          this.notificationService.showSuccess(`${product.title} added to cart!`);
+        }
       }
-    }
+    });
   }
 
   /**
