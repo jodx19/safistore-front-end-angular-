@@ -98,10 +98,19 @@ export class ManageAdminsComponent implements OnInit {
     });
   }
 
-  removeAdmin(email: string) {
-    if (confirm("Are you sure you want to remove this admin?")) {
-      this.admins = this.admins.filter((a) => a.email !== email);
-      this.success = "Admin removed successfully!";
-    }
+  removeAdmin(id: number, email: string) {
+    if (!confirm(`Are you sure you want to remove admin "${email}"?`)) return;
+    this.loading = true;
+    this.http.delete<any>(`${this.apiUrl}/users/${id}`).subscribe({
+      next: () => {
+        this.admins = this.admins.filter((a: any) => a.id !== id);
+        this.success = "Admin removed successfully!";
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = err?.error?.message || "Failed to remove admin";
+        this.loading = false;
+      }
+    });
   }
 }

@@ -156,11 +156,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let order of orders" class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+            <tr *ngFor="let order of filteredOrders" class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
               <td class="py-4 px-6 text-sm font-mono text-white">#{{ order.id }}</td>
               <td class="py-4 px-6 text-sm text-slate-300">{{ order.userId || 'Guest User' }}</td>
               <td class="py-4 px-6 text-sm text-slate-400">{{ order.items?.length || 0 }}</td>
-              <td class="py-4 px-6 text-sm font-semibold text-white">${{ order.totalPrice }}</td>
+              <td class="py-4 px-6 text-sm font-semibold text-white">${{ (order.totalAmount ?? order.totalPrice ?? 0) | number:'1.2-2' }}</td>
               <td class="py-4 px-6 text-sm text-slate-400">Card</td>
               <td class="py-4 px-6">
                 <span
