@@ -94,15 +94,22 @@ export class WishlistComponent implements OnInit, OnDestroy {
     const product: Product = {
       id: item.productId || item.id,
       title: item.productTitle || item.title,
+      name: item.productTitle || item.title,
       price: item.price,
       description: '',
       image: item.productImage || item.image,
+      thumbnail: item.productImage || item.image,
       imageUrl: item.productImage || item.image,
       rating: 0,
-      stock: 100, // Default stock
+      stock: 100,
       category: '',
       categoryName: '',
-      categoryId: 0
+      categoryId: 0,
+      isNew: false,
+      isSale: false,
+      isFeatured: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     this.cartService.addToCart(product, 1).subscribe({
