@@ -1,6 +1,7 @@
 
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { OrderClient, OrderDto } from '../api-client/api-client';
 
 export interface TrackingStatus {
   orderNumber: string;
@@ -14,23 +15,24 @@ export interface TrackingStatus {
   providedIn: 'root'
 })
 export class TrackingService {
-  private trackingData = new BehaviorSubject<TrackingStatus | null>(null);
-  public tracking$ = this.trackingData.asObservable();
 
-  constructor() {}
+  constructor(private orderClient: OrderClient) {}
 
   trackOrder(orderNumber: string): Observable<TrackingStatus> {
-    // محاكاة البيانات
-    const mockTracking: TrackingStatus = {
-      orderNumber,
-      status: 'in-transit',
-      location: 'Cairo, Egypt',
-      estimatedDelivery: '2025-11-10',
-      timestamp: new Date()
-    };
-
-    this.trackingData.next(mockTracking);
-    return this.tracking$ as Observable<TrackingStatus>;
+    const id = parseInt(orderNumber.replace(/\D/g, ''), 10) || 0;
+    return this.orderClient.getById(id).pipe(
+      map((resp: any) => {
+        const order: OrderDto = resp?.data ?? resp;
+        const now = new Date();
+        return {
+          orderNumber: orderNumber,
+          status: (order.status?.toLowerCase() || 'pending') as TrackingStatus['status'],
+          location: order.shippingAddress || 'Processing',
+          estimatedDelivery: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          timestamp: order.createdAt ? new Date(order.createdAt) : now
+        };
+      })
+    );
   }
 
   getStatusColor(status: string): string {

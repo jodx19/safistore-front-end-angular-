@@ -8,12 +8,8 @@ import { AuthService } from '../../services/auth.service';
 import { WishlistService } from '../../services/wishlist.service';
 import { ButtonComponent } from '../../components/ui/button/button.component';
 import { BadgeComponent } from '../../components/ui/badge/badge.component';
-import { 
-  getProductById, 
-  getReviewsByProductId, 
-  Product, 
-  Review 
-} from '../../data/mock-data';
+import { ProductService } from '../../services/product';
+import { ReviewClient } from '../../api-client/api-client';
 import { RevealDirective } from '../../shared/directives/reveal.directive';
 
 @Component({
@@ -31,12 +27,12 @@ import { RevealDirective } from '../../shared/directives/reveal.directive';
   styleUrls: ['./product-detail.css']
 })
 export class ProductDetailComponent implements OnInit {
-  product: Product | null = null;
+  product: any = null;
   loading = true;
   error = '';
   selectedImageIndex = 0;
   quantity = 1;
-  reviews: Review[] = [];
+  reviews: any[] = [];
   showReviewForm = false;
   newReview = {
     rating: 5,
@@ -54,7 +50,9 @@ export class ProductDetailComponent implements OnInit {
     private cartService: CartService,
     private notificationService: NotificationService,
     private authService: AuthService,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
+    private productService: ProductService,
+    private reviewClient: ReviewClient
   ) {}
 
   ngOnInit(): void {
@@ -69,19 +67,41 @@ export class ProductDetailComponent implements OnInit {
 
   private loadProduct(id: number): void {
     this.loading = true;
-    
-    // Simulate API call delay
-    setTimeout(() => {
-      const product = getProductById(id);
-      if (product) {
-        this.product = product;
-        this.loadReviews();
+
+    this.productService.getProductById(id).subscribe({
+      next: (response: any) => {
+        const product = response?.data ?? response;
+        if (product && product.id) {
+          this.product = {
+            id: product.id,
+            title: product.title || product.name,
+            name: product.name || product.title,
+            description: product.description || '',
+            price: product.price,
+            stock: product.stock,
+            category: product.categoryName || product.category || '',
+            imageUrl: product.imageUrl,
+            image: product.imageUrl || product.image || 'https://placehold.co/400x300/1a1a2e/a78bfa?text=SafiStore',
+            thumbnail: product.imageUrl || product.thumbnail || 'https://placehold.co/400x300/1a1a2e/a78bfa?text=SafiStore',
+            images: product.images || [product.imageUrl].filter(Boolean),
+            rating: product.rating || 0,
+            comparePrice: product.comparePrice,
+            isNew: !!product.isNew,
+            isSale: !!product.isSale,
+            createdAt: product.createdAt,
+            updatedAt: product.updatedAt
+          };
+          this.loadReviews();
+        } else {
+          this.error = 'Product not found';
+        }
         this.loading = false;
-      } else {
-        this.error = 'Product not found';
+      },
+      error: () => {
+        this.error = 'Failed to load product';
         this.loading = false;
       }
-    }, 500);
+    });
   }
 
   getProductImages(): string[] {
@@ -143,48 +163,50 @@ export class ProductDetailComponent implements OnInit {
   private loadReviews(): void {
     if (!this.product) return;
     this.loadingReviews = true;
-    
-    // Simulate API call delay
-    setTimeout(() => {
-      this.reviews = getReviewsByProductId(this.product!.id);
-      this.loadingReviews = false;
-    }, 300);
+
+    this.reviewClient.getByProduct(this.product.id).subscribe({
+      next: (response: any) => {
+        const items = response?.data || [];
+        this.reviews = Array.isArray(items) ? items : [];
+        this.loadingReviews = false;
+      },
+      error: () => {
+        this.reviews = [];
+        this.loadingReviews = false;
+      }
+    });
   }
 
   submitReview(): void {
     if (!this.product) return;
-    
-    // Check if user is authenticated
-    this.authService.currentUser$.subscribe(user => {
-      if (!user) {
-        this.notificationService.showError('Authentication required to publish review.');
-        this.router.navigate(['/auth/login']);
-        return;
+
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      this.notificationService.showError('Authentication required to publish review.');
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
+    if (!this.newReview.title.trim() || !this.newReview.comment.trim()) {
+      this.notificationService.showError('Required fields are missing.');
+      return;
+    }
+
+    this.reviewClient.add({
+      productId: this.product.id,
+      rating: this.newReview.rating,
+      title: this.newReview.title,
+      comment: this.newReview.comment
+    } as any).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Review submitted successfully!');
+        this.showReviewForm = false;
+        this.newReview = { rating: 5, title: '', comment: '' };
+        this.loadReviews();
+      },
+      error: (err: any) => {
+        this.notificationService.showError(err?.error?.message || 'Failed to submit review');
       }
-
-      if (!this.newReview.title.trim() || !this.newReview.comment.trim()) {
-        this.notificationService.showError('Required fields are missing.');
-        return;
-      }
-
-      // Simulate adding review
-      const newReview: Review = {
-        id: Date.now(),
-        productId: this.product!.id,
-        userId: typeof user.id === 'number' ? user.id : 0,
-        userName: user.email || 'Anonymous',
-        rating: this.newReview.rating,
-        title: this.newReview.title,
-        comment: this.newReview.comment,
-        date: new Date().toISOString(),
-        helpful: 0,
-        verified: false
-      };
-
-      this.reviews.unshift(newReview);
-      this.notificationService.showSuccess('Review submitted successfully!');
-      this.showReviewForm = false;
-      this.newReview = { rating: 5, title: '', comment: '' };
     });
   }
 

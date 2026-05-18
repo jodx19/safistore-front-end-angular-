@@ -1,7 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from "rxjs";
 import { CartService } from "../../services/cart";
 import { NotificationService } from '../../services/notification.service';
 import { ProductGridComponent } from '../../components/product/product-grid/product-grid.component';
@@ -23,7 +24,7 @@ import { ProductService, Product } from '../../services/product';
   templateUrl: "./products.html",
   styleUrls: ["./products.css"],
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   filteredProducts: Product[] = [];
   categories: string[] = ['Computers', 'Audio', 'Wearables', 'Gaming', 'Accessories', 'Phone'];
@@ -43,6 +44,9 @@ export class ProductsComponent implements OnInit {
   totalPages = 1;
   totalProducts = 0;
 
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
   constructor(
     private cartService: CartService,
     private route: ActivatedRoute,
@@ -51,10 +55,27 @@ export class ProductsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params: any) => {
+    this.setupSearchDebounce();
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params: any) => {
       if (params["search"]) {
         this.searchQuery = params["search"];
       }
+      this.currentPage = 1;
+      this.loadProducts();
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setupSearchDebounce() {
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
       this.currentPage = 1;
       this.loadProducts();
     });
@@ -210,8 +231,7 @@ export class ProductsComponent implements OnInit {
   }
 
   onSearch() {
-    this.currentPage = 1;
-    this.loadProducts();
+    this.searchSubject.next(this.searchQuery);
   }
 
   onAddToCart(product: Product) {
