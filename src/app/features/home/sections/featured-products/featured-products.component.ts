@@ -54,25 +54,29 @@ export class FeaturedProductsComponent {
     this.featuredProducts = mockProducts.map(p => ({
       id: p.id,
       title: p.title || p.name,
+      name: p.name || p.title,
       description: p.description,
       price: p.price,
       stock: p.stock,
       categoryName: p.category,
+      category: p.category,
       imageUrl: p.thumbnail || p.images?.[0],
       image: p.thumbnail || p.images?.[0],
+      thumbnail: p.thumbnail || p.images?.[0],
       rating: p.rating,
       categoryId: 0,
-      name: p.name,
       brand: p.brand,
-      isNew: p.isNew,
-      isFeatured: p.isFeatured,
-      isSale: p.isSale,
+      isNew: !!p.isNew,
+      isFeatured: !!p.isFeatured,
+      isSale: !!p.isSale,
       comparePrice: p.comparePrice,
       shortDescription: p.shortDescription,
       images: p.images,
-      thumbnail: p.thumbnail,
-      reviewCount: p.reviewCount,
-      category: p.category
+      reviewCount: p.reviewCount || 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      tags: [],
+      specifications: {}
     }));
   }
 
