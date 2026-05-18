@@ -13,35 +13,35 @@ import { RevealDirective } from '../../shared/directives/reveal.directive';
 })
 export class AboutComponent implements OnInit {
   stats = [
-    { value: '50K+', label: 'Happy Customers', icon: '👥' },
-    { value: '200K+', label: 'Products Delivered', icon: '📦' },
-    { value: '99.9%', label: 'Uptime Guaranteed', icon: '⚡' },
-    { value: '5★', label: 'Average Rating', icon: '⭐' }
+    { value: '٥٠ ألف+', label: 'عميل سعيد', icon: '👥' },
+    { value: '٢٠٠ ألف+', label: 'منتج تم توصيله', icon: '📦' },
+    { value: '٩٩.٩٪', label: 'وقت تشغيل مضمون', icon: '⚡' },
+    { value: '٥★', label: 'متوسط التقييم', icon: '⭐' }
   ];
 
   team = [
-    { name: 'Alex Carter', role: 'CEO & Co-Founder', avatar: 'AC', gradient: 'from-brand-blue to-brand-purple', social: { twitter: '#', linkedin: '#' } },
-    { name: 'Sara Mitchell', role: 'CTO & Lead Engineer', avatar: 'SM', gradient: 'from-purple-500 to-pink-500', social: { twitter: '#', linkedin: '#' } },
-    { name: 'Omar Hassan', role: 'Head of Design', avatar: 'OH', gradient: 'from-cyan-500 to-brand-blue', social: { twitter: '#', linkedin: '#' } },
-    { name: 'Lena Müller', role: 'Head of Operations', avatar: 'LM', gradient: 'from-emerald-500 to-teal-500', social: { twitter: '#', linkedin: '#' } },
-    { name: 'James Wu', role: 'Lead Data Scientist', avatar: 'JW', gradient: 'from-orange-500 to-red-500', social: { twitter: '#', linkedin: '#' } },
-    { name: 'Priya Sharma', role: 'Customer Success Lead', avatar: 'PS', gradient: 'from-violet-500 to-purple-500', social: { twitter: '#', linkedin: '#' } }
+    { name: 'أحمد الصافي', role: 'الرئيس التنفيذي & المؤسس', avatar: 'ص', gradient: 'from-brand-blue to-brand-purple' },
+    { name: 'سارة محمد', role: 'المديرة التقنية & المهندسة الأولى', avatar: 'س', gradient: 'from-purple-500 to-pink-500' },
+    { name: 'عمر حسن', role: 'مدير التصميم', avatar: 'ع', gradient: 'from-cyan-500 to-brand-blue' },
+    { name: 'ليلى محمود', role: 'مديرة العمليات', avatar: 'ل', gradient: 'from-emerald-500 to-teal-500' },
+    { name: 'جمال وو', role: 'كبير علماء البيانات', avatar: 'ج', gradient: 'from-orange-500 to-red-500' },
+    { name: 'بريا شارما', role: 'قائدة نجاح العملاء', avatar: 'ب', gradient: 'from-violet-500 to-purple-500' }
   ];
 
   milestones = [
-    { year: '2020', title: 'The Genesis', description: 'SafiStore was founded with a vision to democratize access to premium tech products.' },
-    { year: '2021', title: 'First 1,000 Customers', description: 'Reached our first major milestone with customers spanning 15 countries.' },
-    { year: '2022', title: 'Series A Funding', description: 'Secured $5M in funding to expand our product catalog and infrastructure.' },
-    { year: '2023', title: 'Global Expansion', description: 'Launched international shipping to 50+ countries with same-day delivery in major cities.' },
-    { year: '2024', title: 'AI-Powered Platform', description: 'Introduced AI-driven recommendations and a revolutionary checkout experience.' },
-    { year: '2025', title: 'The Future', description: 'Continuing to push boundaries with AR product previews and zero-latency global fulfillment.' }
+    { year: '٢٠٢٠', title: 'البداية', description: 'تأسس متجر الصافي بهدف تسهيل الوصول إلى أفضل المنتجات التقنية للمستخدم العربي.' },
+    { year: '٢٠٢١', title: 'أول ١٠٠٠ عميل', description: 'وصلنا إلى أول إنجاز كبير مع عملاء من ١٥ دولة حول العالم.' },
+    { year: '٢٠٢٢', title: 'جولة تمويل', description: 'حصلنا على تمويل بقيمة ٥ ملايين دولار لتوسيع كتالوج منتجاتنا وبنيتنا التحتية.' },
+    { year: '٢٠٢٣', title: 'التوسع العالمي', description: 'أطلقنا الشحن الدولي لأكثر من ٥٠ دولة مع توصيل في نفس اليوم في المدن الكبرى.' },
+    { year: '٢٠٢٤', title: 'منصة ذكاء اصطناعي', description: 'أضفنا توصيات مدعومة بالذكاء الاصطناعي وتجربة شراء ثورية.' },
+    { year: '٢٠٢٥', title: 'المستقبل', description: 'نواصل تجاوز الحدود مع معاينات المنتج بالواقع المعزز والتوصيل الفوري.' }
   ];
 
   values = [
-    { icon: '🔐', title: 'Security First', description: 'Every transaction is protected with military-grade encryption and multi-factor authentication protocols.' },
-    { icon: '⚡', title: 'Lightning Fast', description: 'Our distributed CDN ensures sub-100ms load times across the globe, 24/7.' },
-    { icon: '🌍', title: 'Globally Accessible', description: 'Serving customers in 50+ countries with localized experiences and competitive pricing.' },
-    { icon: '♻️', title: 'Sustainable Impact', description: 'Carbon-neutral shipping and eco-friendly packaging as our commitment to the planet.' }
+    { icon: '🔐', title: 'الأمان أولاً', description: 'كل معاملة محمية بتشفير عسكري المستوى وبروتوكولات تحقق متعددة.' },
+    { icon: '⚡', title: 'سرعة فائقة', description: 'شبكة التوزيع العالمية لدينا تضمن أوقات تحميل أقل من ١٠٠ مللي ثانية.' },
+    { icon: '🌍', title: 'متاح عالمياً', description: 'نخدم العملاء في أكثر من ٥٠ دولة بتجارب محلية وأسعار تنافسية.' },
+    { icon: '♻️', title: 'أثر مستدام', description: 'شحن محايد للكربون وتغليف صديق للبيئة كالتزامنا تجاه كوكبنا.' }
   ];
 
   email = '';
