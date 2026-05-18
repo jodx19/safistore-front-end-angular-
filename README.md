@@ -1,219 +1,355 @@
-🛍 SafiStore Frontend — Angular
+<p align="center">
+  <img src="https://img.shields.io/badge/Angular_20-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular 20" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/NSwag-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt="NSwag" />
+  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
+</p>
 
-Production-ready Angular 18 e-commerce frontend for SafiStore.
+<h1 align="center">🛍️ SafiStore — Frontend</h1>
 
-🔗 Backend API:
-https://github.com/jodx19/SafiStore-Backend-API
+<p align="center">
+  <strong>Modern Angular e-commerce frontend with a stunning dark-themed UI</strong>
+  <br />
+  Fast · Reactive · Production-Ready
+</p>
 
-🚀 Overview
+<p align="center">
+  <a href="https://safistore.vercel.app" target="_blank">🌐 Live Demo</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/jodx19/SafiStore-Backend-API" target="_blank">📦 Backend API</a>
+</p>
 
-SafiStore Frontend is a modern Angular-based e-commerce application featuring:
+---
 
-Angular 18 (Standalone Architecture)
+## 📋 Table of Contents
 
-Signals-based state management
+- [Overview](#-overview)
+- [Tech Stack](#-tech-stack)
+- [Architecture](#-architecture)
+- [Pages & Features](#-pages--features)
+- [Authentication Flow](#-authentication-flow)
+- [Getting Started](#-getting-started)
+- [Production Build](#-production-build)
+- [Deployment](#-deployment)
+- [API Integration](#-api-integration)
+- [Performance](#-performance)
+- [Security](#-security)
 
-JWT Authentication (Access + Refresh)
+---
 
-Role-based Admin Panel
+## 🚀 Overview
 
-Lazy-loaded feature modules
+SafiStore Frontend is a **production-grade Angular application** delivering a premium e-commerce experience with a sleek dark-themed design system. Built with Angular 20 standalone components and Tailwind CSS.
 
-API client generated via NSwag
+### Key Features
 
-Secure interceptor-based HTTP pipeline
+| Feature | Description |
+|---------|-------------|
+| 🎨 **Dark-Themed UI** | Premium glassmorphism design with gradient accents |
+| 🔐 **JWT Auth** | Login/register with auto token refresh |
+| 🛍️ **Product Catalog** | Grid view with filtering, sorting, pagination |
+| 🛒 **Shopping Cart** | Persistent cart with drawer preview |
+| 📦 **Order Management** | Checkout flow, history, tracking |
+| ⭐ **Reviews** | Purchase-verified ratings and comments |
+| 👑 **Admin Panel** | Full CRUD management dashboard |
+| 📱 **Responsive** | Mobile-first adaptive layout |
+| ⚡ **Performance** | Lazy loading, Signals, debounced search |
 
-Production-hardened configuration
+---
 
-🏗 Architecture Structure
-src/app
-│
-├── admin/                → Admin dashboard features
-├── api-client/           → NSwag generated API client
-├── components/           → Shared UI components
-├── interceptors/         → Auth & Error interceptors
-├── pages/                → Public pages (Products, Login, etc.)
-├── services/             → Business logic services
-├── utils/                → Helper utilities
-└── environments/         → Environment configs
-🔐 Authentication
+## 🛠 Tech Stack
 
-JWT Access Token
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | Angular 20 (Standalone Components) |
+| **UI** | Tailwind CSS, Custom Design System |
+| **State** | RxJS Signals, BehaviorSubjects |
+| **API Client** | NSwag-generated TypeScript client |
+| **Auth** | JWT interceptor with auto-refresh |
+| **Build** | Angular CLI, Vite |
+| **Deployment** | Vercel |
+| **Package Manager** | npm |
 
-Refresh Token support
+---
 
-Token stored securely via TokenStorageService
+## 🏗 Architecture
 
-Interceptor attaches token automatically
+```
+src/app/
+├── admin/                      # Admin panel (role-protected)
+│   ├── admin-dashboard/        # KPI dashboard with real API data
+│   ├── admin-layout/           # Sidebar navigation layout
+│   ├── admin-settings/         # Store settings
+│   ├── analytics/              # Sales analytics
+│   ├── manage-admins/          # Admin user management
+│   ├── manage-customers/       # Customer management
+│   ├── manage-orders/          # Order management with filters
+│   └── manage-products/        # Product CRUD
+├── api-client/                 # NSwag-generated typed API client
+├── auth/                       # Login / Register (Reactive Forms)
+├── components/                 # Reusable shared components
+│   ├── ui/                     # Button, Badge, Card, Input, Modal, Spinner
+│   ├── breadcrumbs/            # Breadcrumb navigation
+│   ├── cart-drawer/            # Slide-out cart preview
+│   ├── notification/           # Toast notification system
+│   ├── product/                # ProductCard, ProductGrid
+│   ├── skeleton/               # Loading skeletons
+│   └── wishlist/               # Wishlist page
+├── core/                       # Core layout components
+│   └── components/navbar/      # Responsive navigation bar
+├── features/home/              # Landing page sections
+├── interceptors/               # HTTP pipeline
+│   ├── auth.interceptor.ts     # Bearer token + 401 refresh
+│   └── error.interceptor.ts    # User-friendly error messages
+├── pages/                      # Feature pages
+│   ├── about/                  # About page
+│   ├── cart/                   # Shopping cart
+│   ├── checkout/               # Multi-step checkout
+│   ├── forgot-password/        # Password reset request
+│   ├── not-found/              # 404 page
+│   ├── order-history/          # User order history
+│   ├── order-review/           # Order review before submission
+│   ├── order-success/          # Order confirmation
+│   ├── product-detail/         # Product detail with reviews
+│   ├── products/               # Product listing with filters
+│   ├── profile/                # User profile management
+│   ├── reset-password/         # Password reset form
+│   ├── search-results/         # Search results page
+│   └── track-order/            # Order tracking
+├── services/                   # Business logic & state
+│   ├── auth.service.ts         # Auth state + JWT management
+│   ├── cart.service.ts         # Cart state management
+│   ├── order.service.ts        # Order API calls
+│   ├── product.service.ts      # Product API calls
+│   ├── review.service.ts       # Review API calls
+│   ├── wishlist.service.ts     # Wishlist state
+│   ├── tracking.service.ts     # Order tracking API
+│   └── notification.service.ts # Toast notifications
+├── shared/                     # Shared directives & utilities
+│   └── directives/             # reveal.directive (scroll animations)
+└── utils/                      # Helper classes
+```
 
-Centralized 401 handling and session expiration
+---
 
-🛠 Environment Configuration
-Development
+## 📄 Pages & Features
 
-src/environments/environment.ts
+### Public Pages
 
-Example:
+| Route | Page | Description |
+|-------|------|-------------|
+| `/` | **Home** | Hero, categories, featured products, testimonials, CTA |
+| `/products` | **Product Listing** | Grid with category filter, price sort, search, pagination |
+| `/products/:id` | **Product Detail** | Gallery, reviews, add to cart |
+| `/search` | **Search Results** | Debounced search with filters |
+| `/about` | **About** | Company information |
+| `/auth/login` | **Login** | Glassmorphism form with validation |
+| `/auth/register` | **Register** | Full validation with password strength indicator |
+| `/forgot-password` | **Forgot Password** | Email-based reset request |
+| `/reset-password` | **Reset Password** | Token-based password reset |
 
-export const environment = {
-  production: false,
-  apiUrl: 'https://localhost:7111/api'
-};
-Production
+### Protected Pages (Require Auth)
 
-src/environments/environment.prod.ts
+| Route | Page | Description |
+|-------|------|-------------|
+| `/profile` | **Profile** | Edit name, address, change password |
+| `/cart` | **Cart** | Full cart with quantity controls |
+| `/checkout` | **Checkout** | Multi-step: Shipping → Payment → Review |
+| `/orders` | **Order History** | List of past orders with status |
+| `/track` | **Track Order** | Real-time order tracking |
+| `/wishlist` | **Wishlist** | Saved products |
 
-export const environment = {
-  production: true,
-  apiUrl: 'https://your-production-api.com/api'
-};
+### Admin Pages (Require Admin Role)
 
-⚠️ No secrets are stored in the frontend.
+| Route | Page | Description |
+|-------|------|-------------|
+| `/admin/dashboard` | **Dashboard** | KPI cards, recent orders, low stock alerts |
+| `/admin/products` | **Manage Products** | Full CRUD with image upload |
+| `/admin/orders` | **Manage Orders** | Filter by status, search, date range |
+| `/admin/admins` | **Manage Admins** | Create/remove admin users |
+| `/admin/customers` | **Manage Customers** | View customer list |
+| `/admin/analytics` | **Analytics** | Sales data visualization |
+| `/admin/settings` | **Settings** | Store configuration |
 
-📦 Features
-🛍 Products
+---
 
-Paginated listing
+## 🔐 Authentication Flow
 
-Category filtering
+```
+Login / Register
+      ↓
+JWT tokens stored in AuthService (BehaviorSubject)
+      ↓
+AuthInterceptor attaches Bearer token to all requests
+      ↓
+On 401: Interceptor attempts refresh token
+      ↓
+On refresh failure: Redirect to login
+      ↓
+AdminGuard checks role before activating admin routes
+```
 
-Search with debounce
+### Auth Interceptor Features
 
-Product detail page
+- Auto-attaches `Authorization: Bearer <token>` header
+- Intercepts 401 responses and attempts silent token refresh
+- Queues concurrent requests during refresh to avoid race conditions
+- Redirects to login on refresh failure
+- Emits `Token-Expired` header detection
 
-Reviews
+---
 
-🛒 Cart
+## 🧪 Getting Started
 
-Add/remove items
+### Prerequisites
 
-Quantity validation
+- [Node.js](https://nodejs.org/) (v18+)
+- npm (v9+)
+- Angular CLI (`npm install -g @angular/cli`)
 
-Persistent cart state
+### Local Development
 
-📦 Orders
+```bash
+# 1. Clone the repository
+git clone https://github.com/jodx19/safistore-front-end-angular-.git
+cd safistore-front-end-angular-
 
-Checkout flow
-
-Order history
-
-Order review
-
-👨‍💼 Admin Panel
-
-Manage products
-
-Manage orders
-
-Manage users
-
-Role-based access control
-
-🔄 API Integration
-
-The project uses NSwag-generated client (api-client.ts) to ensure:
-
-Strong typing
-
-Compile-time API safety
-
-Automatic DTO syncing with backend
-
-To regenerate client:
-
-npx nswag run nswag.json
-🧪 Local Development
-
-Install dependencies:
-
+# 2. Install dependencies
 npm install
 
-Run development server:
-
+# 3. Start development server
 ng serve
+```
 
-Open:
+Open **http://localhost:4200** in your browser.
 
-http://localhost:4200
-🏗 Production Build
+### Environment Configuration
+
+**Development** (`src/environments/environment.ts`):
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:5084/api/v1'
+};
+```
+
+**Production** (`src/environments/environment.prod.ts`):
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://safis.runasp.net/api/v1'
+};
+```
+
+### Regenerate API Client
+
+After backend changes, regenerate the TypeScript client:
+
+```bash
+npx nswag run nswag.json
+```
+
+---
+
+## 🏗 Production Build
+
+```bash
+# Build for production
 npm run build -- --configuration=production
 
-Output folder:
-
-dist/
-
-You can preview locally:
-
+# Output: dist/
+# Preview locally:
 npx serve -s dist
-🚀 Deployment
+```
 
-Compatible with:
+### Build Optimization
 
-Vercel
+- **Lazy Loading**: All feature modules are lazy-loaded
+- **Ahead-of-Time (AOT)**: Enabled by default in production
+- **Tree Shaking**: Dead code elimination
+- **Budget Checks**: Size budgets configured in `angular.json`
+- **Source Maps**: Disabled in production for security
 
-Netlify
+---
 
-Azure Static Web Apps
+## 🚀 Deployment
 
-Firebase Hosting
+The application is compatible with:
 
-Nginx / Apache
+| Platform | Notes |
+|----------|-------|
+| **Vercel** | ✅ Recommended — auto-deploys from GitHub |
+| **Netlify** | Configure redirects for SPA routing |
+| **Azure Static Web Apps** | Full CI/CD integration |
+| **Firebase Hosting** | Fast CDN delivery |
+| **Nginx / Apache** | Configure SPA fallback to `index.html` |
 
-Deployment Checklist
+### Vercel Deployment
 
- Production API URL configured
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+}
+```
 
- HTTPS enabled
+Set environment variable:
+- `NEXT_PUBLIC_API_URL` → `https://safis.runasp.net/api/v1`
 
- CORS configured on backend
+---
 
- No localhost references
+## 🔄 API Integration
 
- Build succeeds with no warnings
+The project uses **NSwag-generated TypeScript client** for type-safe API communication:
 
- Admin routes protected
+- **Strong Typing**: All DTOs are automatically synced with the backend
+- **Compile-Time Safety**: API contract violations caught at build time
+- **Single Source of Truth**: Regenerate with `npx nswag run nswag.json`
 
-🛡 Security Notes
+```
+Backend Swagger JSON
+        ↓
+    NSwag Generator
+        ↓
+api-client.ts ← All components use this
+```
 
-No secrets stored in client
+---
 
-Role checks enforced in backend
+## ⚡ Performance
 
-401 centralized redirect
+| Optimization | Implementation |
+|-------------|---------------|
+| **Lazy Loading** | All routes load on demand |
+| **Signals** | Lightweight state management over RxJS |
+| **Debounced Search** | 500ms debounce on product search |
+| **CDN** | Images and assets cached globally |
+| **Skeleton Loading** | Placeholder UI during data fetch |
+| **Preload Strategy** | `PreloadAllModules` for instant navigation |
 
-Error interceptor sanitizes API errors
+---
 
-Production mode disables dev logs
+## 🛡 Security
 
-📊 Performance Optimizations
+- **No Secrets in Client**: API keys are stored only in backend
+- **JWT Interceptor**: Automatic token attachment and refresh
+- **Admin Guard**: Route-level protection for admin pages
+- **Input Validation**: Both template-driven and reactive forms
+- **Error Sanitization**: User-friendly error messages (no stack traces)
+- **XSS Protection**: Angular's built-in sanitization
+- **CORS**: Backend restricts origins to specific domains
 
-Lazy loading for feature modules
+---
 
-Signals instead of heavy RxJS chains
+## 📄 License
 
-Debounced search inputs
+This project is licensed under the MIT License.
 
-PreloadAllModules enabled
+---
 
-Optimized build budgets
-
-🧹 Code Quality
-
-Strict TypeScript mode
-
-Strong DTO typing
-
-No hardcoded mock data
-
-Clean separation of concerns
-
-Production-ready interceptor architecture
-
-📄 License
-
-MIT
-
-👨‍💻 Author
-
-SafiStore Angular Frontend
-Built with performance, security, and scalability in mind.
+<p align="center">
+  <br />
+  Made with 💜 by <strong>الصافي</strong>
+  <br />
+  <sub>Built with performance, security, and scalability in mind.</sub>
+</p>
