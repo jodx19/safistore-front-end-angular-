@@ -33,6 +33,14 @@ export class CheckoutComponent implements OnInit {
     country: ''
   };
 
+  paymentForm = {
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+    cardholderName: ''
+  };
+
+  termsAgreed = false;
   shippingMethod = 'standard';
   paymentMethod = 'credit_card';
 
@@ -102,6 +110,18 @@ export class CheckoutComponent implements OnInit {
 
   submitOrder() {
     if (this.isSubmitting) return;
+
+    if (!this.termsAgreed) {
+      this.notificationService.showError('❌ Please agree to the terms and conditions');
+      return;
+    }
+
+    if (this.paymentMethod === 'credit_card' &&
+        (!this.paymentForm.cardNumber?.trim() || !this.paymentForm.expiry?.trim() || !this.paymentForm.cvv?.trim())) {
+      this.notificationService.showError('❌ Please complete your payment details');
+      return;
+    }
+
     this.isSubmitting = true;
 
     const orderPayload = {
@@ -109,7 +129,11 @@ export class CheckoutComponent implements OnInit {
       city: this.checkoutForm.city,
       country: this.checkoutForm.country,
       postalCode: this.checkoutForm.postalCode,
-      paymentMethod: this.paymentMethod
+      paymentMethod: this.paymentMethod,
+      cardNumber: this.paymentMethod === 'credit_card' ? this.paymentForm.cardNumber : undefined,
+      cardExpiry: this.paymentMethod === 'credit_card' ? this.paymentForm.expiry : undefined,
+      cardCvv: this.paymentMethod === 'credit_card' ? this.paymentForm.cvv : undefined,
+      cardholderName: this.paymentMethod === 'credit_card' ? this.paymentForm.cardholderName : undefined
     };
 
     this.orderService.createOrder(orderPayload).subscribe({

@@ -62,12 +62,14 @@
       </div>
     </div>
 
-    <!-- Filter bar (visual only; API already loads orders) -->
+    <!-- Filter bar -->
     <div class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-4 mb-6">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
         <div class="lg:col-span-5">
           <input
             type="text"
+            [(ngModel)]="searchQuery"
+            (input)="onSearchInput()"
             placeholder="Search order ID or customer name..."
             class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
                    placeholder-slate-500 outline-none focus:border-[#6C4FF6]/40 
@@ -76,6 +78,8 @@
         </div>
         <div class="lg:col-span-3">
           <select
+            [(ngModel)]="statusFilter"
+            (change)="onStatusFilterChange()"
             class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
                    outline-none focus:border-[#6C4FF6]/40 focus:bg-white/10 transition-all"
           >
@@ -84,11 +88,14 @@
             <option value="confirmed" class="bg-[#0A1628]">confirmed</option>
             <option value="shipped" class="bg-[#0A1628]">shipped</option>
             <option value="delivered" class="bg-[#0A1628]">delivered</option>
+            <option value="cancelled" class="bg-[#0A1628]">cancelled</option>
           </select>
         </div>
         <div class="lg:col-span-2">
           <input
             type="date"
+            [(ngModel)]="dateFrom"
+            (change)="onDateFilterChange()"
             class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
                    outline-none focus:border-[#6C4FF6]/40 focus:bg-white/10 transition-all"
           />
@@ -96,6 +103,8 @@
         <div class="lg:col-span-2">
           <input
             type="date"
+            [(ngModel)]="dateTo"
+            (change)="onDateFilterChange()"
             class="w-full bg-white/5 border border-white/5 rounded-xl px-5 py-3 text-white 
                    outline-none focus:border-[#6C4FF6]/40 focus:bg-white/10 transition-all"
           />
@@ -111,7 +120,7 @@
     </div>
 
     <!-- Empty state -->
-    <div *ngIf="!loading && orders.length === 0" class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-12 text-center">
+    <div *ngIf="!loading && filteredOrders.length === 0" class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-12 text-center">
       <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#6C4FF6]/10 border border-[#6C4FF6]/20 flex items-center justify-center">
         <svg class="w-8 h-8 text-[#6C4FF6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
@@ -121,6 +130,7 @@
       <p class="text-slate-400 mb-6">Try adjusting your filters or search criteria.</p>
       <button
         type="button"
+        (click)="clearFilters()"
         class="bg-gradient-to-r from-[#6C4FF6] to-[#3B82F6] text-white font-bold 
                px-6 py-3 rounded-xl hover:opacity-90 transition-all 
                shadow-[0_0_20px_rgba(108,79,246,0.4)]"
@@ -130,7 +140,7 @@
     </div>
 
     <!-- Orders Table -->
-    <div *ngIf="!loading && orders.length > 0" class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
+    <div *ngIf="!loading && filteredOrders.length > 0" class="bg-[#0D1F3C]/60 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full">
           <thead>

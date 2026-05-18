@@ -77,7 +77,7 @@
             <div class="flex items-center gap-4 mb-8">
               <div class="flex text-yellow-400 gap-0.5">
                 @for (s of [1,2,3,4,5]; track s) {
-                  <span class="text-xl">★</span>
+                  <span [class.text-yellow-400]="s <= (product.rating || 0)" [class.text-gray-600]="s > (product.rating || 0)" class="text-xl">★</span>
                 }
               </div>
               <span class="text-brand-muted text-sm font-medium">({{ product.rating }} average score)</span>
@@ -188,7 +188,7 @@
                   <h4 class="text-white font-bold">{{ review.userName || 'Verified User' }}</h4>
                   <div class="flex text-yellow-400 text-xs gap-0.5 mt-1">
                     @for (s of [1,2,3,4,5]; track s) {
-                      <span>★</span>
+                      <span [class.text-yellow-400]="s <= (review.rating || 0)" [class.text-gray-600]="s > (review.rating || 0)">★</span>
                     }
                   </div>
                 </div>

@@ -1,17 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { BreadcrumbItem } from '../../components/breadcrumbs/breadcrumbs';
 import { Subject, takeUntil } from 'rxjs';
 import { OrderService, Order } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
 
 
-/**
- * Order History Component
- * Displays user's order history
- */
 @Component({
   selector: 'app-order-history',
   standalone: true,
@@ -25,7 +20,6 @@ import { NotificationService } from '../../services/notification.service';
 export class OrderHistoryComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
   loading = true;
-  breadcrumbItems: BreadcrumbItem[] = [];
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -36,23 +30,12 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.setupBreadcrumbs();
     this.loadOrders();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  /**
-   * Setup breadcrumb navigation
-   */
-  private setupBreadcrumbs(): void {
-    this.breadcrumbItems = [
-      { label: 'Home', route: '/' },
-      { label: 'Order History' }
-    ];
   }
 
   /**
