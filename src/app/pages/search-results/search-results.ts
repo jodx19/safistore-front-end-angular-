@@ -136,8 +136,8 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
             categoryName: product.categoryName || product.category || '',
             category: product.category || product.categoryName || '',
             imageUrl: product.imageUrl,
-            image: product.imageUrl || 'https://via.placeholder.com/300',
-            thumbnail: product.imageUrl || 'https://via.placeholder.com/300',
+            image: product.imageUrl || 'https://placehold.co/400x300/1a1a2e/a78bfa?text=SafiStore',
+            thumbnail: product.imageUrl || 'https://placehold.co/400x300/1a1a2e/a78bfa?text=SafiStore',
             rating: product.rating ?? 0,
             comparePrice: product.comparePrice,
             isNew: !!product.isNew,
@@ -293,7 +293,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
    */
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    img.src = 'https://via.placeholder.com/600x600?text=No+Image';
+    img.src = 'https://placehold.co/600x600/1a1a2e/a78bfa?text=No+Image';
   }
 }
 
