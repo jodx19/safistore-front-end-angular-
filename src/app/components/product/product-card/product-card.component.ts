@@ -75,13 +75,9 @@ export class ProductCardComponent {
     this.router.navigate(['/products', this.product.id]);
   }
 
-  readonly fallbackImage = 'https://placehold.co/400x300/1a1a2e/a78bfa?text=SafiStore';
-
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    if (img.src !== this.fallbackImage) {
-      img.src = this.fallbackImage;
-    }
+    img.style.display = 'none';
   }
 
   getCategoryColor(category: string): string {
