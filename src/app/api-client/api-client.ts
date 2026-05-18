@@ -236,6 +236,16 @@ export interface PaginatedResult<T> {
   };
 }
 
+export interface ProductListPayload<T> {
+  products: T[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Base API Client
 // ---------------------------------------------------------------------------

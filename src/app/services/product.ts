@@ -18,18 +18,20 @@ export interface Product {
   imageUrl?: string;
   rating: number;
   categoryId: number;
-  // Backward compatibility
+  createdAt: string;
+  updatedAt: string;
+  comparePrice?: number;
+  isNew: boolean;
+  isSale: boolean;
+  isFeatured: boolean;
+  // Backward compatibility (UI template fields)
   category?: string;
   image?: string;
   name?: string;
+  thumbnail?: string;
   brand?: string;
-  isNew?: boolean;
-  isFeatured?: boolean;
-  isSale?: boolean;
-  comparePrice?: number;
   shortDescription?: string;
   images?: string[];
-  thumbnail?: string;
   reviewCount?: number;
   discountPercentage?: number;
   specifications?: Record<string, string>;
@@ -66,33 +68,27 @@ export class ProductService {
     limit?: number;
     category?: string;
     search?: string;
-  }): Observable<any> {
-    // Build query parameters
+  }): Observable<ApiResponse<PaginatedResult<Product>>> {
     let httpParams = new HttpParams();
     if (params?.page) httpParams = httpParams.set('page', params.page.toString());
     if (params?.limit) httpParams = httpParams.set('pageSize', params.limit.toString());
     if (params?.category) httpParams = httpParams.set('category', params.category);
     if (params?.search) httpParams = httpParams.set('search', params.search);
 
-    // Check cache (only for default requests without params)
     if (!params && this.productsCache$ && this.isCacheValid(this.productsCacheTime)) {
       return this.productsCache$;
     }
 
-    // Fetch from .NET backend
     const request$ = this.http.get<ApiResponse<PaginatedResult<Product>>>(this.apiUrl, { params: httpParams }).pipe(
       timeout(environment.timeouts.apiRequest),
       retry(1),
-      tap((response) => {
-        // Cache only default requests
+      tap(() => {
         if (!params) {
           this.productsCacheTime = Date.now();
         }
       }),
       shareReplay(1),
-      catchError((error) => {
-        return throwError(() => error);
-      })
+      catchError((error) => throwError(() => error))
     );
 
     if (!params) {

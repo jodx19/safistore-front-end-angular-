@@ -63,12 +63,20 @@ export class ProductsComponent implements OnInit {
   loadProducts() {
     this.loading = true;
     this.error = '';
-    
-    this.productService.getAllProducts().subscribe({
+
+    // Fetch products with server-side filtering (category + search)
+    // Pagination is done client-side for now
+    this.productService.getAllProducts({
+      category: this.selectedCategory !== 'All' ? this.selectedCategory : undefined,
+      search: this.searchQuery || undefined
+    }).subscribe({
       next: (response: any) => {
-        // Handle various possible backend response formats
-        let items = [];
-        if (Array.isArray(response)) {
+        let items: any[] = [];
+
+        // Handle the actual backend response shape: { success, data: { products: [...], pagination } }
+        if (response?.data?.products) {
+          items = response.data.products;
+        } else if (Array.isArray(response)) {
           items = response;
         } else if (response?.data?.items) {
           items = response.data.items;
@@ -78,16 +86,33 @@ export class ProductsComponent implements OnInit {
           items = response.items;
         }
 
+        // Map API fields to template-expected fields
         this.products = items.map((p: any) => ({
-          ...p,
           id: p.id,
           title: p.title || p.name,
-          categoryName: p.categoryName || p.category,
+          name: p.name || p.title,
+          description: p.description || '',
           price: p.price,
+          stock: p.stock,
+          categoryId: p.categoryId,
+          categoryName: p.categoryName || p.category || '',
+          category: p.category || p.categoryName || '',
+          imageUrl: p.imageUrl,
+          image: p.imageUrl || p.image || 'https://via.placeholder.com/300',
+          thumbnail: p.imageUrl || p.thumbnail || 'https://via.placeholder.com/300',
           rating: p.rating || 0,
-          stock: p.stock || 0,
-          image: p.imageUrl || p.image || 'https://via.placeholder.com/300'
+          comparePrice: p.comparePrice,
+          isNew: !!p.isNew,
+          isSale: !!p.isSale,
+          isFeatured: !!p.isFeatured,
+          createdAt: p.createdAt,
+          updatedAt: p.updatedAt,
+          brand: p.brand || '',
+          reviewCount: p.reviewCount || 0,
+          tags: p.tags || [],
+          specifications: p.specifications || {}
         }));
+
         this.applyFilters();
         this.loading = false;
       },
@@ -132,31 +157,17 @@ export class ProductsComponent implements OnInit {
   applyFilters() {
     let filtered = [...this.products];
 
-    // Category filter
-    if (this.selectedCategory !== 'All') {
-      filtered = filtered.filter(p => p.category === this.selectedCategory);
-    }
-
-    // Brand filter
+    // Brand filter (not handled server-side)
     if (this.selectedBrands.length > 0) {
       filtered = filtered.filter(p => p.brand && this.selectedBrands.includes(p.brand));
     }
 
-    // Price filter
+    // Price filter (not handled server-side)
     filtered = filtered.filter(p => p.price >= this.minPrice && p.price <= this.maxPrice);
 
-    // Stock filter
+    // Stock filter (not handled server-side)
     if (this.inStockOnly) {
       filtered = filtered.filter(p => p.stock > 0);
-    }
-
-    // Search filter
-    if (this.searchQuery.trim()) {
-      const query = this.searchQuery.toLowerCase().trim();
-      filtered = filtered.filter(p => 
-        (p.title && p.title.toLowerCase().includes(query)) || 
-        (p.description && p.description.toLowerCase().includes(query))
-      );
     }
 
     // Sort
@@ -171,11 +182,11 @@ export class ProductsComponent implements OnInit {
         filtered.sort((a, b) => b.rating - a.rating);
         break;
       case 'newest':
-        filtered.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+        filtered.sort((a, b) => (+b.isNew) - (+a.isNew));
         break;
       case 'featured':
       default:
-        filtered.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+        filtered.sort((a, b) => (+b.isFeatured) - (+a.isFeatured));
         break;
     }
 

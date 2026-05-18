@@ -100,7 +100,7 @@
         </div>
         <h2 class="text-2xl font-display font-bold text-text-primary mb-2">No products found</h2>
         <p class="text-text-secondary mb-8">Try adjusting your filters or search terms</p>
-        <app-button variant="secondary" (onClick)="searchQuery=''; selectedCategory='All'; applyFilters()">
+        <app-button variant="secondary" (onClick)="searchQuery=''; selectedCategory='All'; onSearch()">
           Reset Filters
         </app-button>
       </div>
@@ -111,8 +111,6 @@
          Shows: [Prev] [1] [2] [3] [4] [5] [...] [Last] [Next]
     ════════════════════════════════════════════════════════════ -->
     @if (totalPages > 1 && !loading && !error) {
-      <!-- Pagination -->
-    @if (totalPages > 1) {
       <div class="mt-16 flex flex-col items-center gap-4">
         <p class="text-sm text-text-secondary">
           Showing <span class="text-text-primary font-semibold">{{ (currentPage - 1) * pageSize + 1 }}</span>
@@ -166,7 +164,6 @@
           </app-button>
         </nav>
       </div>
-    }
     }
   </div>
 </div>
