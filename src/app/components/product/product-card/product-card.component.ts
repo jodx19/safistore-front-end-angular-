@@ -20,6 +20,7 @@ export class ProductCardComponent {
   @Input() showQuickView = true;
   @Input() compact = false;
   @Output() onWishlistToggle = new EventEmitter<Product>();
+  @Output() onImageError = new EventEmitter<number>();
 
   constructor(
     private cartService: CartService,
@@ -77,6 +78,7 @@ export class ProductCardComponent {
 
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
+    this.onImageError.emit(this.product.id);
     img.src = 'data:image/svg+xml,' + encodeURIComponent(
       '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">' +
       '<rect fill="#1e1b2e" width="400" height="300"/>' +
