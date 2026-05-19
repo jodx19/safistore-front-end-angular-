@@ -26,6 +26,6 @@
     [showWishlist]="showWishlist"
     [showQuickView]="showQuickView"
     (onWishlistToggle)="handleWishlistToggle($event)"
-    (onImageError)="onImageError.emit($event)"
+    (onImageLoadError)="onImageLoadError.emit($event)"
   ></app-product-card>
 </div>
