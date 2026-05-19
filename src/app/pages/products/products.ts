@@ -85,22 +85,27 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = '';
 
-    // Fetch products with server-side filtering (category + search)
-    // Pagination is done client-side for now
     this.productService.getAllProducts({
+      page: this.currentPage,
+      limit: this.pageSize,
       category: this.selectedCategory !== 'All' ? this.selectedCategory : undefined,
       search: this.searchQuery || undefined
     }).subscribe({
       next: (response: any) => {
         let items: any[] = [];
 
-        // Handle the actual backend response shape: { success, data: { products: [...], pagination } }
         if (response?.data?.products) {
           items = response.data.products;
+          const pagination = response.data.pagination;
+          if (pagination) {
+            this.totalProducts = pagination.total;
+            this.totalPages = pagination.totalPages;
+          }
         } else if (Array.isArray(response)) {
           items = response;
         } else if (response?.data?.items) {
           items = response.data.items;
+          if (response.data.total) this.totalProducts = response.data.total;
         } else if (response?.data && Array.isArray(response.data)) {
           items = response.data;
         } else if (response?.items) {
@@ -212,8 +217,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
     }
 
     this.filteredProducts = filtered;
-    this.totalProducts = filtered.length;
-    this.totalPages = Math.ceil(filtered.length / this.pageSize);
   }
 
   onCategoryChange() {
