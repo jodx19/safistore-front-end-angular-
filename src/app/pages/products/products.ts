@@ -112,6 +112,15 @@ export class ProductsComponent implements OnInit, OnDestroy {
           items = response.items;
         }
 
+        // Sort: products with images first, broken-image products last
+        items.sort((a: any, b: any) => {
+            const aImg = a.imageUrl || a.image || a.thumbnail;
+            const bImg = b.imageUrl || b.image || b.thumbnail;
+            if (aImg && !bImg) return -1;
+            if (!aImg && bImg) return 1;
+            return 0;
+        });
+
         // Map API fields to template-expected fields
         this.products = items.map((p: any) => ({
           id: p.id,
