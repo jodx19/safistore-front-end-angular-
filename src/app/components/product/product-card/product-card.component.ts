@@ -77,7 +77,13 @@ export class ProductCardComponent {
 
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    img.style.display = 'none';
+    img.src = 'data:image/svg+xml,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">' +
+      '<rect fill="#1e1b2e" width="400" height="300"/>' +
+      '<text fill="#6b6580" font-family="Arial" font-size="16" text-anchor="middle" x="200" y="140">📷 Image Unavailable</text>' +
+      '<text fill="#4a4560" font-family="Arial" font-size="12" text-anchor="middle" x="200" y="170">' + (this.product?.category || 'Product') + '</text>' +
+      '</svg>'
+    );
   }
 
   getCategoryColor(category: string): string {
