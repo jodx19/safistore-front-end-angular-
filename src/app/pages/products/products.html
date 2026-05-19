@@ -88,6 +88,7 @@
       [showWishlist]="true"
       [showQuickView]="true"
       (onWishlistToggle)="onAddToWishlist($event)"
+      (onImageError)="onImageBroken($event)"
     ></app-product-grid>
 
     <!-- Empty State -->

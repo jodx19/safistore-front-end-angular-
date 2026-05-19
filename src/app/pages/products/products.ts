@@ -37,6 +37,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   loading = false;
   error = "";
   inStockOnly = false;
+  brokenImageIds: Set<number> = new Set();
 
   // Pagination
   readonly pageSize = 12;
@@ -111,15 +112,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
         } else if (response?.items) {
           items = response.items;
         }
-
-        // Sort: products with images first, broken-image products last
-        items.sort((a: any, b: any) => {
-            const aImg = a.imageUrl || a.image || a.thumbnail;
-            const bImg = b.imageUrl || b.image || b.thumbnail;
-            if (aImg && !bImg) return -1;
-            if (!aImg && bImg) return 1;
-            return 0;
-        });
 
         // Map API fields to template-expected fields
         this.products = items.map((p: any) => ({
@@ -225,6 +217,15 @@ export class ProductsComponent implements OnInit, OnDestroy {
         break;
     }
 
+    // Sort: broken-image products to end
+    filtered.sort((a, b) => {
+      const aBroken = this.brokenImageIds.has(a.id);
+      const bBroken = this.brokenImageIds.has(b.id);
+      if (aBroken && !bBroken) return 1;
+      if (!aBroken && bBroken) return -1;
+      return 0;
+    });
+
     this.filteredProducts = filtered;
   }
 
@@ -254,6 +255,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  onImageBroken(productId: number): void {
+    this.brokenImageIds.add(productId);
+    this.applyFilters();
   }
 
   onAddToWishlist(product: Product) {

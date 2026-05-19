@@ -18,6 +18,7 @@ export class ProductGridComponent {
   @Input() showWishlist = true;
   @Input() showQuickView = true;
   @Output() onWishlistToggle = new EventEmitter<Product>();
+  @Output() onImageError = new EventEmitter<number>();
 
   get gridClasses(): string {
     const columnClasses = {
